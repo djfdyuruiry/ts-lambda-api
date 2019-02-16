@@ -11,8 +11,7 @@
         "outDir": "dist",
         "paths": {
             "*": [
-                "node_modules/*",
-                "src/types/*"
+                "node_modules/*"
             ]
         },
         "target": "es2017",

@@ -1,6 +1,7 @@
 import { API, METHODS } from "lambda-api";
 
 import { ApiDecoratorRegistry } from "../ApiDecoratorRegistry";
+import { Controller } from "../Controller";
 
 /**
  * decorators for controller endpoint methods, a path
@@ -45,11 +46,26 @@ function registerApiEndpoint(classDefinition: Object, methodName: string, path: 
             // call api setup method, passing in handler that will invoke 
             // the endpoint method on the controller instance with request 
             // and response objects
-            call(endpointPath, (req, res) => {
+            call(endpointPath, async (req, res) => {
                 // build a instance of the associated controller
-                let controller = controllerFactory(classDefinition.constructor)
+                let controller: Controller = controllerFactory(classDefinition.constructor)
 
-                controller[methodName](req, res)
+                if (controllerDefintion.produces) {
+                    res.removeHeader("Content-Type")
+                        .header("Content-Type", controllerDefintion.produces)
+                }
+
+                controller.setRequest(req)
+                controller.setResponse(res)
+
+                let response = await controller[methodName](req, res)
+                let rawRes: any = res
+
+                if (!response && rawRes._state !== "done") {
+                    throw `no content was set in response or returned by endpoint method, path: ${endpointPath} | method: ${methodName}`
+                }
+
+                return response
             })
         }
     )

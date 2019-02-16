@@ -10,8 +10,11 @@
     "tsc": "tsc",
     "tsserver": "tsserver",
     "nodemon": "nodemon",
-    "clean": "rm -rf node_modules && rm -rf dist",
-    "build": "npm run clean && npm install && tsc",
+    "alsatian": "alsatian",
+    "clean-install": "rm -rf node_modules && npm install",
+    "build": "rm -rf dist && tsc",
+    "build-tests": "rm -rf tests/js && tsc -p ./tests",
+    "test": "npm run build && npm run build-tests && cat tests/banner.txt && alsatian ./tests/js/**/*Tests.js",
     "watch-ts": "tsc -- -w"
   },
   "files": [
@@ -27,6 +30,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/aws-lambda": "^8.10.19",
+    "@types/aws-sdk": "^2.7.0",
     "inversify": "^5.0.1",
     "lambda-api": "^0.10.1",
     "marky": "^1.2.1",
@@ -34,6 +38,8 @@
   },
   "devDependencies": {
     "@types/node": "^10.12.24",
+    "alsatian": "^2.3.0",
+    "aws-sdk": "^2.404.0",
     "tslint": "^5.12.1",
     "typescript": "^3.3.3"
   }
