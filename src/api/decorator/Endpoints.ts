@@ -35,21 +35,22 @@ export function PATCH(path: string = "") {
 function registerApiEndpoint(classDefinition: Object, methodName: string, path: string, httpMethod: METHODS) {
     ApiDecoratorRegistry.Endpoints.push(
         (api: API, controllerFactory: (constructor: Function) => any) => {
-            // build a instance of the associated controller
-            let controller = controllerFactory(classDefinition.constructor)
-            let call = mapHttpMethodToCall(api, httpMethod)
-            let endpointPath = path
             let controllerDefintion: any = classDefinition.constructor
+            let endpointPath = controllerDefintion.rootPath ? 
+                `${controllerDefintion.rootPath}${path}` :
+                path
 
-            if (controllerDefintion.rootPath) {
-                // prepend controller root path to endpoint path 
-                endpointPath = `${controllerDefintion.rootPath}${path}`
-            }
+            let call = mapHttpMethodToCall(api, httpMethod)
 
             // call api setup method, passing in handler that will invoke 
             // the endpoint method on the controller instance with request 
             // and response objects
-            call(endpointPath, (req, res) => controller[methodName](req, res))
+            call(endpointPath, (req, res) => {
+                // build a instance of the associated controller
+                let controller = controllerFactory(classDefinition.constructor)
+
+                controller[methodName](req, res)
+            })
         }
     )
 }
