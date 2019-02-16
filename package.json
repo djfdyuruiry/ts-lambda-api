@@ -1,0 +1,35 @@
+{
+  "name": "typescript-lambda-api",
+  "version": "0.1.4",
+  "description": "Build REST API's using Typescript & AWS Lambda. Support for decorator based routing and dependecy injection using InversifyJS. This project is built on top of the wonderful lambda-api package.",
+  "scripts": {
+    "tsc": "tsc",
+    "tsserver": "tsserver",
+    "nodemon": "nodemon",
+    "clean": "rm -rf node_modules && rm -rf dist",
+    "build": "npm run clean && npm install && tsc",
+    "watch-ts": "tsc -- -w"
+  },
+  "files": [
+    "README.md",
+    "index.d.ts",
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
+  ],
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "author": "Matthew Snoddy",
+  "license": "MIT",
+  "dependencies": {
+    "@types/aws-lambda": "^8.10.19",
+    "inversify": "^5.0.1",
+    "lambda-api": "^0.10.1",
+    "marky": "^1.2.1",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.24",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.3"
+  }
+}
