@@ -15,7 +15,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 
 This is a short guide to creating your first API using `typescript-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customised. 
 
-**Note: Node.js v8 or newer is required to use this package.**
+**Note: Node.js v8 & Typescript v3 or newer are required to use this package.**
 
 - Create a directory for your project and run `npm init` to create your `package.json`
 
