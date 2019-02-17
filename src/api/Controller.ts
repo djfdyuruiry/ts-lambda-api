@@ -15,6 +15,8 @@ export abstract class Controller {
     }
 
     public async invoke(methodName: string, request: Request, response: Response) {
-        return await this[methodName](request, response)
+        var method: Function = this[methodName]
+
+        return await method.apply(this, [request, response])
     }
 }

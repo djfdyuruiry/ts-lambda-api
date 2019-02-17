@@ -94,11 +94,11 @@ exports.handler = app.run
 
 ```typescript
 import { injectable } from "inversify"
-import { apiController, GET } from "typescript-lambda-api"
+import { apiController, Controller, GET } from "typescript-lambda-api"
 
 @injectable()
 @apiController("/hello-world")
-export class HelloWorldController {
+export class HelloWorldController extends Controller {
     // GET, POST, PUT, PATCH and DELETE are supported
     @GET()
     public get() {
@@ -134,11 +134,11 @@ If you want to read request bodies or write to the response object, you can add 
 ```typescript
 import { injectable } from "inversify"
 import { Request, Response } from "lambda-api"
-import { apiController, GET } from "typescript-lambda-api"
+import { apiController, Controller, GET } from "typescript-lambda-api"
 
 @injectable()
 @apiController("/hello-world")
-export class HelloWorldController {
+export class HelloWorldController extends Controller {
     @GET()
     public get(request: Request, response: Response) {
         let queryStringParam = request.query["someField"]

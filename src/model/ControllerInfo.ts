@@ -1,12 +1,12 @@
-import { ApiEndpointInfo } from "./ApiEndpointInfo";
+import { EndpointInfo } from "./EndpointInfo";
 
-export class ApiControllerInfo {
+export class ControllerInfo {
     public readonly name: string
     public readonly classConstructor: Function
 
     public path?: string
     public produces?: string
-    public endpoints: Map<string, ApiEndpointInfo> = new Map<string, ApiEndpointInfo>()
+    public endpoints: Map<string, EndpointInfo> = new Map<string, EndpointInfo>()
 
     public constructor(name: string, classConstructor: Function) {
         this.name = name

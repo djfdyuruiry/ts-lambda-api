@@ -1,14 +1,14 @@
 import "reflect-metadata"
 
 import { API } from "lambda-api"
-import { ApiServer } from "./api/ApiServer"
+import { Server } from "./api/Server"
 import { Container } from "inversify"
 import { AppConfig } from "./model/AppConfig"
 import { ApiRequest } from "./model/ApiRequest";
 import { ApiResponse } from "./model/ApiResponse";
 
 export abstract class ApiApp {
-    protected readonly apiServer: ApiServer
+    protected readonly apiServer: Server
     protected readonly appContainer: Container
 
     public constructor(appConfig?: AppConfig, appContainer?: Container) {
@@ -24,7 +24,7 @@ export abstract class ApiApp {
             }
         }
 
-        this.apiServer = this.appContainer.get<ApiServer>(ApiServer)
+        this.apiServer = this.appContainer.get<Server>(Server)
     }
 
     /**

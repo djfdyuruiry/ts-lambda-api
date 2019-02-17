@@ -1,16 +1,16 @@
 import createAPI, { API } from "lambda-api"
 import { inject, injectable, Container } from "inversify"
 
-import { ApiEndpoint } from "./ApiEndpoint"
-import { ApiControllerLoader } from "./ApiControllerLoader"
-import { ApiDecoratorRegistry } from "./ApiDecoratorRegistry"
+import { Endpoint } from "./Endpoint"
+import { ControllerLoader } from "./ControllerLoader"
+import { DecoratorRegistry } from "./DecoratorRegistry"
 import { AppConfig } from "../model/AppConfig"
 import { ApiRequest } from "../model/ApiRequest"
 import { ApiResponse } from "../model/ApiResponse"
 import { timed } from "../util/timed"
 
 @injectable()
-export class ApiServer {
+export class Server {
     private readonly api: API;
 
     public constructor(@inject(AppConfig) apiConfig?: AppConfig) {
@@ -23,11 +23,11 @@ export class ApiServer {
 
     @timed
     public async discoverAndBuildRoutes(controllersPath: string, appContainer: Container) {
-        await ApiControllerLoader.loadControllers(controllersPath)
+        await ControllerLoader.loadControllers(controllersPath)
 
-        for (let endpointKey in ApiDecoratorRegistry.Endpoints) {
-            let apiEndpoint = new ApiEndpoint(
-                ApiDecoratorRegistry.Endpoints[endpointKey],
+        for (let endpointKey in DecoratorRegistry.Endpoints) {
+            let apiEndpoint = new Endpoint(
+                DecoratorRegistry.Endpoints[endpointKey],
                 c => appContainer.get(c)
             )
 

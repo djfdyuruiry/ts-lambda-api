@@ -1,13 +1,13 @@
 import { Request, Response, API } from "lambda-api"
 
 import { Controller } from "./Controller"
-import { ApiEndpointInfo } from "../model/ApiEndpointInfo"
+import { EndpointInfo } from "../model/EndpointInfo"
 
-export class ApiEndpoint {
-    private readonly endpoint: ApiEndpointInfo
+export class Endpoint {
+    private readonly endpoint: EndpointInfo
     private readonly controllerFactory: (constructor: Function) => Controller
 
-    public constructor(endpoint: ApiEndpointInfo, controllerFactory: (constructor: Function) => Controller) {
+    public constructor(endpoint: EndpointInfo, controllerFactory: (constructor: Function) => Controller) {
         this.endpoint = endpoint
         this.controllerFactory = controllerFactory
     }
@@ -24,7 +24,7 @@ export class ApiEndpoint {
 
     // entry point or lambda-api request engine, self parameter required to inject
     // this instance into the invocation context as `this` is overwritten
-    public async invoke(self: ApiEndpoint, request: Request, response: Response) {
+    public async invoke(self: Endpoint, request: Request, response: Response) {
         // build a instance of the associated controller
         let controller: Controller = 
             self.controllerFactory(self.endpoint.controller.classConstructor)

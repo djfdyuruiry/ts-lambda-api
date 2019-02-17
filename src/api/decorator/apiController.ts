@@ -1,8 +1,8 @@
-import { ApiDecoratorRegistry } from "../ApiDecoratorRegistry"
+import { DecoratorRegistry } from "../DecoratorRegistry"
 
 export function apiController(path?: string) {
     return (constructor: Function) => {
-        let apiController = ApiDecoratorRegistry.getOrCreateController(constructor)
+        let apiController = DecoratorRegistry.getOrCreateController(constructor)
 
         apiController.path = path
     }

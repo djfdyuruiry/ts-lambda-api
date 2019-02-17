@@ -1,4 +1,4 @@
-import { ApiDecoratorRegistry } from "../ApiDecoratorRegistry";
+import { DecoratorRegistry } from "../DecoratorRegistry";
 
 /**
  * decorators for controller endpoint methods, a path
@@ -31,8 +31,8 @@ export function PATCH(path: string = "") {
 }
 
 function registerApiEndpoint(classDefinition: Object, methodName: string, path: string, httpMethod: string) {
-    let controller = ApiDecoratorRegistry.getOrCreateController(classDefinition.constructor)
-    let endpoint = ApiDecoratorRegistry.getOrCreateEndpoint(controller, methodName)
+    let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
+    let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
     endpoint.httpMethod = httpMethod
     endpoint.path = path
