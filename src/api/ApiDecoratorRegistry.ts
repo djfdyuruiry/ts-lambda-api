@@ -9,6 +9,7 @@ import { ApiEndpointInfo } from "../model/ApiEndpointInfo"
  * allows for dependecy injection to be preformed by an IOC container.
  */
 export class ApiDecoratorRegistry {
+    // these are required to be dictionaries, using Map here causes weird issues with persistance
     public static readonly Endpoints: { [key: string] : ApiEndpointInfo} = {}
     public static readonly Controllers: { [key: string]: ApiControllerInfo } = {}
 
