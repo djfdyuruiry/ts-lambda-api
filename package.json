@@ -8,14 +8,13 @@
   },
   "scripts": {
     "tsc": "tsc",
-    "tsserver": "tsserver",
-    "nodemon": "nodemon",
     "alsatian": "alsatian",
     "clean-install": "rm -rf node_modules && npm install",
     "build": "rm -rf dist && tsc",
     "build-tests": "rm -rf tests/js && tsc -p ./tests",
-    "test": "npm run build && npm run build-tests && cat tests/banner.txt && alsatian --tap ./tests/js/**/*Tests.js",
-    "watch-ts": "tsc -w"
+    "build-all": "npm run build && npm run build-tests",
+    "tests": "cat tests/banner.txt && alsatian --tap ./tests/js/**/*Tests.js",
+    "test": "npm run build-tests && nyc --reporter=lcov --reporter=html npm run tests"
   },
   "files": [
     "README.md",
@@ -24,6 +23,11 @@
     "dist/**/*.js",
     "dist/**/*.d.ts"
   ],
+  "nyc": {
+    "exclude": [
+      "tests/**/*"
+    ]
+  },
   "main": "index.js",
   "typings": "index.d.ts",
   "author": "Matthew Snoddy",
@@ -40,6 +44,7 @@
     "@types/node": "^10.12.24",
     "alsatian": "^2.3.0",
     "aws-sdk": "^2.404.0",
+    "nyc": "^13.3.0",
     "tslint": "^5.12.1",
     "typescript": "^3.3.3"
   }
