@@ -1,11 +1,11 @@
 import { injectable } from "inversify";
 
-import { GET, Controller } from "../../../index"
+import { GET } from "../../../index"
 
 @injectable()
-export class NoRootPathController extends Controller {
+export class NoRootPathController {
     @GET("/test/no-root-path")
     public get() {
-        this.response.send("OK")
+        return "OK"
     }
 }
