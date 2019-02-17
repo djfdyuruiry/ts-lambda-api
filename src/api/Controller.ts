@@ -1,5 +1,8 @@
+import { applyPatch } from 'fast-json-patch'
 import { injectable } from "inversify"
 import { Request, Response } from "lambda-api"
+
+import { JsonPatch } from "../model/JsonPatch";
 
 @injectable()
 export abstract class Controller {
@@ -12,5 +15,11 @@ export abstract class Controller {
 
     public setResponse(response: Response) {
         this.response = response
+    }
+
+    protected applyJsonPatch<T>(patch: JsonPatch, obj: T) {
+        let result = applyPatch(obj, patch)
+
+        return result.newDocument
     }
 }

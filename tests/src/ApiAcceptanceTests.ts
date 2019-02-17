@@ -1,10 +1,11 @@
-import { Expect, AsyncTest, TestFixture, TestCase } from "alsatian";
+import { Expect, AsyncTest, TestFixture, TestCase } from "alsatian"
+import { ReplaceOperation } from "fast-json-patch/lib/core"
 
-import { RequestBuilder } from "../../index"
-import { METHODS } from "lambda-api";
+import { RequestBuilder, JsonPatch } from "../../index"
+import { METHODS } from "lambda-api"
 
-import { TestBase } from "./TestBase";
-import { Person } from "./test-controllers/model/Person";
+import { TestBase } from "./TestBase"
+import { Person } from "./test-controllers/model/Person"
 
 @TestFixture()
 export class ApiAcceptanceTests extends TestBase {
@@ -41,6 +42,37 @@ export class ApiAcceptanceTests extends TestBase {
 
         Expect(response.statusCode).toEqual(200)
         Expect(JSON.parse(response.body)).toEqual(requestBody)
+    }
+
+    @AsyncTest()
+    public async when_delete_request_made_then_app_returns_http_status_204_no_content() {
+        let response = await this.sendRequest(
+            RequestBuilder.delete("/test/methods/delete").build()
+        )
+
+        Expect(response.statusCode).toEqual(204)
+    }
+
+    @AsyncTest()
+    public async when_patch_request_made_then_app_endpoint_applies_json_patch() {
+        let replaceOp: ReplaceOperation<string> = {
+            op: "replace",
+            path: "/name",
+            value: "I patched it!"
+        }
+    
+        let jsonPatch: JsonPatch = [replaceOp]
+        
+        let response = await this.sendRequest(
+            RequestBuilder.patch("/test/methods/patch")
+                .body(JSON.stringify(jsonPatch))
+                .build()
+        )
+
+        Expect(JSON.parse(response.body)).toEqual({
+            name: "I patched it!",
+            age: 42
+        })
     }
 
     @AsyncTest()

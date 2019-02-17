@@ -35,6 +35,7 @@
   "dependencies": {
     "@types/aws-lambda": "^8.10.19",
     "@types/aws-sdk": "^2.7.0",
+    "fast-json-patch": "^2.0.7",
     "inversify": "^5.0.1",
     "lambda-api": "^0.10.1",
     "marky": "^1.2.1",

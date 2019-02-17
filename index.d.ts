@@ -19,3 +19,5 @@ export { controllerProduces, produces } from "./dist/api/decorator/produces"
 
 export { RequestBuilder } from "./dist/util/RequestBuilder"
 export { timed } from "./dist/util/timed"
+
+export { JsonPatch } from "./dist/model/JsonPatch"

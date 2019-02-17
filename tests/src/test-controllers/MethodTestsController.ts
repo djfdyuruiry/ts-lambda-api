@@ -1,12 +1,12 @@
 import { injectable } from "inversify"
 
-import { apiController, fromBody, GET, POST, PUT, PATCH, DELETE } from "../../../index"
+import { apiController, fromBody, Controller, JsonPatch, POST, PUT, PATCH, DELETE } from "../../../index"
 
-import { Person } from "./model/Person";
+import { Person } from "./model/Person"
 
 @apiController("/test/methods")
 @injectable()
-export class MethodTestsController {
+export class MethodTestsController extends Controller {
     @POST("/post")
     public post(@fromBody person: Person) {
         return person
@@ -18,12 +18,17 @@ export class MethodTestsController {
     }
 
     @PATCH("/patch")
-    public patch() {
-        return "OK"
+    public patch(@fromBody jsonPatch: JsonPatch) {
+        let somePerson: Person = {
+            name: "Should Not Come Back",
+            age: 42
+        }
+
+        return this.applyJsonPatch<Person>(jsonPatch, somePerson)
     }
 
     @DELETE("/delete")
     public delete() {
-        return "OK"
+        this.response.status(204).send("")
     }
 }
