@@ -23,6 +23,8 @@ export class DecoratorRegistry {
             DecoratorRegistry.Endpoints[endpointKey] = new EndpointInfo(endpointKey, controller, methodName)
         }
 
+        controller.endpoints[methodName] = DecoratorRegistry.Endpoints[endpointKey]
+
         return DecoratorRegistry.Endpoints[endpointKey]
     }
 }

@@ -21,6 +21,9 @@ exports.PUT = endpoints.PUT
 exports.PATCH = endpoints.PATCH
 exports.DELETE = endpoints.DELETE
 
+exports.pathParam = require("./dist/api/decorator/pathParam").pathParam
+exports.queryParam = require("./dist/api/decorator/queryParam").queryParam
+
 let produces = require("./dist/api/decorator/produces")
 
 exports.controllerProduces = produces.controllerProduces

@@ -5,16 +5,16 @@ import { ApiRequest } from "../model/ApiRequest"
 export class RequestBuilder {
     private readonly method: METHODS
     private readonly path: string
-    private readonly httpHeaders: Map<string, string>
-    private readonly httpQueryParams: Map<string, string>
+    private readonly httpHeaders: { [key: string] : string}
+    private readonly httpQueryParams: { [key: string] : string}
     private readonly body: string
 
     private constructor(method: METHODS, path: string) {
         this.method = method
         this.path = path
 
-        this.httpHeaders = new Map<string, string>()
-        this.httpQueryParams = new Map<string, string>()
+        this.httpHeaders = {}
+        this.httpQueryParams = {}
     }
 
     public static get(path: string) {
@@ -39,24 +39,36 @@ export class RequestBuilder {
 
     public header(key: string, value: string) {
         this.headers[key] = value
+        return this
     }
 
-    public headers(httpHeaders: Map<string, string>) {
-        httpHeaders.forEach((k,v) => this.httpHeaders[k] = v)
+    public headers(httpHeaders: { [key: string] : string}) {
+        for (let key in httpHeaders) {
+            this.httpHeaders[key] = httpHeaders[key] 
+        }
+
+        return this
     }
 
     public query(key: string, value: string) {
-        this.queryParams[key] = value
+        this.httpQueryParams[key] = value
+        return this
     }
 
-    public queryParams(params: Map<string, string>) {
-        params.forEach((k,v) => this.httpQueryParams[k] = v)
+    public queryParams(params: { [key: string] : string}) {
+        for (let key in params) {
+            this.httpQueryParams[key] = params[key] 
+        }
+
+        return this
     }
 
-    private mapToObject(map: Map<string, string>) {
+    private mapToObject(map: { [key: string] : string}) {
         let obj = {}
 
-        map.forEach((k,v) => obj[k] = v)
+        for (let key in map) {
+            obj[key] = map[key] 
+        }
 
         return obj
     }

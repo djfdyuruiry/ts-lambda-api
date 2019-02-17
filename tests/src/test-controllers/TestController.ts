@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import { apiController, GET, controllerProduces, produces, Controller } from "../../../index"
+import { apiController, GET, controllerProduces, Controller, pathParam, queryParam } from "../../../index"
 
 @apiController("/test")
 @controllerProduces("text/plain")
@@ -12,7 +12,6 @@ export class TestController extends Controller {
     }
 
     @GET("/response-model")
-    @produces("text/plain")
     public get_ResponseModel() {
         this.response.send("OK")
     }
@@ -25,5 +24,19 @@ export class TestController extends Controller {
     @GET("/no-content")
     public get_NoContent(){
         this.response.status(204).send("")
+    }
+
+    @GET("/path-test/:name/:age")
+    public get_PathTest(
+        @pathParam("name") name: string,
+        @pathParam("age") age: string
+    ) {
+        this.response.send(`Hey ${name}, you are ${age}`)
+    }
+
+
+    @GET("/query-test/")
+    public get_QueryTest(@queryParam("magic") magic: string) {
+        this.response.send(`Magic status: ${magic}`)
     }
 }
