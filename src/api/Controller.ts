@@ -15,8 +15,6 @@ export abstract class Controller {
     }
 
     public async invoke(methodName: string, request: Request, response: Response) {
-        let self: any = this
-
-        return await self[methodName](request, response)
+        return await this[methodName](request, response)
     }
 }
