@@ -1,7 +1,6 @@
 import { API, METHODS } from "lambda-api";
 
 import { ApiDecoratorRegistry } from "../ApiDecoratorRegistry";
-import { Controller } from "../Controller";
 
 /**
  * decorators for controller endpoint methods, a path
@@ -34,55 +33,9 @@ export function PATCH(path: string = "") {
 }
 
 function registerApiEndpoint(classDefinition: Object, methodName: string, path: string, httpMethod: METHODS) {
-    ApiDecoratorRegistry.Endpoints.push(
-        (api: API, controllerFactory: (constructor: Function) => any) => {
-            let controllerDefintion: any = classDefinition.constructor
-            let endpointPath = controllerDefintion.rootPath ? 
-                `${controllerDefintion.rootPath}${path}` :
-                path
+    let controller = ApiDecoratorRegistry.getOrCreateController(classDefinition.constructor)
+    let endpoint = ApiDecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
-            let call = mapHttpMethodToCall(api, httpMethod)
-
-            // call api setup method, passing in handler that will invoke 
-            // the endpoint method on the controller instance with request 
-            // and response objects
-            call(endpointPath, async (req, res) => {
-                // build a instance of the associated controller
-                let controller: Controller = controllerFactory(classDefinition.constructor)
-
-                if (controllerDefintion.produces) {
-                    res.removeHeader("Content-Type")
-                        .header("Content-Type", controllerDefintion.produces)
-                }
-
-                controller.setRequest(req)
-                controller.setResponse(res)
-
-                let response = await controller[methodName](req, res)
-                let rawRes: any = res
-
-                if (!response && rawRes._state !== "done") {
-                    throw `no content was set in response or returned by endpoint method, path: ${endpointPath} | method: ${methodName}`
-                }
-
-                return response
-            })
-        }
-    )
-}
-
-function mapHttpMethodToCall(api: API, method: METHODS) {
-    if (method == "GET") {
-        return api.get
-    } else if (method == "POST") {
-        return api.post
-    } else if (method == "PUT") {
-        return api.put
-    } else if (method == "PATCH") {
-        return api.patch
-    } else if (method == "DELETE") {
-        return api.delete
-    }
-
-    throw "Unrecognised HTTP method '" + method + "'"
+    endpoint.httpMethod = httpMethod
+    endpoint.path = path
 }

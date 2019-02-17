@@ -20,4 +20,5 @@ exports.POST = Endpoints.POST
 exports.PUT = Endpoints.PUT
 exports.PATCH = Endpoints.PATCH
 exports.DELETE = Endpoints.DELETE
+exports.controllerProduces = require("./dist/api/decorator/produces").controllerProduces
 exports.produces = require("./dist/api/decorator/produces").produces

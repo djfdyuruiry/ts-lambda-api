@@ -10,7 +10,7 @@ export { AppConfig } from "./dist/model/AppConfig"
 
 export { apiController } from "./dist/api/decorator/apiController"
 export { GET, POST, PUT, PATCH, DELETE } from "./dist/api/decorator/Endpoints"
-export { produces } from "./dist/api/decorator/produces"
+export { controllerProduces, produces } from "./dist/api/decorator/produces"
 
 export { RequestBuilder } from "./dist/util/RequestBuilder"
 export { timed } from "./dist/util/timed"

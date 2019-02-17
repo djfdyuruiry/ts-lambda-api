@@ -14,8 +14,8 @@
     "clean-install": "rm -rf node_modules && npm install",
     "build": "rm -rf dist && tsc",
     "build-tests": "rm -rf tests/js && tsc -p ./tests",
-    "test": "npm run build && npm run build-tests && cat tests/banner.txt && alsatian ./tests/js/**/*Tests.js",
-    "watch-ts": "tsc -- -w"
+    "test": "npm run build && npm run build-tests && cat tests/banner.txt && alsatian --tap ./tests/js/**/*Tests.js",
+    "watch-ts": "tsc -w"
   },
   "files": [
     "README.md",

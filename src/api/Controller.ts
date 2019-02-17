@@ -13,4 +13,10 @@ export abstract class Controller {
     public setResponse(response: Response) {
         this.response = response
     }
+
+    public async invoke(methodName: string, request: Request, response: Response) {
+        let self: any = this
+
+        return await self[methodName](request, response)
+    }
 }

@@ -1,4 +1,5 @@
-import { API } from "lambda-api";
+import { ApiControllerInfo } from "../model/ApiControllerInfo"
+import { ApiEndpointInfo } from "../model/ApiEndpointInfo"
 
 /**
  * All controllers and endpoints that declare decorators are registered here.
@@ -8,7 +9,26 @@ import { API } from "lambda-api";
  * allows for dependecy injection to be preformed by an IOC container.
  */
 export class ApiDecoratorRegistry {
-    public static readonly Endpoints: 
-        ((api: API, controllerFactory: (constructor: Function) => any) => void)[] = []
-    public static readonly Controllers: Object[] = []
+    public static readonly Endpoints: { [key: string] : ApiEndpointInfo} = {}
+    public static readonly Controllers: { [key: string]: ApiControllerInfo } = {}
+
+    public static getOrCreateController(constructor: Function): ApiControllerInfo {
+        let name = constructor.name
+
+        if (!ApiDecoratorRegistry.Controllers[name]) {
+            ApiDecoratorRegistry.Controllers[name] = new ApiControllerInfo(name, constructor)
+        }
+
+        return ApiDecoratorRegistry.Controllers[name]
+    }
+
+    public static getOrCreateEndpoint(controller: ApiControllerInfo, methodName: string): ApiEndpointInfo {
+        let endpointKey = `${controller.name}::${methodName}`
+
+        if (!ApiDecoratorRegistry.Endpoints[endpointKey]) {
+            ApiDecoratorRegistry.Endpoints[endpointKey] = new ApiEndpointInfo(endpointKey, controller, methodName)
+        }
+
+        return ApiDecoratorRegistry.Endpoints[endpointKey]
+    }
 }

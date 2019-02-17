@@ -2,7 +2,7 @@ import path from "path"
 
 import { Expect, AsyncTest, TestFixture, TestCase } from "alsatian";
 
-import { ApiLambdaApp, RequestBuilder, ApiRequest } from "../../index"
+import { ApiLambdaApp, RequestBuilder } from "../../index"
 
 @TestFixture()
 export class ApiLambdaAppTests {

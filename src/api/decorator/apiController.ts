@@ -1,13 +1,9 @@
 import { ApiDecoratorRegistry } from "../ApiDecoratorRegistry"
 
-export function apiController(path: string) {
-    return (classDefinition: Function) => {
-        var classDef: any = classDefinition
+export function apiController(path?: string) {
+    return (constructor: Function) => {
+        let apiController = ApiDecoratorRegistry.getOrCreateController(constructor)
 
-        // store rootPath against controller for lookup
-        // by an API endpoint decorator
-        classDef.rootPath = path;
-
-        ApiDecoratorRegistry.Controllers.push(classDefinition)
+        apiController.path = path
     }
 }

@@ -1,8 +1,18 @@
-export function produces(contentType: string) {
-    return (classDefinition: Function) => {
-        var classDef: any = classDefinition
+import { ApiDecoratorRegistry } from "../ApiDecoratorRegistry";
 
-        // store contentType against controller/endpoint
-        classDef.produces = contentType;
+export function produces(contentType: string) {
+    return (classDefinition: Object | Function, methodName: string) => {
+        let controller = ApiDecoratorRegistry.getOrCreateController(classDefinition.constructor)
+        let endpoint = ApiDecoratorRegistry.getOrCreateEndpoint(controller, methodName)
+
+        endpoint.produces = contentType;
+    }
+}
+
+export function controllerProduces(contentType: string) {
+    return (classDefinition: Function) => {
+        let apiController = ApiDecoratorRegistry.getOrCreateController(classDefinition)
+
+        apiController.produces = contentType;
     }
 }
