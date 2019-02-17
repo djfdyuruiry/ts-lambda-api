@@ -14,6 +14,14 @@ export class EndpointInfo {
         public readonly methodName: string
     ) {
         this.method = this.controller.classConstructor.prototype[methodName]
+
+        if (this.method === undefined) {
+            throw new Error(
+                `Unable to read method parameters for endpoint '${this.methodName}' in controller '${controller.name}', ` +
+                "this normally happens when you have two controllers with the same class name"
+            )
+        }
+
         this.parameterExtractors = Array(this.method.length)
     }
 }

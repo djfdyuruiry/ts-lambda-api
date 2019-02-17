@@ -17,7 +17,7 @@ export class Server {
         this.api = createAPI(apiConfig)
     }
 
-    public configure(handler: (api: API) => void) {
+    public configure(handler: (this: void, api: API) => void) {
         handler(this.api)
     }
 

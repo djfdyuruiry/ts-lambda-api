@@ -7,7 +7,7 @@ export class RequestBuilder {
     private readonly path: string
     private readonly httpHeaders: { [key: string] : string}
     private readonly httpQueryParams: { [key: string] : string}
-    private readonly body: string
+    private httpBody: string
 
     private constructor(method: METHODS, path: string) {
         this.method = method
@@ -37,6 +37,10 @@ export class RequestBuilder {
         return new RequestBuilder("DELETE", path)
     }
 
+    public static do(method: METHODS, path: string) {
+        return new RequestBuilder(method, path)
+    }
+
     public header(key: string, value: string) {
         this.headers[key] = value
         return this
@@ -63,6 +67,11 @@ export class RequestBuilder {
         return this
     }
 
+    public body(value: string) {
+        this.httpBody = value
+        return this
+    }
+
     private mapToObject(map: { [key: string] : string}) {
         let obj = {}
 
@@ -80,7 +89,7 @@ export class RequestBuilder {
         request.httpMethod = this.method
         request.headers = this.mapToObject(this.httpHeaders)
         request.queryStringParameters = this.mapToObject(this.httpQueryParams)
-        request.body = this.body
+        request.body = this.httpBody
         request.isBase64Encoded = false
 
         return request

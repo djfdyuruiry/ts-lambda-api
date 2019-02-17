@@ -1,17 +1,13 @@
-import path from "path"
+import { Expect, AsyncTest, TestFixture, TestCase } from "alsatian";
 
-import { Expect, AsyncTest, TestFixture, TestCase, Test } from "alsatian";
+import { RequestBuilder } from "../../index"
+import { METHODS } from "lambda-api";
 
-import { ApiLambdaApp, ApiRequest, RequestBuilder } from "../../index"
+import { TestBase } from "./TestBase";
+import { Person } from "./test-controllers/model/Person";
 
 @TestFixture()
-export class ApiAcceptanceTests {
-    private readonly app: ApiLambdaApp;
-
-    public constructor() {
-        this.app = new ApiLambdaApp(path.join(__dirname, "test-controllers"))
-    }
-
+export class ApiAcceptanceTests extends TestBase {
     @TestCase("/test/")
     @TestCase("/test/no-root-path")
     @TestCase("/test/response-model")
@@ -23,6 +19,28 @@ export class ApiAcceptanceTests {
         )
 
         Expect(response.statusCode).toEqual(200)
+    }
+
+    @TestCase("POST", "/test/methods/post")
+    @TestCase("PUT", "/test/methods/put")
+    @AsyncTest()
+    public async when_request_with_body_made_for_decorator_route_then_app_passes_body_to_endpoint_and_returns_http_status_200_ok(
+        method: METHODS,
+        path: string
+    ) {
+        let requestBody: Person = {
+            name: "ezra",
+            age: 23
+        }
+
+        let response = await this.sendRequest(
+            RequestBuilder.do(method, path)
+                .body(JSON.stringify(requestBody))
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(200)
+        Expect(JSON.parse(response.body)).toEqual(requestBody)
     }
 
     @AsyncTest()
@@ -91,14 +109,8 @@ export class ApiAcceptanceTests {
             RequestBuilder.get("/test/produces").build()
         )
 
-        let responseObject = JSON.parse(response.body)
-
-        Expect(responseObject).toEqual({
+        Expect(JSON.parse(response.body)).toEqual({
             some: "value"
         })
-    }
-
-    private async sendRequest(request: ApiRequest) {
-        return await this.app.run(request, {})
     }
 }

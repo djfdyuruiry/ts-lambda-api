@@ -10,6 +10,7 @@ export { AppConfig } from "./dist/model/AppConfig"
 
 export { apiController } from "./dist/api/decorator/apiController"
 export { GET, POST, PUT, PATCH, DELETE } from "./dist/api/decorator/endpoints"
+export { fromBody } from "./dist/api/decorator/fromBody"
 export { pathParam } from "./dist/api/decorator/pathParam"
 export { queryParam } from "./dist/api/decorator/queryParam"
 export { request } from "./dist/api/decorator/request"

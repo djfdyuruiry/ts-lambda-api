@@ -14,7 +14,7 @@
     "build-tests": "rm -rf tests/js && tsc -p ./tests",
     "build-all": "npm run build && npm run build-tests",
     "tests": "cat tests/banner.txt && alsatian --tap ./tests/js/**/*Tests.js",
-    "test": "npm run build-tests && nyc --reporter=lcov --reporter=html npm run tests"
+    "test": "npm run build-all && nyc --reporter=lcov --reporter=html npm run tests"
   },
   "files": [
     "README.md",
