@@ -55,8 +55,9 @@ export class Endpoint {
 
         let rawRes: any = response
 
-        if (!endpointResponse && rawRes._state !== "done") {
-            throw `no content was set in response or returned by endpoint method, path: ${self.endpointInfo.path} | endpoint: ${self.endpointInfo.name}`
+        if (!endpointResponse && rawRes && rawRes._state !== "done") {
+            throw "no content was set in response or returned by endpoint method, " +
+                `path: ${self.endpointInfo.path} | endpoint: ${self.endpointInfo.name}`
         }
 
         return endpointResponse

@@ -12,6 +12,8 @@ export { apiController } from "./dist/api/decorator/apiController"
 export { GET, POST, PUT, PATCH, DELETE } from "./dist/api/decorator/endpoints"
 export { pathParam } from "./dist/api/decorator/pathParam"
 export { queryParam } from "./dist/api/decorator/queryParam"
+export { request } from "./dist/api/decorator/request"
+export { response } from "./dist/api/decorator/response"
 export { controllerProduces, produces } from "./dist/api/decorator/produces"
 
 export { RequestBuilder } from "./dist/util/RequestBuilder"

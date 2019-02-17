@@ -23,6 +23,8 @@ exports.DELETE = endpoints.DELETE
 
 exports.pathParam = require("./dist/api/decorator/pathParam").pathParam
 exports.queryParam = require("./dist/api/decorator/queryParam").queryParam
+exports.request = require("./dist/api/decorator/request").request
+exports.response = require("./dist/api/decorator/response").response
 
 let produces = require("./dist/api/decorator/produces")
 
