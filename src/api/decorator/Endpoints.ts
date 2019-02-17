@@ -1,5 +1,3 @@
-import { API, METHODS } from "lambda-api";
-
 import { ApiDecoratorRegistry } from "../ApiDecoratorRegistry";
 
 /**
@@ -32,7 +30,7 @@ export function PATCH(path: string = "") {
         registerApiEndpoint(classDefinition, methodName, path, "PATCH")
 }
 
-function registerApiEndpoint(classDefinition: Object, methodName: string, path: string, httpMethod: METHODS) {
+function registerApiEndpoint(classDefinition: Object, methodName: string, path: string, httpMethod: string) {
     let controller = ApiDecoratorRegistry.getOrCreateController(classDefinition.constructor)
     let endpoint = ApiDecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
