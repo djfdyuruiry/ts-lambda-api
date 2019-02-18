@@ -115,9 +115,10 @@ export class HelloWorldController extends Controller {
 
     // sub routes can be specifed in method decorators
     @GET("/sub-resource")
-    public get() {
+    public getSubResource() {
         return {
-            "hello": "world"
+            "hello": "world",
+            "sub": "resource"
         }
     }
 }
@@ -192,7 +193,7 @@ You can declare a root path for all methods in a controller using the `apiContro
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, GET } from "typescript-lambda-api"
+import { apiController, GET, POST } from "typescript-lambda-api"
 
 @injectable()
 @apiController("/hello-world")
@@ -203,7 +204,7 @@ export class HelloWorldController {
     }
 
     @POST()
-    public get() {
+    public post() {
         // handle post /hello-world requests
     }
 }
