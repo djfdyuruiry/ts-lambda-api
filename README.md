@@ -29,16 +29,14 @@ This is a short guide to creating your first API using `typescript-lambda-api`. 
 **Ensure the `@types/node` package you install matches your version of Node.js**
 
 ```shell
-npm install -D typescript
-npm install -D @types/node
 npm install typescript-lambda-api
+npm install -D typescript @types/node aws-sdk
 ```
 
 - Open `package.json` and add a script to enable access to the Typescript compiler:
 
 ```json
 {
-    // rest of package.json settings
     "scripts": {
         "tsc": "tsc"
     }
@@ -80,7 +78,7 @@ npm install typescript-lambda-api
 - Create a new file named `src/api.ts`, add the following:
 
 ```typescript
-import path from "path"
+import * as path from "path"
 
 import { AppConfig, ApiLambdaApp } from "typescript-lambda-api"
 
@@ -117,9 +115,10 @@ export class HelloWorldController extends Controller {
 
     // sub routes can be specifed in method decorators
     @GET("/sub-resource")
-    public get() {
+    public getSubResource() {
         return {
-            "hello": "world"
+            "hello": "world",
+            "sub": "resource"
         }
     }
 }
@@ -194,7 +193,7 @@ You can declare a root path for all methods in a controller using the `apiContro
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, GET } from "typescript-lambda-api"
+import { apiController, GET, POST } from "typescript-lambda-api"
 
 @injectable()
 @apiController("/hello-world")
@@ -205,7 +204,7 @@ export class HelloWorldController {
     }
 
     @POST()
-    public get() {
+    public post() {
         // handle post /hello-world requests
     }
 }
@@ -218,7 +217,7 @@ You can declare a path for any given method in a controller when using the endpo
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, Controller, GET } from "typescript-lambda-api"
+import { apiController, GET } from "typescript-lambda-api"
 
 @injectable()
 @apiController("/store")
@@ -284,7 +283,7 @@ Different parts of the HTTP request can be bound to endpoint method parameters u
 
 - `queryParam` - Query string parameter
 - `header` - HTTP header value
-- `fromBody` - Entity from request body, this will be an object if request contains JSON, otherwise it will simply be a string
+- `fromBody` - Entity from request body, this will be an object if the request contains JSON, otherwise it will simply be a string
 
 
 ```typescript
@@ -390,13 +389,13 @@ This library supports [JSON Patch](http://jsonpatch.com/) format for updating en
 ```typescript
 import { injectable } from "inversify"
 
-import { JsonPatch, PATCH } from "typescript-lambda-api"
+import { apiController, produces, JsonPatch, PATCH } from "typescript-lambda-api"
 
-import { Item } "./Item"
+import { Item } from "./Item"
 
 @injectable()
 @apiController("/store")
-export class StoreController {
+export class StoreController extends Controller {
     @PATCH("/item/:id")
     public modifyItem(@queryParam("id") id: string, @fromBody jsonPatch: JsonPatch) {
         let item = this.lookupItem(id)
