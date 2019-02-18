@@ -82,15 +82,18 @@ import * as path from "path"
 
 import { AppConfig, ApiLambdaApp } from "typescript-lambda-api"
 
-let appConfig = new AppConfig()
+exports.handler = async (event, context) => {
+    let appConfig = new AppConfig()
 
-appConfig.base = "api/v1"
-appConfig.version = "v1"
+    appConfig.base = "/api/v1"
+    appConfig.version = "v1"
 
-let controllersPath = path.join(__dirname, "controllers")
-let app = new ApiLambdaApp(controllersPath, appConfig)
+    let controllersPath = path.join(__dirname, "controllers")
+    let app = new ApiLambdaApp(controllersPath, appConfig)
 
-exports.handler = app.run
+    return await app.run(event, context)
+}
+
 ```
 
 - Add a `src/controllers` directory
