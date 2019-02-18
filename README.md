@@ -29,16 +29,14 @@ This is a short guide to creating your first API using `typescript-lambda-api`. 
 **Ensure the `@types/node` package you install matches your version of Node.js**
 
 ```shell
-npm install -D typescript
-npm install -D @types/node
 npm install typescript-lambda-api
+npm install -D typescript @types/node aws-sdk
 ```
 
 - Open `package.json` and add a script to enable access to the Typescript compiler:
 
 ```json
 {
-    // rest of package.json settings
     "scripts": {
         "tsc": "tsc"
     }
@@ -80,7 +78,7 @@ npm install typescript-lambda-api
 - Create a new file named `src/api.ts`, add the following:
 
 ```typescript
-import path from "path"
+import * as path from "path"
 
 import { AppConfig, ApiLambdaApp } from "typescript-lambda-api"
 
@@ -390,13 +388,13 @@ This library supports [JSON Patch](http://jsonpatch.com/) format for updating en
 ```typescript
 import { injectable } from "inversify"
 
-import { JsonPatch, PATCH } from "typescript-lambda-api"
+import { Controller, JsonPatch, PATCH } from "typescript-lambda-api"
 
 import { Item } "./Item"
 
 @injectable()
 @apiController("/store")
-export class StoreController {
+export class StoreController extends Controller {
     @PATCH("/item/:id")
     public modifyItem(@queryParam("id") id: string, @fromBody jsonPatch: JsonPatch) {
         let item = this.lookupItem(id)
