@@ -3,9 +3,9 @@ import { mark, stop } from 'marky'
 import { ProfilingEnabled } from './Environment'
 
 export function timed(_: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const functionToMeasure = descriptor.value;
+    const functionToMeasure: Function = descriptor.value;
 
-    descriptor.value = function (...args: any[]) {
+    descriptor.value = function (this: void, ...args: any[]) {
         if (ProfilingEnabled) {
             mark(propertyKey)
         }
