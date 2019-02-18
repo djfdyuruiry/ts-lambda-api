@@ -82,7 +82,7 @@ import * as path from "path"
 
 import { AppConfig, ApiLambdaApp } from "typescript-lambda-api"
 
-exports.handler = async (event, context) => {
+export async function handler(event, context) {
     let appConfig = new AppConfig()
 
     appConfig.base = "/api/v1"
@@ -93,7 +93,6 @@ exports.handler = async (event, context) => {
 
     return await app.run(event, context)
 }
-
 ```
 
 - Add a `src/controllers` directory
