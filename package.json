@@ -1,18 +1,20 @@
 {
   "name": "typescript-lambda-api",
   "description": "Build REST API's using Typescript & AWS Lambda. Support for decorator based routing and dependecy injection using InversifyJS. This project is built on top of the wonderful lambda-api package.",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/djfdyuruiry/typescript-lambda-api.git"
   },
   "scripts": {
     "tsc": "tsc",
-    "tsserver": "tsserver",
-    "nodemon": "nodemon",
-    "clean": "rm -rf node_modules && rm -rf dist",
-    "build": "npm run clean && npm install && tsc",
-    "watch-ts": "tsc -- -w"
+    "alsatian": "alsatian",
+    "clean-install": "rm -rf node_modules && npm install",
+    "build": "rm -rf dist && tsc",
+    "build-tests": "rm -rf tests/js && tsc -p ./tests",
+    "build-all": "npm run build && npm run build-tests",
+    "tests": "cat tests/banner.txt && alsatian --tap ./tests/js/**/*Tests.js",
+    "test": "npm run build-all && nyc --reporter=lcov --reporter=html npm run tests"
   },
   "files": [
     "README.md",
@@ -21,12 +23,19 @@
     "dist/**/*.js",
     "dist/**/*.d.ts"
   ],
+  "nyc": {
+    "exclude": [
+      "tests/**/*"
+    ]
+  },
   "main": "index.js",
   "typings": "index.d.ts",
   "author": "Matthew Snoddy",
   "license": "MIT",
   "dependencies": {
     "@types/aws-lambda": "^8.10.19",
+    "@types/aws-sdk": "^2.7.0",
+    "fast-json-patch": "^2.0.7",
     "inversify": "^5.0.1",
     "lambda-api": "^0.10.1",
     "marky": "^1.2.1",
@@ -34,6 +43,9 @@
   },
   "devDependencies": {
     "@types/node": "^10.12.24",
+    "alsatian": "^2.3.0",
+    "aws-sdk": "^2.404.0",
+    "nyc": "^13.3.0",
     "tslint": "^5.12.1",
     "typescript": "^3.3.3"
   }

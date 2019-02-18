@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-export class ApiControllerLoader {
+export class ControllerLoader {
     public static async loadControllers(controllersDirectory: string) {
         for (let file of fs.readdirSync(controllersDirectory)) {
             if (file.endsWith(".js")) {

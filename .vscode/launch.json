@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run Tests",
+            "preLaunchTask": "npm: build-all",
+            "program": "${workspaceFolder}/node_modules/.bin/alsatian",
+            "cwd": "${workspaceFolder}",
+            "outputCapture": "std",
+            "console": "integratedTerminal",
+            "args": [
+                "--tap",
+                "./tests/js/**/*Tests.js"
+            ],
+            // the below settings are required, otherwise debugging is flaky
+            "protocol": "inspector",
+            "sourceMaps": true,
+            "outFiles": [
+                "dist/**/*.js",
+                "tests/js/**/*.js"
+            ]
+        }
+    ]
+}

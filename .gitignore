@@ -80,3 +80,5 @@ typings/
 .dynamodb/
 
 dist
+
+tests/js
