@@ -1,6 +1,9 @@
 # typescript-lambda-api
 
-Build REST API's using Typescript & AWS Lambda. 
+Build REST API's using Typescript & AWS Lambda.
+
+[NPM Package](https://www.npmjs.com/package/typescript-lambda-api)
+
 
 Framework Features:
 
@@ -12,9 +15,34 @@ Framework Features:
 
 This project is built on top of the wonderful [lambda-api](https://github.com/jeremydaly/lambda-api) framework.
 
+----
+
+- [Creating a new API](#create-api)
+- [Deploy to AWS Lambda](#aws-deploy)
+    - [Invoke AWS Lambda](#invoke-lambda)
+
+Docs
+
+- [Routing](#routing) 
+    - [Controller Routes](#controller-routes)
+    - [Endpoint Routes](#endpoint-routes)
+    - [Path Parameters](#path-params)
+- [Request Parameter Binding](#request-binding)
+- [Responses](#responses)
+- [JSON Patch Requests](#json-patch)
+- [Request / Response Context](#req-res-context)
+    - [Extending Controller Class](#extend-controller)
+    - [Using Decorators](#use-decorators)
+- [Configuration](#config)
+    - [IOC Container](#ioc-container)
+    - [lambda-api](#lambda-api)
+- [Testing](#testing)
+
+- [Useful Links](#useful-links)
+
 ---
 
-## Creating a new API
+## <a id="create-api"></a>Creating a new API
 
 ---
 
@@ -134,7 +162,7 @@ npm run tsc
 
 ---
 
-## Deploy to AWS Lambda
+## <a id="aws-deploy"></a>Deploy to AWS Lambda
 
 ---
 
@@ -163,7 +191,7 @@ zip -r lambda.zip ./
 
 ---
 
-### Invoke Lambda
+### <a id="invoke-lambda"></a>Invoke Lambda
 
 ---
 
@@ -182,13 +210,13 @@ wget -qO - https://some.alb.dns.address/api/v1/hello-world/
 
 ----
 
-## Routing
+## <a id="routing"></a>Routing
 
 ----
 
 Routing is configured using decorators on both controller classes and endpoint methods. You can also define a global base path (e.x. `/api/v1`) for your API by configuring the `base` property when passing your app configuration to the `ApiLambdaApp` class. (See the `Creating a new API` section)
 
-### Controller Routes
+### <a id="controller-routes"></a>Controller Routes
 
 You can declare a root path for all methods in a controller using the `apiController` decorator.
 
@@ -212,7 +240,7 @@ export class HelloWorldController {
 }
 ```
 
-### Endpoint Routes
+### <a id="endpoint-routes"></a>Endpoint Routes
 
 You can declare a path for any given method in a controller when using the endpoint decorators. The `apiController` decorator is not required on the class to use this form of routing. 
 
@@ -233,7 +261,7 @@ export class StoreController {
 
 ---
 
-### Path Parameters
+### <a id="path-params"></a>Path Parameters
 
 You can include parameters as part of your routes, when you need to capture parts of the URL.
 
@@ -277,7 +305,7 @@ export class StoreController {
 
 ----
 
-## Request Parameter Binding
+## <a id="request-binding"></a>Request Parameter Binding
 
 ----
 
@@ -317,7 +345,7 @@ export class HelloWorldController {
 
 ----
 
-## Sending Responses
+## <a id="responses"></a>Responses
 
 ----
 
@@ -382,7 +410,7 @@ export class MessageOfTheDayController {
 
 ----
 
-## JSON Patch Requests
+## <a id="json-patch"></a>JSON Patch Requests
 
 ----
 
@@ -418,13 +446,13 @@ export class StoreController extends Controller {
 
 ----
 
-## Request / Response Context
+## <a id="req-res-context"></a>Request / Response Context
 
 ----
 
 If you want to read request bodies or write to the response, there are several supported approaches.
 
-### Extending Controller Class
+### <a id="extend-controller"></a>Extending Controller Class
 
 If you extend the controller class, you get access to the request and response context.
 
@@ -447,7 +475,7 @@ export class HelloWorldController extends Controller {
 }
 ```
 
-### Using Decorators
+### <a id="use-decorators"></a>Using Decorators
 
 You can use parameter decorators to inject the request and response context.
 
@@ -475,13 +503,13 @@ export class HelloWorldController {
 
 ----
 
-## Configuration
+## <a id="config"></a>Configuration
 
 ----
 
 The `AppConfig` class supports all the configuration fields documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package. (See the `Creating a new API` section)
 
-### IOC Container
+### <a id="ioc-container"></a>IOC Container
 
 Configuring the IOC container to enable dependency injection into your controllers is easy. Once you build a `ApiLambdaApp` instance you can call the `configureApp` method like below:
 
@@ -500,7 +528,7 @@ app.configureApp(container => {
 
 See the [InversifyJS](https://github.com/inversify/InversifyJS) package documentation for guidance how to use the `Container` class to manage dependencies.
 
-### lambda-api
+### <a id="lambda-api"></a>lambda-api
 
 Configuring `lambda-api` directly can be done by calling the `configureApi` method like below:
 
@@ -528,7 +556,7 @@ See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documenta
 
 ---
 
-## Testing
+## <a id="testing"></a>Testing
 
 ---
 
@@ -538,7 +566,7 @@ Also check out this project's dev dependencies to see what you need to test API 
 
 ---
 
-## Useful links
+## <a id="useful-links"></a>Useful links
 
 ---
 
