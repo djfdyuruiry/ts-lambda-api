@@ -8,6 +8,7 @@ Framework Features:
 - Decorator based parameter binding for endpoint methods (from body, path & query parameters and headers)
 - Built in support for applying JSON patch operations
 - API controller dependency injection using [InversifyJS](https://github.com/inversify/InversifyJS)
+- Supports invoking your API from both `Amazon API Gateway` and `Amazon Load Balancer`
 
 This project is built on top of the wonderful [lambda-api](https://github.com/jeremydaly/lambda-api) framework.
 
