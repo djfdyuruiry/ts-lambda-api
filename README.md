@@ -216,7 +216,7 @@ You can declare a path for any given method in a controller when using the endpo
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, Controller, GET } from "typescript-lambda-api"
+import { apiController, GET } from "typescript-lambda-api"
 
 @injectable()
 @apiController("/store")
@@ -282,7 +282,7 @@ Different parts of the HTTP request can be bound to endpoint method parameters u
 
 - `queryParam` - Query string parameter
 - `header` - HTTP header value
-- `fromBody` - Entity from request body, this will be an object if request contains JSON, otherwise it will simply be a string
+- `fromBody` - Entity from request body, this will be an object if the request contains JSON, otherwise it will simply be a string
 
 
 ```typescript
