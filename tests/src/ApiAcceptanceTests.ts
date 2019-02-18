@@ -108,6 +108,19 @@ export class ApiAcceptanceTests extends TestBase {
         Expect(response.body).toEqual("Magic status: enabled")
     }
 
+    @TestCase("/test/header-test")
+    @TestCase("/test/injected-header-test")
+    @AsyncTest()
+    public async when_request_made_with_header_then_app_passes_value_to_endpoint(path: string) {
+        let response = await this.sendRequest(
+            RequestBuilder.get(path)
+                .header("x-test-header", "header_value")
+                .build()
+        )
+
+        Expect(response.body).toEqual("Header: header_value")
+    }
+
     @AsyncTest()
     public async when_controller_produces_decorator_present_then_response_content_type_header_is_correct() {
         let response = await this.sendRequest(

@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { Response, Request } from "lambda-api";
 
-import { apiController, GET, controllerProduces, Controller, pathParam, queryParam, response, request, produces } from "../../../index"
+import { apiController, controllerProduces, header, pathParam, queryParam, response, request, produces, Controller, GET } from "../../../index"
 
 @apiController("/test")
 @controllerProduces("text/plain")
@@ -61,5 +61,17 @@ export class TestController extends Controller {
         return {
             some: "value"
         }
+    }
+
+    @GET("/header-test")
+    public get_HeaderTest(
+        @header("x-test-header") testHeader: string
+    ) {
+        this.response.send(`Header: ${testHeader}`)
+    }
+
+    @GET("/injected-header-test")
+    public get_InjectedHeaderTest(@request request: Request) {
+        this.response.send(`Header: ${request.headers["x-test-header"]}`)
     }
 }

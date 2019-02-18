@@ -42,7 +42,7 @@ export class RequestBuilder {
     }
 
     public header(key: string, value: string) {
-        this.headers[key] = value
+        this.httpHeaders[key] = value
         return this
     }
 

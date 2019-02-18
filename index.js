@@ -22,6 +22,7 @@ exports.PATCH = endpoints.PATCH
 exports.DELETE = endpoints.DELETE
 
 exports.fromBody = require("./dist/api/decorator/fromBody").fromBody
+exports.header = require("./dist/api/decorator/header").header
 exports.pathParam = require("./dist/api/decorator/pathParam").pathParam
 exports.queryParam = require("./dist/api/decorator/queryParam").queryParam
 exports.request = require("./dist/api/decorator/request").request

@@ -1,11 +1,15 @@
 # typescript-lambda-api
 
-Build REST API's using Typescript & AWS Lambda. Features:
+Build REST API's using Typescript & AWS Lambda. 
+
+Framework Features:
 
 - Decorator based routing for API controllers and endpoint methods
+- Decorator based parameter binding for endpoint methods (from body, path & query parameters and headers)
+- Built in support for applying JSON patch operations
 - API controller dependency injection using [InversifyJS](https://github.com/inversify/InversifyJS)
 
-This project is built on top of the wonderful [lambda-api](https://github.com/jeremydaly/lambda-api) npm package.
+This project is built on top of the wonderful [lambda-api](https://github.com/jeremydaly/lambda-api) framework.
 
 ---
 
@@ -20,6 +24,8 @@ This is a short guide to creating your first API using `typescript-lambda-api`. 
 - Create a directory for your project and run `npm init` to create your `package.json`
 
 - Install required packages:
+
+**Ensure the `@types/node` package you install matches your version of Node.js**
 
 ```shell
 npm install -D typescript
@@ -96,8 +102,9 @@ exports.handler = app.run
 import { injectable } from "inversify"
 import { apiController, Controller, GET } from "typescript-lambda-api"
 
-@injectable()
+@injectable() // all controller classes must be decorated with injectable
 @apiController("/hello-world")
+// extending Controller is optional, it provides convience methods
 export class HelloWorldController extends Controller {
     // GET, POST, PUT, PATCH and DELETE are supported
     @GET()
@@ -122,88 +129,6 @@ export class HelloWorldController extends Controller {
 ```
 npm run tsc
 ```
-
-----
-
-## Request / Response Model
-
-----
-
-If you want to read request bodies or write to the response object, you can add them as parameters to your endpoint methods:
-
-```typescript
-import { injectable } from "inversify"
-import { Request, Response } from "lambda-api"
-import { apiController, Controller, GET } from "typescript-lambda-api"
-
-@injectable()
-@apiController("/hello-world")
-export class HelloWorldController extends Controller {
-    @GET()
-    public get(request: Request, response: Response) {
-        let queryStringParam = request.query["someField"]
-
-        // ... do some logic ...
-
-        response.html("<h1>Hello World</h1>");
-    }
-}
-```
-
-The `Request` and `Response` classes are documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package.
-
-----
-
-## Configuration
-
-----
-
-The `AppConfig` class supports all the configuration fields documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package.
-
-**IOC Container**
-
-Configuring the IOC container to enable dependency injection into your controllers is easy. Once you build a `ApiLambdaApp` instance you can call the `configureApp` method like below:
-
-```typescript
-// build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
-
-app.configureApp(container => {
-    // bind interface to implementation class, for example
-    container.bind<IMyService>(IMyService)
-        .to(MyServiceImplementation)
-})
-
-// export handler
-```
-
-See the [InversifyJS](https://github.com/inversify/InversifyJS) package documentation for guidance how to use the `Container` class to manage dependencies.
-
-**lambda-api**
-
-Configuring `lambda-api` directly can be done by calling the `configureApi` method like below:
-
-```typescript
-// build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
-
-app.configureApi(api => {
-    // add middleware handler, for example
-    api.use((req,res,next) => {
-        if (req.headers.authorization !== "secretToken") {
-            res.error(401, "Not Authorized")
-            return
-        }
-
-        req.authorized = true
-        next()
-    })
-})
-
-// export handler
-```
-
-See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documentation for guidance how to use the `API` class.
 
 ---
 
@@ -253,6 +178,352 @@ wget -qO - https://some.alb.dns.address/api/v1/hello-world/
 {"hello":"world"}
 ```
 
+----
+
+## Routing
+
+----
+
+Routing is configured using decorators on both controller classes and endpoint methods. You can also define a global base path (e.x. `/api/v1`) for your API by configuring the `base` property when passing your app configuration to the `ApiLambdaApp` class. (See the `Creating a new API` section)
+
+### Controller Routes
+
+You can declare a root path for all methods in a controller using the `apiController` decorator.
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, GET } from "typescript-lambda-api"
+
+@injectable()
+@apiController("/hello-world")
+export class HelloWorldController {
+    @GET()
+    public get() {
+        // handle get /hello-world requests
+    }
+
+    @POST()
+    public get() {
+        // handle post /hello-world requests
+    }
+}
+```
+
+### Endpoint Routes
+
+You can declare a path for any given method in a controller when using the endpoint decorators. The `apiController` decorator is not required on the class to use this form of routing. 
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, Controller, GET } from "typescript-lambda-api"
+
+@injectable()
+@apiController("/store")
+export class StoreController {
+    @GET("/items")
+    public getItems() {
+        // handle get /store/items requests
+    }
+}
+```
+
+---
+
+### Path Parameters
+
+You can include parameters as part of your routes, when you need to capture parts of the URL.
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, pathParam, GET } from "typescript-lambda-api"
+
+@injectable()
+@apiController("/store")
+export class StoreController {
+    @GET("/item/:id")
+    public getItems(@pathParam("id") id: string) {
+        // do something with id
+    }
+}
+```
+
+---
+
+You can also combine controller and endpoint path parameters.
+
+---
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, pathParam, GET } from "typescript-lambda-api"
+
+@injectable()
+@apiController("/store/:storeId")
+export class StoreController {
+    @GET("/item/:id")
+    public getItem(@pathParam("storeId") storeId: string, @pathParam("id") id: string) {
+        // do something with storeId and id
+    }
+}
+```
+
+**Note all path parameters are passed in as strings, you will need to cast these if required**
+
+----
+
+## Request Parameter Binding
+
+----
+
+Different parts of the HTTP request can be bound to endpoint method parameters using decorators.
+
+- `queryParam` - Query string parameter
+- `header` - HTTP header value
+- `fromBody` - Entity from request body, this will be an object if request contains JSON, otherwise it will simply be a string
+
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, fromBody, header, queryParam, GET, POST } from "typescript-lambda-api"
+
+import { Thing } "./Thing"
+
+@injectable()
+@apiController("/hello-world")
+export class HelloWorldController {
+    @GET()
+    public getThings(@queryParam("id") id: string) {
+        // do something with id
+    }
+
+    @GET("/some/other/route")
+    public getThings(@header("content-type") contentType: string) {
+        // do something with contentType
+    }
+    
+    @POST("/thing")
+    public getThings(@fromBody thing: Thing) {
+        // do something with thing
+    }
+}
+```
+
+----
+
+## Sending Responses
+
+----
+
+There are two ways to respond to requests:
+
+- Return a value from your endpoint method
+- Use the response context to send a response (see `Request / Response Context` section below - the context has convience methods for html, json etc.)
+
+By default all return values are serialised to JSON in the response body and the `content-type` response header is set to `application/json`. To change this you can use the `produces` and `controllerProduces` decorators.
+
+Only JSON content types are serialised automatically, all other types simply convert the return value to a string.
+
+To set the response content type for all methods, use `controllerProduces` on a class.
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, controllerProduces, pathParam, produces, GET } from "typescript-lambda-api"
+
+import { Item } from "./Item"
+
+@injectable()
+@apiController("/store/:storeId")
+@controllerProduces("application/xml")
+export class StoreController {
+    @GET("/item/:id")
+    public getItem(@pathParam("storeId") storeId: string, @pathParam("id") id: string) {
+        let item = this.lookupItem(storeId, id)
+
+        return this.serialiseToXml(item)
+    }
+
+    private lookupItem(storeId: string, id: string) {
+        // go get the item from somewhere, db for example
+    }
+
+    private serialiseToXml(item: Item) {
+        // use 3rd party library to serialise item
+    }
+}
+```
+
+For an individual method, use `produces`. This will override `controllerProduces` for that method, if present on the controller class.
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, produces, GET } from "typescript-lambda-api"
+
+import { Item } from "./Item"
+
+@injectable()
+@apiController("/motd")
+export class MessageOfTheDayController {
+    @GET()
+    @produces("text/plain")
+    public get(){
+        return "Message of the Day!"
+    }
+}
+```
+
+----
+
+## JSON Patch Requests
+
+----
+
+This library supports [JSON Patch](http://jsonpatch.com/) format for updating entities without having to upload the entire entity. To use it in your endpoints, ensure your controller extends the `Controller` class, an example is below:
+
+```typescript
+import { injectable } from "inversify"
+
+import { JsonPatch, PATCH } from "typescript-lambda-api"
+
+import { Item } "./Item"
+
+@injectable()
+@apiController("/store")
+export class StoreController {
+    @PATCH("/item/:id")
+    public modifyItem(@queryParam("id") id: string, @fromBody jsonPatch: JsonPatch) {
+        let item = this.lookupItem(id)
+
+        // apply the patch operation
+        let modifiedItem = this.applyJsonPatch<Item>(jsonPatch, item)
+
+        // do something with modifiedItem
+    }
+
+    private lookupItem(id: string) {
+        // go get the item from somewhere, db for example
+    }
+}
+```
+
+**Under the hood, the API uses the [fast-json-patch](https://www.npmjs.com/package/fast-json-patch) package**
+
+----
+
+## Request / Response Context
+
+----
+
+If you want to read request bodies or write to the response, there are several supported approaches.
+
+### Extending Controller Class
+
+If you extend the controller class, you get access to the request and response context.
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, Controller, GET } from "typescript-lambda-api"
+
+@injectable()
+@apiController("/hello-world")
+export class HelloWorldController extends Controller {
+    @GET()
+    public get() {
+        let queryStringParam = this.request.query["someField"]
+
+        // ... do some logic ...
+
+        this.response.html("<h1>Hello World</h1>");
+    }
+}
+```
+
+### Using Decorators
+
+You can use parameter decorators to inject the request and response context.
+
+```typescript
+import { injectable } from "inversify"
+import { Request, Response } from "lambda-api"
+
+import { apiController, request, response, GET } from "typescript-lambda-api"
+
+@injectable()
+@apiController("/hello-world")
+export class HelloWorldController {
+    @GET()
+    public get(@request request: Request, @response response: Response) {
+        let queryStringParam = request.query["someField"]
+
+        // ... do some logic ...
+
+        response.html("<h1>Hello World</h1>");
+    }
+}
+```
+
+**The `Request` and `Response` classes are documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package.**
+
+----
+
+## Configuration
+
+----
+
+The `AppConfig` class supports all the configuration fields documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package. (See the `Creating a new API` section)
+
+### IOC Container
+
+Configuring the IOC container to enable dependency injection into your controllers is easy. Once you build a `ApiLambdaApp` instance you can call the `configureApp` method like below:
+
+```typescript
+// build config and controllers path...
+let app = new ApiLambdaApp(controllersPath, appConfig)
+
+app.configureApp(container => {
+    // bind interface to implementation class, for example
+    container.bind<IMyService>(IMyService)
+        .to(MyServiceImplementation)
+})
+
+// export handler
+```
+
+See the [InversifyJS](https://github.com/inversify/InversifyJS) package documentation for guidance how to use the `Container` class to manage dependencies.
+
+### lambda-api
+
+Configuring `lambda-api` directly can be done by calling the `configureApi` method like below:
+
+```typescript
+// build config and controllers path...
+let app = new ApiLambdaApp(controllersPath, appConfig)
+
+app.configureApi(api => {
+    // add middleware handler, for example
+    api.use((req,res,next) => {
+        if (req.headers.authorization !== "secretToken") {
+            res.error(401, "Not Authorized")
+            return
+        }
+
+        req.authorized = true
+        next()
+    })
+})
+
+// export handler
+```
+
+See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documentation for guidance how to use the `API` class.
+
 ---
 
 ## Testing
@@ -260,6 +531,8 @@ wget -qO - https://some.alb.dns.address/api/v1/hello-world/
 ---
 
 For local dev testing and integration with functional tests see the [typescript-lambda-api-local](https://www.npmjs.com/package/typescript-lambda-api-local) package which enables hosting your API using express as a local HTTP server.
+
+Also check out this project's dev dependencies to see what you need to test API code. Also, and the `tests` directory of this repo contains some acceptance tests which will help you.
 
 ---
 
