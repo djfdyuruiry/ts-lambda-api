@@ -388,9 +388,9 @@ This library supports [JSON Patch](http://jsonpatch.com/) format for updating en
 ```typescript
 import { injectable } from "inversify"
 
-import { Controller, JsonPatch, PATCH } from "typescript-lambda-api"
+import { apiController, produces, JsonPatch, PATCH } from "typescript-lambda-api"
 
-import { Item } "./Item"
+import { Item } from "./Item"
 
 @injectable()
 @apiController("/store")
