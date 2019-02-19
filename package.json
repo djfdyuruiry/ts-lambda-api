@@ -9,12 +9,12 @@
   "scripts": {
     "tsc": "tsc",
     "alsatian": "alsatian",
-    "clean-install": "rm -rf node_modules && npm install",
+    "clean-install": "rm -rf node_modules && yarn install",
     "build": "rm -rf dist && tsc",
     "build-tests": "rm -rf tests/js && tsc -p ./tests",
-    "build-all": "npm run build && npm run build-tests",
+    "build-all": "yarn run build && yarn run build-tests",
     "tests": "cat tests/banner.txt && alsatian --tap ./tests/js/**/*Tests.js",
-    "test": "npm run build-all && nyc --reporter=lcov --reporter=html npm run tests"
+    "test": "yarn run build-all && nyc --reporter=lcov --reporter=html yarn run tests"
   },
   "files": [
     "README.md",
