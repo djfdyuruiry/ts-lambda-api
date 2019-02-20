@@ -25,6 +25,7 @@
     "dist/**/*.d.ts"
   ],
   "nyc": {
+    "lines": 70,
     "exclude": [
       "tests/**/*"
     ]
