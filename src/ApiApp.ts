@@ -6,6 +6,7 @@ import { Container } from "inversify"
 import { AppConfig } from "./model/AppConfig"
 import { ApiRequest } from "./model/ApiRequest";
 import { ApiResponse } from "./model/ApiResponse";
+import { ErrorInterceptor } from "./api/ErrorInterceptor";
 
 export abstract class ApiApp {
     protected readonly apiServer: Server
@@ -28,6 +29,10 @@ export abstract class ApiApp {
      */
     public configureApi(configureBlock: (this: void, api: API) => void) {
         this.apiServer.configure(configureBlock)
+    }
+
+    public addErrorInterceptor(errorInterceptor?: ErrorInterceptor) {
+        this.apiServer.addErrorInterceptor(errorInterceptor)
     }
 
     public abstract async run(event: ApiRequest, context: any): Promise<ApiResponse>;

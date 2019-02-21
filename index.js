@@ -3,6 +3,7 @@ exports.ApiLambdaApp = require("./dist/ApiLambdaApp").ApiLambdaApp
 
 exports.Server = require("./dist/api/Server").Server
 exports.Controller = require("./dist/api/Controller").Controller
+exports.ErrorInterceptor = require("./dist/api/ErrorInterceptor").ErrorInterceptor
 
 exports.ApiRequest = require("./dist/model/ApiRequest").ApiRequest
 exports.ApiResponse = require("./dist/model/ApiResponse").ApiResponse

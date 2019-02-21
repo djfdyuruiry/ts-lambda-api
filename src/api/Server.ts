@@ -2,6 +2,7 @@ import createAPI, { API } from "lambda-api"
 import { inject, injectable, Container } from "inversify"
 
 import { Endpoint } from "./Endpoint"
+import { ErrorInterceptor } from "./ErrorInterceptor";
 import { ControllerLoader } from "./ControllerLoader"
 import { DecoratorRegistry } from "./DecoratorRegistry"
 import { AppConfig } from "../model/AppConfig"
@@ -12,13 +13,23 @@ import { timed } from "../util/timed"
 @injectable()
 export class Server {
     private readonly api: API;
+    private readonly errorInterceptors: ErrorInterceptor[]
 
     public constructor(@inject(AppConfig) apiConfig?: AppConfig) {
         this.api = createAPI(apiConfig)
+        this.errorInterceptors = []
     }
 
     public configure(handler: (this: void, api: API) => void) {
         handler(this.api)
+    }
+
+    public addErrorInterceptor(errorInterceptor?: ErrorInterceptor) {
+        if (!errorInterceptor) {
+            throw new Error("Null or undefined errorInterceptor passed to Server::addErrorInterceptor")
+        }
+
+        this.errorInterceptors.push(errorInterceptor)
     }
 
     @timed
