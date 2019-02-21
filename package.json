@@ -9,13 +9,12 @@
   "scripts": {
     "tsc": "tsc",
     "alsatian": "alsatian",
-    "clean": "git clean -fxd",
-    "clean-install": "yarn run clean && yarn install",
+    "install-with-audit": "yarn install && yarn audit",
     "build": "rm -rf dist && tsc",
     "build-tests": "rm -rf tests/js && tsc -p ./tests",
-    "build-all": "yarn run build && yarn run build-tests",
+    "build-all": "yarn run install-with-audit && yarn run build && yarn run build-tests",
     "tests": "cat tests/banner.txt && nyc --reporter=lcov --reporter=html alsatian --tap ./tests/js/**/*Tests.js",
-    "test": "yarn run clean-install && yarn run build-all && yarn run tests"
+    "test": "yarn run build-all && yarn run tests"
   },
   "files": [
     "README.md",

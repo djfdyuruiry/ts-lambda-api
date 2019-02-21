@@ -82,3 +82,4 @@ typings/
 dist
 
 tests/js
+package-lock.json
