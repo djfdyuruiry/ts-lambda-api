@@ -1,8 +1,8 @@
 import { Expect, AsyncTest, TestFixture, TestCase } from "alsatian"
 import { ReplaceOperation } from "fast-json-patch/lib/core"
+import { METHODS } from "lambda-api"
 
 import { RequestBuilder, JsonPatch } from "../../index"
-import { METHODS } from "lambda-api"
 
 import { TestBase } from "./TestBase"
 import { Person } from "./test-controllers/model/Person"
@@ -60,9 +60,9 @@ export class ApiAcceptanceTests extends TestBase {
             path: "/name",
             value: "I patched it!"
         }
-    
+
         let jsonPatch: JsonPatch = [replaceOp]
-        
+
         let response = await this.sendRequest(
             RequestBuilder.patch("/test/methods/patch")
                 .body(JSON.stringify(jsonPatch))
@@ -126,7 +126,7 @@ export class ApiAcceptanceTests extends TestBase {
         let response = await this.sendRequest(
             RequestBuilder.get("/test").build()
         )
-    
+
         Expect(response.headers["content-type"]).toEqual("text/plain")
     }
 
@@ -135,7 +135,7 @@ export class ApiAcceptanceTests extends TestBase {
         let response = await this.sendRequest(
             RequestBuilder.get("/test").build()
         )
-    
+
         Expect(response.body).toEqual("OK")
     }
 

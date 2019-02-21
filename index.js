@@ -8,6 +8,7 @@ exports.ErrorInterceptor = require("./dist/api/ErrorInterceptor").ErrorIntercept
 exports.ApiRequest = require("./dist/model/ApiRequest").ApiRequest
 exports.ApiResponse = require("./dist/model/ApiResponse").ApiResponse
 exports.AppConfig = require("./dist/model/AppConfig").AppConfig
+exports.ApiError = require("./dist/model/ApiError").ApiError
 
 exports.RequestBuilder = require("./dist/util/RequestBuilder").RequestBuilder
 exports.timed = require("./dist/util/timed").timed

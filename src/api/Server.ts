@@ -39,7 +39,8 @@ export class Server {
         for (let endpointKey in DecoratorRegistry.Endpoints) {
             let apiEndpoint = new Endpoint(
                 DecoratorRegistry.Endpoints[endpointKey],
-                c => appContainer.get(c)
+                c => appContainer.get(c),
+                this.errorInterceptors
             )
 
             apiEndpoint.register(this.api)

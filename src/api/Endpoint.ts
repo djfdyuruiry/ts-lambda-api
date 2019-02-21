@@ -23,7 +23,7 @@ export class Endpoint {
     // entry point for lambda-api request engine
     private async invoke(request: Request, response: Response) {
         // build a instance of the associated controller
-        let controller: Controller = 
+        let controller: Controller =
             this.controllerFactory(this.endpointInfo.controller.classConstructor)
         let produces: string
 
@@ -36,7 +36,7 @@ export class Endpoint {
         if (produces) {
             response.removeHeader("Content-Type")
                 .header("Content-Type", produces)
-        } 
+        }
 
         if (typeof(controller.setRequest) === "function") {
             controller.setRequest(request)
@@ -50,12 +50,18 @@ export class Endpoint {
 
         let rawRes: any = response
 
-        if (!endpointResponse && rawRes && rawRes._state !== "done") {
-            throw "no content was set in response or returned by endpoint method, " +
-                `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`
+        if (!this.responseDetected(endpointResponse, response)) {
+            throw new Error("no content was set in response or returned by endpoint method, " +
+                `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
         }
 
         return endpointResponse
+    }
+
+    private responseDetected(endpointResponse: any, response: Response): any {
+        let rawRes: any = response
+
+        return endpointResponse || (rawRes && rawRes._state === "done")
     }
 
     private mapHttpMethodToCall(api: API, method: string): Function {
@@ -71,7 +77,7 @@ export class Endpoint {
             return api.delete
         }
 
-        throw `Unrecognised HTTP method ${method}`
+        throw new Error(`Unrecognised HTTP method ${method}`)
     }
 
     private async invokeControllerMethod(controller: Controller, request: Request, response: Response) {
@@ -83,18 +89,22 @@ export class Endpoint {
         } catch(ex) {
             let errorInterceptor = this.getMatchingErrorInterceptor()
 
-            if (!errorInterceptor) {
-                throw ex
+            if (errorInterceptor) {
+                let interceptorResponse = await errorInterceptor.intercept({
+                    error: ex,
+                    endpointMethodParameters: parameters,
+                    endpointMethod: method,
+                    endpointController: controller,
+                    request: request,
+                    response: response
+                })
+
+                if(this.responseDetected(interceptorResponse, response)) {
+                    return interceptorResponse
+                }
             }
 
-            return await errorInterceptor.intercept({
-                error: ex,
-                endpointMethodParameters: parameters,
-                endpointMethod: method,
-                endpointController: controller,
-                request: request,
-                response: response
-            })
+            throw ex
         }
     }
 
