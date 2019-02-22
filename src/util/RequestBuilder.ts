@@ -48,7 +48,7 @@ export class RequestBuilder {
 
     public headers(httpHeaders: { [key: string] : string}) {
         for (let key in httpHeaders) {
-            this.httpHeaders[key] = httpHeaders[key] 
+            this.httpHeaders[key] = httpHeaders[key]
         }
 
         return this
@@ -61,7 +61,7 @@ export class RequestBuilder {
 
     public queryParams(params: { [key: string] : string}) {
         for (let key in params) {
-            this.httpQueryParams[key] = params[key] 
+            this.httpQueryParams[key] = params[key]
         }
 
         return this
@@ -72,11 +72,18 @@ export class RequestBuilder {
         return this
     }
 
+    public basicAuth(username: string, password: string) {
+        let credentials = Buffer.from(`${username}:${password}`).toString("base64")
+
+        this.httpHeaders["Authorization"] = `Basic ${credentials}`
+        return this
+    }
+
     private mapToObject(map: { [key: string] : string}) {
         let obj = {}
 
         for (let key in map) {
-            obj[key] = map[key] 
+            obj[key] = map[key]
         }
 
         return obj

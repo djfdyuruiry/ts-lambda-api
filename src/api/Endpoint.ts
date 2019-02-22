@@ -1,15 +1,19 @@
-import { interfaces } from 'inversify/dts/interfaces/interfaces';
+import { interfaces } from "inversify"
 import { Request, Response, API } from "lambda-api"
 
 import { Controller } from "./Controller"
-import { ErrorInterceptor } from "./ErrorInterceptor"
-import { EndpointInfo } from "../model/EndpointInfo"
+import { ErrorInterceptor } from "./error/ErrorInterceptor"
+import { EndpointInfo } from "../model/reflection/EndpointInfo"
+import { IAuthFilter } from "./security/IAuthFilter"
+import { AuthResult } from "../model/security/AuthResult"
+import { Principal } from "../model/security/Principal"
 
 export class Endpoint {
     public constructor(private readonly endpointInfo: EndpointInfo,
         private readonly controllerFactory: (constructor: Function) => Controller,
         private readonly errorInteceptorFactory: (type: interfaces.ServiceIdentifier<ErrorInterceptor>) => ErrorInterceptor,
-        private readonly errorInterceptors: ErrorInterceptor[] = []) {
+        private readonly errorInterceptors: ErrorInterceptor[] = [],
+        private readonly authFilters: IAuthFilter<any, Principal>[] = []) {
     }
 
     public register(api: API) {
@@ -24,6 +28,17 @@ export class Endpoint {
 
     // entry point for lambda-api request engine
     private async invoke(request: Request, response: Response) {
+        let authResult = await this.authenticateRequest(request)
+
+        if(!authResult.authenticated) {
+            response.status(401)
+                .removeHeader("content-type")
+                .header("content-type", "text/plain")
+                .send("")
+
+            return
+        }
+
         // build a instance of the associated controller
         let controller: Controller =
             this.controllerFactory(this.endpointInfo.controller.classConstructor)
@@ -48,7 +63,7 @@ export class Endpoint {
             controller.setResponse(response)
         }
 
-        let endpointResponse = await this.invokeControllerMethod(controller, request, response)
+        let endpointResponse = await this.invokeControllerMethod(controller, request, response, authResult.user)
 
         if (!this.responseDetected(endpointResponse, response)) {
             throw new Error("no content was set in response or returned by endpoint method, " +
@@ -80,9 +95,9 @@ export class Endpoint {
         throw new Error(`Unrecognised HTTP method ${method}`)
     }
 
-    private async invokeControllerMethod(controller: Controller, request: Request, response: Response) {
+    private async invokeControllerMethod(controller: Controller, request: Request, response: Response, principal: Principal) {
         var method: Function = controller[this.endpointInfo.methodName]
-        var parameters = this.buildEndpointParameters(request, response)
+        var parameters = this.buildEndpointParameters(request, response, principal)
 
         try {
             return await method.apply(controller, parameters)
@@ -108,10 +123,33 @@ export class Endpoint {
         }
     }
 
-    private buildEndpointParameters(request: Request, response: Response): any[] {
+    private async authenticateRequest(request: Request) {
+        let authResult = new AuthResult()
+
+        if (this.authFilters.length < 1) {
+            authResult.authenticated = true
+            return authResult
+        }
+
+        for (let filter of this.authFilters) {
+            try {
+                authResult.user = await filter.invoke(request)
+                authResult.authenticated = true
+
+                // return after finding a filter that does not throw an error
+                return authResult
+            } catch(ex) {
+                let a = 22
+            }
+        }
+
+        return authResult
+    }
+
+    private buildEndpointParameters(request: Request, response: Response, principal: Principal): any[] {
         return this.endpointInfo
             .parameterExtractors
-            .map(pe => pe.extract(request, response))
+            .map(pe => pe.extract(request, response, principal))
     }
 
     private getMatchingErrorInterceptor() {

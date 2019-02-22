@@ -1,4 +1,4 @@
-import { injectable } from "inversify";
+import { injectable } from "inversify"
 
 import { ErrorInterceptor } from "../../index"
 

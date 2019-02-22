@@ -1,7 +1,7 @@
 import { interfaces } from "inversify/dts/interfaces/interfaces"
 
 import { EndpointInfo } from "./EndpointInfo"
-import { ErrorInterceptor } from "../api/ErrorInterceptor"
+import { ErrorInterceptor } from "../../api/error/ErrorInterceptor"
 
 export class ControllerInfo {
     public readonly name: string

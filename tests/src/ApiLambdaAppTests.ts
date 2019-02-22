@@ -5,7 +5,8 @@ import { ApiLambdaApp, AppConfig, RequestBuilder } from "../../index"
 
 import { TestBase } from "./TestBase"
 import { TestDecoratorErrorInterceptor } from "./TestDecoratorErrorInterceptor"
-import { TestErrorInterceptor } from './TestErrorInterceptor'
+import { TestErrorInterceptor } from "./TestErrorInterceptor"
+import { TestAuthFilter } from "./TestAuthFilter"
 
 @TestFixture()
 export class ApiLambdaAppTests extends TestBase {
@@ -129,5 +130,47 @@ export class ApiLambdaAppTests extends TestBase {
         )
 
         Expect(errorInterceptor.wasInvoked).toBeTruthy()
+    }
+
+    @AsyncTest()
+    public async when_api_auth_filter_configured_and_request_is_made_then_filter_is_invoked() {
+        let authFilter = new TestAuthFilter("luke", "vaderismydad")
+
+        this.app.addAuthFilter(authFilter)
+
+        await this.sendRequest(
+            RequestBuilder.get("/test")
+                .basicAuth("luke", "vaderismydad")
+                .build()
+        )
+
+        Expect(authFilter.wasInvoked).toBeTruthy()
+    }
+
+    @TestCase("vaderismydad", 200)
+    @TestCase("whoismydad?", 401)
+    @AsyncTest()
+    public async when_api_auth_filter_configured_and_credentials_passed_then_valid_endpoint_request_returns_correct_status(password: string, expectedStatus: number) {
+        this.app.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
+
+        let response = await this.sendRequest(
+            RequestBuilder.get("/test")
+                .basicAuth("luke", password)
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(expectedStatus)
+    }
+
+    @AsyncTest()
+    public async when_api_auth_filter_configured_and_no_credentials_passed_then_valid_endpoint_request_returns_401_unauthorized() {
+        this.app.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
+
+        let response = await this.sendRequest(
+            RequestBuilder.get("/test")
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(401)
     }
 }

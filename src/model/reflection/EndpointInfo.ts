@@ -1,8 +1,8 @@
 import { interfaces } from "inversify/dts/interfaces/interfaces"
 
 import { ControllerInfo } from "./ControllerInfo"
-import { ErrorInterceptor } from "../api/ErrorInterceptor"
-import { IParameterExtractor } from "../api/parameters/IParameterExtractor"
+import { ErrorInterceptor } from "../../api/error/ErrorInterceptor"
+import { IParameterExtractor } from "../../api/parameters/IParameterExtractor"
 
 export class EndpointInfo {
     public readonly method: Function

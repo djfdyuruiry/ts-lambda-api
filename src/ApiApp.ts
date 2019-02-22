@@ -1,12 +1,15 @@
 import "reflect-metadata"
 
-import { API } from "lambda-api"
-import { Server } from "./api/Server"
 import { Container } from "inversify"
+import { API } from "lambda-api"
+
+import { Server } from "./api/Server"
+import { ErrorInterceptor } from "./api/error/ErrorInterceptor"
+import { IAuthFilter } from "./api/security/IAuthFilter";
 import { AppConfig } from "./model/AppConfig"
-import { ApiRequest } from "./model/ApiRequest";
-import { ApiResponse } from "./model/ApiResponse";
-import { ErrorInterceptor } from "./api/ErrorInterceptor";
+import { ApiRequest } from "./model/ApiRequest"
+import { ApiResponse } from "./model/ApiResponse"
+import { Principal } from "./model/security/Principal";
 
 export abstract class ApiApp {
     protected readonly apiServer: Server
@@ -18,14 +21,14 @@ export abstract class ApiApp {
     }
 
     /**
-     * Configure the IOC container instance. 
+     * Configure the IOC container instance.
      */
     public configureApp(configureBlock: (this: void, container: Container) => void) {
         configureBlock(this.appContainer)
     }
 
     /**
-     * Configure the lambda-api API instance. 
+     * Configure the lambda-api API instance.
      */
     public configureApi(configureBlock: (this: void, api: API) => void) {
         this.apiServer.configure(configureBlock)
@@ -35,7 +38,11 @@ export abstract class ApiApp {
         this.apiServer.addErrorInterceptor(errorInterceptor)
     }
 
-    public abstract async run(event: ApiRequest, context: any): Promise<ApiResponse>;
+    public addAuthFilter<T, U extends Principal>(authFilter?: IAuthFilter<T, U>) {
+        this.apiServer.addAuthFilter(authFilter)
+    }
+
+    public abstract async run(event: ApiRequest, context: any): Promise<ApiResponse>
 
     protected async initialiseControllers(controllersPath: string) {
         await this.apiServer.discoverAndBuildRoutes(controllersPath, this.appContainer)

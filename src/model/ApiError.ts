@@ -3,7 +3,7 @@ import { Request, Response } from "lambda-api"
 import { Controller } from "../api/Controller"
 
 export class ApiError {
-    public error: any
+    public error: Error
     public endpointMethodParameters: any[]
     public endpointMethod: Function
     public endpointController: Controller

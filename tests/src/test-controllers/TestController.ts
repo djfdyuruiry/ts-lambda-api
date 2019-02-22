@@ -1,7 +1,9 @@
-import { injectable } from "inversify";
-import { Response, Request } from "lambda-api";
+import { injectable } from "inversify"
+import { Response, Request } from "lambda-api"
 
-import { apiController, controllerProduces, header, pathParam, queryParam, response, request, produces, Controller, GET } from "../../../index"
+import { apiController, controllerProduces, header, pathParam, queryParam, response, request, produces, user, Controller, GET } from "../../../index"
+
+import { TestUser } from '../TestUser';
 
 @apiController("/test")
 @controllerProduces("text/plain")
@@ -78,5 +80,10 @@ export class TestController extends Controller {
     @GET("/raise-error")
     public raiseError() {
         throw new Error("all I do is throw an error")
+    }
+
+    @GET("/user-test")
+    public userTest(@user testUser: TestUser) {
+        return testUser.name
     }
 }

@@ -1,8 +1,8 @@
-import { applyPatch } from 'fast-json-patch'
+import { applyPatch } from "fast-json-patch"
 import { injectable } from "inversify"
 import { Request, Response } from "lambda-api"
 
-import { JsonPatch } from "../model/JsonPatch";
+import { JsonPatch } from "../model/JsonPatch"
 
 @injectable()
 export abstract class Controller {

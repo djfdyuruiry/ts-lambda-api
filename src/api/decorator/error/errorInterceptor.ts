@@ -1,14 +1,14 @@
-import { interfaces } from "inversify/dts/interfaces/interfaces";
+import { interfaces } from "inversify/dts/interfaces/interfaces"
 
-import { DecoratorRegistry } from "../DecoratorRegistry";
-import { ErrorInterceptor } from "../ErrorInterceptor";
+import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
+import { ErrorInterceptor } from "../../error/ErrorInterceptor"
 
 export function errorInterceptor(interceptor: interfaces.ServiceIdentifier<ErrorInterceptor>) {
     return (classDefinition: Object | Function, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
-        endpoint.errorInterceptor = interceptor;
+        endpoint.errorInterceptor = interceptor
     }
 }
 
@@ -16,6 +16,6 @@ export function controllerErrorInterceptor(interceptor: interfaces.ServiceIdenti
     return (classDefinition: Function) => {
         let apiController = DecoratorRegistry.getOrCreateController(classDefinition)
 
-        apiController.errorInterceptor = interceptor;
+        apiController.errorInterceptor = interceptor
     }
 }

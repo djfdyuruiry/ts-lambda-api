@@ -1,4 +1,4 @@
-import { DecoratorRegistry } from "../DecoratorRegistry"
+import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
 
 export function apiController(path?: string) {
     return (constructor: Function) => {

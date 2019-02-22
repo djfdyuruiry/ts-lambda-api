@@ -1,4 +1,4 @@
-import { ApiError } from "../model/ApiError"
+import { ApiError } from "../../model/ApiError"
 
 export abstract class ErrorInterceptor {
     public endpointTarget?: string
