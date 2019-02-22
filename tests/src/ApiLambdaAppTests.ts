@@ -4,7 +4,8 @@ import { Container } from "inversify"
 import { ApiLambdaApp, AppConfig, RequestBuilder } from "../../index"
 
 import { TestBase } from "./TestBase"
-import { TestErrorInterceptor } from './TestErrorInterceptor';
+import { TestDecoratorErrorInterceptor } from "./TestDecoratorErrorInterceptor"
+import { TestErrorInterceptor } from './TestErrorInterceptor'
 
 @TestFixture()
 export class ApiLambdaAppTests extends TestBase {
@@ -68,6 +69,14 @@ export class ApiLambdaAppTests extends TestBase {
         )
 
         Expect(errorInterceptor.wasInvoked).toBeTruthy()
+    }
+
+    public async when_api_decorator_error_interceptor_is_present_and_it_throws_an_error_then_interceptor_is_invoked() {
+        await this.sendRequest(
+            RequestBuilder.get("/test/ei-decorator").build()
+        )
+
+        Expect(TestDecoratorErrorInterceptor.wasInvoked).toBeTruthy()
     }
 
     @AsyncTest()

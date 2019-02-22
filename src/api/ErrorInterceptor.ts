@@ -5,15 +5,21 @@ export abstract class ErrorInterceptor {
     public abstract controllerTarget?: string
 
     public shouldIntercept(controller: string, endpoint: string) {
-        if (this.controllerTarget) {
-            return this.controllerTarget === controller
-        }
+        let match = false
 
         if (this.endpointTarget) {
-            return this.endpointTarget === endpoint
+            match = this.endpointTarget === endpoint
         }
 
-        return false
+        if (!match && this.controllerTarget) {
+            match = this.controllerTarget === controller
+        }
+
+        if (!match && this.controllerTarget === "*") {
+            match = true
+        }
+
+        return match
     }
 
     public abstract async intercept(apiError: ApiError): Promise<any>

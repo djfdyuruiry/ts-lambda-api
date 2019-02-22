@@ -115,10 +115,19 @@ export class Endpoint {
     }
 
     private getMatchingErrorInterceptor() {
-        if (this.endpointInfo.controller.errorInterceptor) {
-            return this.errorInteceptorFactory(this.endpointInfo.controller.errorInterceptor)
-        } else if (this.endpointInfo.errorInterceptor) {
-            return this.errorInteceptorFactory(this.endpointInfo.errorInterceptor)
+        let decoratorInterceptor: ErrorInterceptor
+
+        if (this.endpointInfo.errorInterceptor) {
+            decoratorInterceptor = this.errorInteceptorFactory(this.endpointInfo.errorInterceptor)
+        } else if (this.endpointInfo.controller.errorInterceptor) {
+            decoratorInterceptor = this.errorInteceptorFactory(this.endpointInfo.controller.errorInterceptor)
+        }
+
+        if (decoratorInterceptor) {
+            decoratorInterceptor.controllerTarget = this.endpointInfo.controller.name
+            decoratorInterceptor.endpointTarget = this.endpointInfo.name
+
+            return decoratorInterceptor
         }
 
         return this.errorInterceptors

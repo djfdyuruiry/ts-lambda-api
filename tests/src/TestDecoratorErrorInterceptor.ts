@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 import { ErrorInterceptor } from "../../index"
 
 @injectable()
-export class TestErrorInterceptor extends ErrorInterceptor {
+export class TestDecoratorErrorInterceptor extends ErrorInterceptor {
     public static wasInvoked: boolean
 
     public endpointTarget?: string
@@ -12,10 +12,10 @@ export class TestErrorInterceptor extends ErrorInterceptor {
 	public constructor() {
         super()
 
-        TestErrorInterceptor.wasInvoked = false
+        TestDecoratorErrorInterceptor.wasInvoked = false
 	}
 
     public async intercept() {
-        TestErrorInterceptor.wasInvoked = true
+        TestDecoratorErrorInterceptor.wasInvoked = true
     }
 }

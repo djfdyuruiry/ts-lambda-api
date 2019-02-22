@@ -1,4 +1,4 @@
-import { errorInterceptor } from './src/api/decorator/errorInterceptor';
+import { errorInterceptor } from './dist/api/decorator/errorInterceptor';
 export { ApiApp } from "./dist/ApiApp"
 export { ApiLambdaApp } from "./dist/ApiLambdaApp"
 export { Server } from "./dist/api/Server"

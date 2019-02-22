@@ -30,6 +30,10 @@ Docs
 - [Request Parameter Binding](#request-binding)
 - [Responses](#responses)
 - [Error Handling](#errors)
+    - [Error Interceptors](#error-interceptors)
+    - [Manual Error Interceptors](#manual-error-interceptors)
+    - [Catching Errors](#catching-errors)
+    - [Framework Error Handling](#framework-errors)
 - [JSON Patch Requests](#json-patch)
 - [Request / Response Context](#req-res-context)
     - [Extending Controller Class](#extend-controller)
@@ -414,24 +418,31 @@ export class MessageOfTheDayController {
 
 ----
 
-When an unexpected error is thrown in your endpoints, you can choose how to handle this. There are three general techniques:
+When an unexpected error is thrown in one of your endpoints, you can choose how to handle this. There are three general techniques:
 
 1. Use an error interceptor
 1. Catch the error in your endpoint logic
 1. Let the framework handle the error
 
-### <a id="error-interceptor"></a>Error Interceptor
+### <a id="error-interceptors"></a>Error Interceptors
 
-Error interceptors are classes that you create that can be configured to be invoked when an error occurs when calling a given controller or endpoint. Interceptors extend the `ErrorInterceptor` class and provide an implementation for a `intercept` method.
+Error interceptors are classes that can be configured to be invoked when an error occurs when calling a given controller or endpoint. Interceptors extend the `ErrorInterceptor` class and provide an implementation for an `intercept` method.
+
+Interceptor instances are built using the InversifyJS app container, so you can add any dependencies as constructor parameters if you configure the container correctly.
 
 ```typescript
+import { injectable } from "inversify";
+
 import { ApiError, ErrorInterceptor } from "../../index"
 
+@injectable()
 export class StoreErrorInterceptor extends ErrorInterceptor {
     public endpointTarget?: string;
     public controllerTarget?: string;
 
     public async intercept(apiError: ApiError) {
+        // endpointTarget and controllerTarget will set before this is called
+        // (they are set to the controller and endpoint that threw the error)
         apiError.response.status(500)
 
         return {
@@ -442,8 +453,36 @@ export class StoreErrorInterceptor extends ErrorInterceptor {
 }
 ```
 
-You can then use this interceptor when setting up your application instance:
+In your controller you can then use the `controllerErrorInterceptor` decorator to specify the error interceptor to use:
 
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, controllerErrorInterceptor, GET } from "typescript-lambda-api"
+
+import { StoreErrorInterceptor } from "./StoreErrorInterceptor"
+
+@injectable()
+@apiController("/store")
+@controllerErrorInterceptor(StoreErrorInterceptor)
+export class StoreController {
+    @GET("/items")
+    public getItems() {
+        return getItemsFromDb()
+    }
+
+    private getItemsFromDb() {
+        // get all the items from the DB, may error
+    }
+}
+```
+
+You can also use the `errorInterceptor` decorator on individual endpoints for more fine grained error control. Endpoint interceptors will override controller interceptors.
+
+### <a id="manual-error-interceptors"></a>Manual Error Interceptors
+
+You can manually register interceptors when setting up your application instance:
 
 ```typescript
 // build config and controllers path...
@@ -465,9 +504,14 @@ Additionally you can intercept all the error items for a given controller:
 errorInterceptor.controllerTarget = "StoreController"
 ```
 
-### <a id="decorator-error-interceptor"></a>Decorator Error Interceptor
+One of the best uses of this technique is to use the wildcard controller target:
 
+```typescript
+// this will intercept errors from any endpoint in the current API
+errorInterceptor.controllerTarget = "*"
+```
 
+**Note: using this type of interceptor is overridden if the target controller or endpoint has an interceptor configured**
 
 ### <a id="catching-errors"></a>Catching Errors
 
@@ -505,7 +549,7 @@ export class StoreController extends Controller {
 
 ### <a id="framework-errors"></a>Framework Error Handling
 
-If you simple preform your logic in your endpoint method without catching any errors yourself, the framework will catch the error and return a HTTP 500 response with error details. Below is a JSON snippet showing an example.
+If you simply preform your logic in your endpoint method without catching any errors yourself, the framework will catch the error and return a HTTP 500 response with error details. Below is a JSON snippet showing an example.
 
 ```json
 {
