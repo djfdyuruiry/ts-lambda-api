@@ -1,3 +1,4 @@
+import { errorInterceptor } from './src/api/decorator/errorInterceptor';
 export { ApiApp } from "./dist/ApiApp"
 export { ApiLambdaApp } from "./dist/ApiLambdaApp"
 export { Server } from "./dist/api/Server"
@@ -13,6 +14,7 @@ export { ApiError } from './dist/model/ApiError';
 export { apiController } from "./dist/api/decorator/apiController"
 export { GET, POST, PUT, PATCH, DELETE } from "./dist/api/decorator/endpoints"
 export { controllerProduces, produces } from "./dist/api/decorator/produces"
+export { controllerErrorInterceptor, errorInterceptor } from "./dist/api/decorator/errorInterceptor"
 export { fromBody } from "./dist/api/decorator/fromBody"
 export { header } from "./dist/api/decorator/header"
 export { pathParam } from "./dist/api/decorator/pathParam"

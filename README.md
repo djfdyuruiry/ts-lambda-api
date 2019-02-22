@@ -23,12 +23,13 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 
 Docs
 
-- [Routing](#routing) 
+- [Routing](#routing)
     - [Controller Routes](#controller-routes)
     - [Endpoint Routes](#endpoint-routes)
     - [Path Parameters](#path-params)
 - [Request Parameter Binding](#request-binding)
 - [Responses](#responses)
+- [Error Handling](#errors)
 - [JSON Patch Requests](#json-patch)
 - [Request / Response Context](#req-res-context)
     - [Extending Controller Class](#extend-controller)
@@ -46,7 +47,7 @@ Docs
 
 ---
 
-This is a short guide to creating your first API using `typescript-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customised. 
+This is a short guide to creating your first API using `typescript-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customised.
 
 **Note: Node.js v8 & Typescript v3 or newer are required to use this package.**
 
@@ -195,7 +196,7 @@ zip -r lambda.zip ./
 
 ---
 
-- Create an AWS Load Balancer and point it to your new API Lambda. See: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html 
+- Create an AWS Load Balancer and point it to your new API Lambda. See: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html
 
 - You can now call your new ALB to see your API in action:
 
@@ -242,7 +243,7 @@ export class HelloWorldController {
 
 ### <a id="endpoint-routes"></a>Endpoint Routes
 
-You can declare a path for any given method in a controller when using the endpoint decorators. The `apiController` decorator is not required on the class to use this form of routing. 
+You can declare a path for any given method in a controller when using the endpoint decorators. The `apiController` decorator is not required on the class to use this form of routing.
 
 ```typescript
 import { injectable } from "inversify"
@@ -315,7 +316,6 @@ Different parts of the HTTP request can be bound to endpoint method parameters u
 - `header` - HTTP header value
 - `fromBody` - Entity from request body, this will be an object if the request contains JSON, otherwise it will simply be a string
 
-
 ```typescript
 import { injectable } from "inversify"
 
@@ -335,7 +335,7 @@ export class HelloWorldController {
     public getThings(@header("content-type") contentType: string) {
         // do something with contentType
     }
-    
+
     @POST("/thing")
     public getThings(@fromBody thing: Thing) {
         // do something with thing
@@ -405,6 +405,111 @@ export class MessageOfTheDayController {
     public get(){
         return "Message of the Day!"
     }
+}
+```
+
+----
+
+## <a id="errors"></a>Error Handling
+
+----
+
+When an unexpected error is thrown in your endpoints, you can choose how to handle this. There are three general techniques:
+
+1. Use an error interceptor
+1. Catch the error in your endpoint logic
+1. Let the framework handle the error
+
+### <a id="error-interceptor"></a>Error Interceptor
+
+Error interceptors are classes that you create that can be configured to be invoked when an error occurs when calling a given controller or endpoint. Interceptors extend the `ErrorInterceptor` class and provide an implementation for a `intercept` method.
+
+```typescript
+import { ApiError, ErrorInterceptor } from "../../index"
+
+export class StoreErrorInterceptor extends ErrorInterceptor {
+    public endpointTarget?: string;
+    public controllerTarget?: string;
+
+    public async intercept(apiError: ApiError) {
+        apiError.response.status(500)
+
+        return {
+            statusCode: 500,
+            errorMessage: "Error getting items for store"
+        }
+    }
+}
+```
+
+You can then use this interceptor when setting up your application instance:
+
+
+```typescript
+// build config and controllers path...
+let app = new ApiLambdaApp(controllersPath, appConfig)
+let errorInterceptor = new StoreErrorInterceptor()
+
+// pattern for endpoints is {controller class name}::{endpoint method name}
+errorInterceptor.endpointTarget = "StoreController::getItems"
+
+app.addErrorInterceptor(errorInterceptor)
+
+// export handler
+```
+
+Additionally you can intercept all the error items for a given controller:
+
+```typescript
+// controllers are identified by class name
+errorInterceptor.controllerTarget = "StoreController"
+```
+
+### <a id="decorator-error-interceptor"></a>Decorator Error Interceptor
+
+
+
+### <a id="catching-errors"></a>Catching Errors
+
+You can use a try/catch block and the `Response` class to handle errors:
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, Controller, GET } from "typescript-lambda-api"
+
+@injectable()
+@apiController("/store")
+export class StoreController extends Controller {
+    @GET("/items")
+    public getItems() {
+        try {
+            return getItemsFromDb()
+        } catch(ex) {
+            // log ex...maybe?
+
+            this.response.status(500).send({
+                statusCode: 500,
+                errorMessage: "Error occurred getting items from backend"
+            })
+        }
+    }
+
+    private getItemsFromDb() {
+        // get all the items from the DB
+    }
+}
+```
+
+*Note: this can also be done by injecting the `Response` class instance using the `response` parameter decorator, instead of extending `Controller`.*
+
+### <a id="framework-errors"></a>Framework Error Handling
+
+If you simple preform your logic in your endpoint method without catching any errors yourself, the framework will catch the error and return a HTTP 500 response with error details. Below is a JSON snippet showing an example.
+
+```json
+{
+    "error": "...some error that the framework caught when calling an endpoint...."
 }
 ```
 

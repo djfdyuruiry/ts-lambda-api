@@ -40,6 +40,7 @@ export class Server {
             let apiEndpoint = new Endpoint(
                 DecoratorRegistry.Endpoints[endpointKey],
                 c => appContainer.get(c),
+                ei => appContainer.get(ei),
                 this.errorInterceptors
             )
 

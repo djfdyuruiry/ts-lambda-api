@@ -35,4 +35,10 @@ let produces = require("./dist/api/decorator/produces")
 exports.controllerProduces = produces.controllerProduces
 exports.produces = produces.produces
 
+
+let errorInterceptor = require("./dist/api/decorator/errorInterceptor")
+
+exports.controllerErrorInterceptor = errorInterceptor.controllerErrorInterceptor
+exports.errorInterceptor = errorInterceptor.errorInterceptor
+
 exports.JsonPatch = require("./dist/model/JsonPatch").JsonPatch

@@ -1,3 +1,4 @@
+import { interfaces } from 'inversify/dts/interfaces/interfaces';
 import { Request, Response, API } from "lambda-api"
 
 import { Controller } from "./Controller"
@@ -7,6 +8,7 @@ import { EndpointInfo } from "../model/EndpointInfo"
 export class Endpoint {
     public constructor(private readonly endpointInfo: EndpointInfo,
         private readonly controllerFactory: (constructor: Function) => Controller,
+        private readonly errorInteceptorFactory: (type: interfaces.ServiceIdentifier<ErrorInterceptor>) => ErrorInterceptor,
         private readonly errorInterceptors: ErrorInterceptor[] = []) {
     }
 
@@ -47,8 +49,6 @@ export class Endpoint {
         }
 
         let endpointResponse = await this.invokeControllerMethod(controller, request, response)
-
-        let rawRes: any = response
 
         if (!this.responseDetected(endpointResponse, response)) {
             throw new Error("no content was set in response or returned by endpoint method, " +
@@ -115,6 +115,12 @@ export class Endpoint {
     }
 
     private getMatchingErrorInterceptor() {
+        if (this.endpointInfo.controller.errorInterceptor) {
+            return this.errorInteceptorFactory(this.endpointInfo.controller.errorInterceptor)
+        } else if (this.endpointInfo.errorInterceptor) {
+            return this.errorInteceptorFactory(this.endpointInfo.errorInterceptor)
+        }
+
         return this.errorInterceptors
             .find(i => i.shouldIntercept(this.endpointInfo.controller.name, this.endpointInfo.name))
     }

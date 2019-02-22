@@ -1,17 +1,16 @@
 import { ApiError } from "../model/ApiError"
 
 export abstract class ErrorInterceptor {
-    public constructor(private readonly forEndpoint?: string,
-        private readonly forController?: string) {
-    }
+    public abstract endpointTarget?: string
+    public abstract controllerTarget?: string
 
     public shouldIntercept(controller: string, endpoint: string) {
-        if (this.forController) {
-            return this.forController === controller
+        if (this.controllerTarget) {
+            return this.controllerTarget === controller
         }
 
-        if (this.forEndpoint) {
-            return this.forEndpoint === endpoint
+        if (this.endpointTarget) {
+            return this.endpointTarget === endpoint
         }
 
         return false
