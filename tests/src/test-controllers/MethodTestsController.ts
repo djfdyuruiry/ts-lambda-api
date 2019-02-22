@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { apiController, fromBody, Controller, JsonPatch, POST, PUT, PATCH, DELETE } from "../../../index"
+import { apiController, fromBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE } from "../../../index"
 
 import { Person } from "./model/Person"
 
@@ -30,5 +30,10 @@ export class MethodTestsController extends Controller {
     @DELETE("/delete")
     public delete() {
         this.response.status(204).send("")
+    }
+
+    @GET("/raise-error")
+    public raiseError() {
+        throw new Error("Panic!")
     }
 }

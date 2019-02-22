@@ -437,9 +437,6 @@ import { ApiError, ErrorInterceptor } from "../../index"
 
 @injectable()
 export class StoreErrorInterceptor extends ErrorInterceptor {
-    public endpointTarget?: string;
-    public controllerTarget?: string;
-
     public async intercept(apiError: ApiError) {
         // endpointTarget and controllerTarget will set before this is called
         // (they are set to the controller and endpoint that threw the error)
@@ -489,26 +486,23 @@ You can manually register interceptors when setting up your application instance
 let app = new ApiLambdaApp(controllersPath, appConfig)
 let errorInterceptor = new StoreErrorInterceptor()
 
-// pattern for endpoints is {controller class name}::{endpoint method name}
-errorInterceptor.endpointTarget = "StoreController::getItems"
-
+// this will intercept errors thrown by any endpoint
 app.addErrorInterceptor(errorInterceptor)
-
 // export handler
 ```
 
-Additionally you can intercept all the error items for a given controller:
+You can intercept only the errors thrown by an endpoint by setting `endpointTarget`:
+
+```typescript
+// pattern for endpoints is {controller class name}::{endpoint method name}
+errorInterceptor.endpointTarget = "StoreController::getItems"
+```
+
+You can intercept only the errors thrown by a controller by setting `controllerTarget`:
 
 ```typescript
 // controllers are identified by class name
 errorInterceptor.controllerTarget = "StoreController"
-```
-
-One of the best uses of this technique is to use the wildcard controller target:
-
-```typescript
-// this will intercept errors from any endpoint in the current API
-errorInterceptor.controllerTarget = "*"
 ```
 
 **Note: using this type of interceptor is overridden if the target controller or endpoint has an interceptor configured**

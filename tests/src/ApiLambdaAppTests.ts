@@ -115,4 +115,19 @@ export class ApiLambdaAppTests extends TestBase {
         Expect(response.statusCode).toEqual(200)
         Expect(response.body).toEqual("interceptor return value")
     }
+
+    @TestCase("/test/raise-error")
+    @TestCase("/test/methods/raise-error")
+    @AsyncTest()
+    public async when_global_api_error_interceptor_is_invoked_and_error_is_thrown_in_any_endpoint_then_interceptor_is_invoked(path: string) {
+        let errorInterceptor = new TestErrorInterceptor("*", null)
+
+        this.app.addErrorInterceptor(errorInterceptor)
+
+        await this.sendRequest(
+            RequestBuilder.get(path).build()
+        )
+
+        Expect(errorInterceptor.wasInvoked).toBeTruthy()
+    }
 }

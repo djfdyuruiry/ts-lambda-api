@@ -1,8 +1,6 @@
 import { ApiError, ErrorInterceptor } from "../../index"
 
 export class TestErrorInterceptor extends ErrorInterceptor {
-    public endpointTarget?: string;
-    public controllerTarget?: string;
     public wasInvoked: boolean
     public apiErrorPassed?: ApiError
 

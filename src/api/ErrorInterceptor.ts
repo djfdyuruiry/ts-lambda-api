@@ -1,25 +1,17 @@
 import { ApiError } from "../model/ApiError"
 
 export abstract class ErrorInterceptor {
-    public abstract endpointTarget?: string
-    public abstract controllerTarget?: string
+    public endpointTarget?: string
+    public controllerTarget?: string
+
+    public constructor() {
+        this.endpointTarget = "*"
+    }
 
     public shouldIntercept(controller: string, endpoint: string) {
-        let match = false
-
-        if (this.endpointTarget) {
-            match = this.endpointTarget === endpoint
-        }
-
-        if (!match && this.controllerTarget) {
-            match = this.controllerTarget === controller
-        }
-
-        if (!match && this.controllerTarget === "*") {
-            match = true
-        }
-
-        return match
+        return this.endpointTarget === "*" ||
+            this.endpointTarget === endpoint ||
+            this.controllerTarget === controller
     }
 
     public abstract async intercept(apiError: ApiError): Promise<any>

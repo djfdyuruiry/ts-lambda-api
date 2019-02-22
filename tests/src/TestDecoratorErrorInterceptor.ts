@@ -6,9 +6,6 @@ import { ErrorInterceptor } from "../../index"
 export class TestDecoratorErrorInterceptor extends ErrorInterceptor {
     public static wasInvoked: boolean
 
-    public endpointTarget?: string
-    public controllerTarget?: string
-
 	public constructor() {
         super()
 
