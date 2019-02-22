@@ -17,11 +17,14 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 
 ----
 
+**Quickstart**
+
 - [Creating a new API](#create-api)
 - [Deploy to AWS Lambda](#aws-deploy)
     - [Invoke AWS Lambda](#invoke-lambda)
 
-Docs
+
+**Docs**
 
 - [Routing](#routing)
     - [Controller Routes](#controller-routes)
