@@ -7,7 +7,6 @@ import { ErrorInterceptor } from "./error/ErrorInterceptor"
 import { EndpointInfo } from "../model/reflection/EndpointInfo"
 import { AuthResult } from "../model/security/AuthResult"
 import { Principal } from "../model/security/Principal"
-import { IAuthorizer } from "./security/IAuthorizer";
 
 export class Endpoint {
     public constructor(private readonly endpointInfo: EndpointInfo,

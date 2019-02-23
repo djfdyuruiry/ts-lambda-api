@@ -46,8 +46,8 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 - [Request / Response Context](#req-res-context)
     - [Extending Controller Class](#extend-controller)
     - [Using Decorators](#use-decorators)
+- [Dependency Injection](#di)
 - [Configuration](#config)
-    - [IOC Container](#ioc-container)
     - [lambda-api](#lambda-api)
 - [Testing](#testing)
 
@@ -339,17 +339,17 @@ import { Thing } "./Thing"
 @apiController("/hello-world")
 export class HelloWorldController {
     @GET()
-    public getThings(@queryParam("id") id: string) {
+    public getThingById(@queryParam("id") id: string) {
         // do something with id
     }
 
     @GET("/some/other/route")
-    public getThings(@header("content-type") contentType: string) {
+    public getContentType(@header("content-type") contentType: string) {
         // do something with contentType
     }
 
     @POST("/thing")
-    public getThings(@fromBody thing: Thing) {
+    public addThing(@fromBody thing: Thing) {
         // do something with thing
     }
 }
@@ -531,7 +531,7 @@ export class TokenAuthFilter<T extends Principal> implements IAuthFilter<TokenAu
     }
 
     public async authenticate(tokenAuth: TokenAuth): Promise<StoreUser | undefined> {
-        let user = getUserByTokenFromDb(tokenAuth.token)
+        let user = this.getUserByTokenFromDb(tokenAuth.token)
 
         if (user) {
             return user
@@ -665,7 +665,7 @@ import { StoreErrorInterceptor } from "./StoreErrorInterceptor"
 export class StoreController {
     @GET("/items")
     public getItems() {
-        return getItemsFromDb()
+        return this.getItemsFromDb()
     }
 
     private getItemsFromDb() {
@@ -721,7 +721,7 @@ export class StoreController extends Controller {
     @GET("/items")
     public getItems() {
         try {
-            return getItemsFromDb()
+            return this.getItemsFromDb()
         } catch(ex) {
             // log ex...maybe?
 
@@ -845,13 +845,9 @@ export class HelloWorldController {
 
 ----
 
-## <a id="config"></a>Configuration
+## <a id="di"></a> Dependency Injection
 
 ----
-
-The `AppConfig` class supports all the configuration fields documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package. (See the `Creating a new API` section)
-
-### <a id="ioc-container"></a>IOC Container
 
 Configuring the IOC container to enable dependency injection into your controllers is easy. Once you build a `ApiLambdaApp` instance you can call the `configureApp` method like below:
 
@@ -868,7 +864,37 @@ app.configureApp(container => {
 // export handler
 ```
 
-See the [InversifyJS](https://github.com/inversify/InversifyJS) package documentation for guidance how to use the `Container` class to manage dependencies.
+**Note: Any classes that you are going to inject need to be decorated with `injectable`, any subclasses are also required to be decorated**
+
+In your controllers you can then use the registered types as constructor parameters:
+
+```typescript
+import { inject, injectable } from "inversify"
+
+import { apiController, GET } from "typescript-lambda-api"
+
+@apiController("/hello-world")
+@injectable()
+export class MyController {
+    public constructor(@inject(IMyService) private readonly service: IMyService) {
+    }
+
+    @GET()
+    public get() {
+        // use injected service to do cool stuff
+    }
+}
+```
+
+See the [InversifyJS](https://github.com/inversify/InversifyJS) package documentation for full guidance how to use the `Container` class to manage dependencies.
+
+----
+
+## <a id="config"></a>Configuration
+
+----
+
+The `AppConfig` class that can be passed to the `ApiLambdaApp` constructor supports all the configuration fields documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package. (See the `Creating a new API` section)
 
 ### <a id="lambda-api"></a>lambda-api
 
