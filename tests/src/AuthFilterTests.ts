@@ -1,4 +1,4 @@
-import { Expect, AsyncTest, TestFixture, TestCase } from "alsatian"
+import { AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
 
 import { RequestBuilder } from "../../index"
 

@@ -1,8 +1,8 @@
 import { Request } from "lambda-api"
 
 import { IAuthFilter } from "./IAuthFilter"
-import { Principal } from "../../model/security/Principal"
 import { BasicAuth } from "../../model/security/BasicAuth"
+import { Principal } from "../../model/security/Principal"
 
 export abstract class BasicAuthFilter<T extends Principal> implements IAuthFilter<BasicAuth, T> {
     public async extractAuthData(request: Request): Promise<BasicAuth | undefined> {

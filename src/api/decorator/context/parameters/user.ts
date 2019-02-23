@@ -1,5 +1,5 @@
-import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 import { UserParameterExtractor } from '../../../parameters/UserParameterExtractor';
+import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 
 export function user(classDefinition: Object | Function, methodName: string, paramIndex: number) {
     let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)

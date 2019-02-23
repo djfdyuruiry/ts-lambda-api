@@ -1,8 +1,8 @@
-import { Expect, AsyncTest, TestFixture, TestCase } from "alsatian"
+import { AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
 import { ReplaceOperation } from "fast-json-patch/lib/core"
 import { METHODS } from "lambda-api"
 
-import { RequestBuilder, JsonPatch } from "../../index"
+import { JsonPatch, RequestBuilder } from "../../index"
 
 import { TestBase } from "./TestBase"
 import { Person } from "./test-components/model/Person"

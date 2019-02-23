@@ -1,5 +1,5 @@
-import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 import { PathParameterExtractor } from "../../../parameters/PathParameterExtractor"
+import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 
 export function pathParam(paramName?: string) {
     return (classDefinition: Object | Function, methodName: string, paramIndex: number) => {

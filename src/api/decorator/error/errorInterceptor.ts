@@ -1,7 +1,7 @@
 import { interfaces } from "inversify/dts/interfaces/interfaces"
 
-import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 import { ErrorInterceptor } from "../../error/ErrorInterceptor"
+import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 
 export function errorInterceptor(interceptor: interfaces.ServiceIdentifier<ErrorInterceptor>) {
     return (classDefinition: Object | Function, methodName: string) => {

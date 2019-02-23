@@ -1,5 +1,5 @@
-import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 import { QueryParameterExtractor } from "../../../parameters/QueryParameterExtractor"
+import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 
 export function queryParam(paramName: string) {
     return (classDefinition: Object | Function, methodName: string, paramIndex: number) => {

@@ -1,7 +1,7 @@
 import { ErrorInterceptor } from "./error/ErrorInterceptor";
+import { IAuthorizer } from './security/IAuthorizer';
 import { IAuthFilter } from './security/IAuthFilter';
 import { Principal } from '../model/security/Principal';
-import { IAuthorizer } from './security/IAuthorizer';
 
 export class MiddlewareRegistry {
     private _authFilters: IAuthFilter<any, Principal>[]

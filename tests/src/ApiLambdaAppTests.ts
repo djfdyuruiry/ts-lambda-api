@@ -1,7 +1,7 @@
-import { Expect, AsyncTest, TestFixture, TestCase } from "alsatian"
+import { AsyncTest, Expect, TestFixture } from "alsatian"
 import { Container } from "inversify"
 
-import { ApiLambdaApp, AppConfig, RequestBuilder } from "../../index"
+import { AppConfig, ApiLambdaApp, RequestBuilder } from "../../index"
 
 import { TestBase } from "./TestBase"
 

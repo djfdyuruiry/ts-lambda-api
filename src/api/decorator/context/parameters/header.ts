@@ -1,5 +1,5 @@
-import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 import { HeaderParameterExtractor } from "../../../parameters/HeaderParameterExtractor"
+import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 
 export function header(headerName?: string) {
     return (classDefinition: Object | Function, methodName: string, paramIndex: number) => {
