@@ -7,6 +7,7 @@ import { ErrorInterceptor } from "./error/ErrorInterceptor"
 import { EndpointInfo } from "../model/reflection/EndpointInfo"
 import { AuthResult } from "../model/security/AuthResult"
 import { Principal } from "../model/security/Principal"
+import { IAuthorizer } from "./security/IAuthorizer";
 
 export class Endpoint {
     public constructor(private readonly endpointInfo: EndpointInfo,
@@ -55,6 +56,10 @@ export class Endpoint {
             this.sendStatusCodeResponse(401, response)
         }
 
+        if(!await this.authorizeRequest(authResult.principal)) {
+            this.sendStatusCodeResponse(403, response)
+        }
+
         return authResult.principal
     }
 
@@ -86,6 +91,48 @@ export class Endpoint {
                 .removeHeader("content-type")
                 .header("content-type", "text/plain")
                 .send("")
+    }
+
+    private async authorizeRequest(principal: Principal) {
+        let controllerRoles = this.endpointInfo.controller.rolesAllowed
+        let endpointRoles = this.endpointInfo.rolesAllowed
+        let roleRequired = controllerRoles || endpointRoles
+
+        if (!roleRequired) {
+            return true
+        }
+
+        if (this.middlewareRegistry.authAuthorizers.length < 1) {
+            throw new Error("Role restrictions were declared but no authorizer was registered in the middleware registry, " +
+                `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
+        }
+
+        for (let authorizer of this.middlewareRegistry.authAuthorizers) {
+            if (endpointRoles) {
+                // endpoint roles, if defined, override controller roles
+                for (let role of endpointRoles) {
+                    if (await this.runAuthorize(authorizer, principal, role)) {
+                        return true
+                    }
+                }
+            } else if (controllerRoles) {
+                for (let role of controllerRoles) {
+                    if (await this.runAuthorize(authorizer, principal, role)) {
+                        return true
+                    }
+                }
+            }
+        }
+
+        return false
+    }
+
+    private async runAuthorize(authorizer: IAuthorizer<Principal>, principal: Principal, role: string) {
+        try {
+            return await authorizer.authorize(principal, role)
+        } catch(ex) {
+            return false
+        }
     }
 
     private responseSent(response?: Response, endpointResponse?: any) {

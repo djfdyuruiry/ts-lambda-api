@@ -10,6 +10,7 @@ export class EndpointInfo {
     public httpMethod: string
     public path?: string
     public produces?: string
+    public rolesAllowed?: string[]
     public errorInterceptor?: interfaces.ServiceIdentifier<ErrorInterceptor>
 
     public constructor(
