@@ -7,6 +7,7 @@ export { Server } from "./dist/api/Server"
 
 export { ErrorInterceptor } from "./dist/api/error/ErrorInterceptor"
 export { IAuthFilter } from "./dist/api/security/IAuthFilter"
+export { IAuthorizer } from "./dist/api/security/IAuthorizer"
 export { BasicAuthFilter } from "./dist/api/security/BasicAuthFilter"
 
 export { ApiRequest } from "./dist/model/ApiRequest"
@@ -18,8 +19,9 @@ export { AuthenticationError } from "./dist/model/error/AuthenticationError"
 
 export { apiController } from "./dist/api/decorator/apiController"
 export { GET, POST, PUT, PATCH, DELETE } from "./dist/api/decorator/endpoints"
-export { controllerProduces, produces } from "./dist/api/decorator/context/produces"
+export { controllerRolesAllowed, rolesAllowed } from "./dist/api/decorator/security/rolesAllowed"
 export { controllerErrorInterceptor, errorInterceptor } from "./dist/api/decorator/error/errorInterceptor"
+export { controllerProduces, produces } from "./dist/api/decorator/context/produces"
 export { fromBody } from "./dist/api/decorator/context/parameters/fromBody"
 export { header } from "./dist/api/decorator/context/parameters/header"
 export { pathParam } from "./dist/api/decorator/context/parameters/pathParam"

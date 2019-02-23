@@ -1,4 +1,5 @@
 let endpoints = require("./dist/api/decorator/endpoints")
+let rolesAllowed = require("./dist/api/decorator/security/rolesAllowed")
 let errorInterceptor = require("./dist/api/decorator/error/errorInterceptor")
 let produces = require("./dist/api/decorator/context/produces")
 
@@ -11,6 +12,7 @@ exports.Server = require("./dist/api/Server").Server
 
 exports.ErrorInterceptor = require("./dist/api/error/ErrorInterceptor").ErrorInterceptor
 exports.IAuthFilter = require("./dist/api/security/IAuthFilter").IAuthFilter
+exports.IAuthorizer = require("./dist/api/security/IAuthorizer").IAuthorizer
 exports.BasicAuthFilter = require("./dist/api/security/BasicAuthFilter").BasicAuthFilter
 
 exports.ApiRequest = require("./dist/model/ApiRequest").ApiRequest
@@ -27,6 +29,8 @@ exports.POST = endpoints.POST
 exports.PUT = endpoints.PUT
 exports.PATCH = endpoints.PATCH
 exports.DELETE = endpoints.DELETE
+exports.controllerRolesAllowed = rolesAllowed.controllerRolesAllowed
+exports.rolesAllowed = rolesAllowed.rolesAllowed
 exports.controllerProduces = produces.controllerProduces
 exports.produces = produces.produces
 exports.controllerErrorInterceptor = errorInterceptor.controllerErrorInterceptor

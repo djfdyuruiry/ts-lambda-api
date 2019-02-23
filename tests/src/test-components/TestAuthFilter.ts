@@ -8,7 +8,8 @@ export class TestAuthFilter extends BasicAuthFilter<TestUser> {
 
     public constructor(private readonly username: string,
         private readonly password: string,
-        private readonly shouldThrowError: boolean = false) {
+        private readonly shouldThrowError: boolean = false,
+        private readonly roles: string[] = []) {
             super()
 
             this.wasInvoked = false
@@ -26,6 +27,6 @@ export class TestAuthFilter extends BasicAuthFilter<TestUser> {
             throw new AuthenticationError()
         }
 
-        return new TestUser(basicAuth.username)
+        return new TestUser(basicAuth.username, this.roles)
     }
 }

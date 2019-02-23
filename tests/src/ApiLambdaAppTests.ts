@@ -5,6 +5,7 @@ import { ApiLambdaApp, AppConfig, RequestBuilder } from "../../index"
 
 import { TestBase } from "./TestBase"
 import { TestAuthFilter } from "./test-components/TestAuthFilter"
+import { TestAuthorizer } from "./test-components/TestAuthorizer"
 import { TestDecoratorErrorInterceptor } from "./test-components/TestDecoratorErrorInterceptor"
 import { TestErrorInterceptor } from "./test-components/TestErrorInterceptor"
 
@@ -165,6 +166,22 @@ export class ApiLambdaAppTests extends TestBase {
         Expect(authFilter.wasInvoked).toBeTruthy()
     }
 
+    @AsyncTest()
+    public async when_api_auth_filter_configured_and_request_is_made_then_credentials_are_passed_to_filter() {
+        let authFilter = new TestAuthFilter("luke", "vaderismydad")
+
+        this.app.middlewareRegistry.addAuthFilter(authFilter)
+
+        await this.sendRequest(
+            RequestBuilder.get("/test")
+                .basicAuth("luke", "vaderismydad")
+                .build()
+        )
+
+        Expect(authFilter.passedCredentials.username).toEqual("luke")
+        Expect(authFilter.passedCredentials.password).toEqual("vaderismydad")
+    }
+
     @TestCase("vaderismydad", 200)
     @TestCase("whoismydad?", 401)
     @AsyncTest()
@@ -224,5 +241,75 @@ export class ApiLambdaAppTests extends TestBase {
         )
 
         Expect(response.body).toEqual("stoat")
+    }
+
+    @AsyncTest()
+    public async when_api_authorizer_configured_and_no_roles_declared_then_valid_request_returns_200_ok() {
+        this.app.middlewareRegistry.addAuthorizer(new TestAuthorizer())
+
+        let response = await this.sendRequest(
+            RequestBuilder.get("/test")
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(200)
+    }
+
+    @TestCase({ path: "/test/restricted", userRoles: ["SPECIAL_USER"] })
+    @TestCase({ path: "/test-restricted", userRoles: ["SPECIAL_USER"] })
+    @TestCase({ path: "/test-restricted", userRoles: ["SUPER_SPECIAL_USER"] })
+    @AsyncTest()
+    public async when_api_authorizer_configured_with_roles_declared_and_user_is_authorized_then_valid_request_returns_200_ok(testCase: any) {
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("stoat", "ihavenoideawhatiam", false, testCase.userRoles)
+        )
+        this.app.middlewareRegistry.addAuthorizer(new TestAuthorizer())
+
+        let response = await this.sendRequest(
+            RequestBuilder.get(testCase.path)
+                .basicAuth("stoat", "ihavenoideawhatiam")
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(200)
+    }
+
+    @TestCase("/test/restricted")
+    @TestCase("/test-restricted")
+    @AsyncTest()
+    public async when_api_authorizer_configured_with_roles_declared_and_user_is_not_authorized_then_valid_request_returns_403_forbidden(path: string) {
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("stoat", "ihavenoideawhatiam", false, ["ANOTHER_THING"])
+        )
+        this.app.middlewareRegistry.addAuthorizer(new TestAuthorizer())
+
+        let response = await this.sendRequest(
+            RequestBuilder.get(path)
+                .basicAuth("stoat", "ihavenoideawhatiam")
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(403)
+    }
+
+    @TestCase("/test/restricted")
+    @TestCase("/test-restricted")
+    @AsyncTest()
+    public async when_api_authorizer_configured_and_role_declared_then_principle_and_role_are_passed_to_authorizer(path: string) {
+        let authorizer = new TestAuthorizer()
+
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("stoat", "ihavenoideawhatiam")
+        )
+        this.app.middlewareRegistry.addAuthorizer(authorizer)
+
+        await this.sendRequest(
+            RequestBuilder.get(path)
+                .basicAuth("stoat", "ihavenoideawhatiam")
+                .build()
+        )
+
+        Expect(authorizer.principalPassed.name).toEqual("stoat")
+        Expect(authorizer.rolePassed).toEqual("SPECIAL_USER")
     }
 }

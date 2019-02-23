@@ -1,7 +1,7 @@
 import { injectable } from "inversify"
 import { Response, Request } from "lambda-api"
 
-import { apiController, controllerProduces, header, pathParam, queryParam, response, request, produces, user, Controller, GET } from "../../../index"
+import { apiController, controllerProduces, header, pathParam, queryParam, response, request, rolesAllowed, produces, user, Controller, GET } from "../../../index"
 
 import { TestUser } from '../test-components/model/TestUser';
 
@@ -85,5 +85,11 @@ export class TestController extends Controller {
     @GET("/user-test")
     public userTest(@user testUser: TestUser) {
         return testUser.name
+    }
+
+    @GET("/restricted")
+    @rolesAllowed("SPECIAL_USER")
+    public restricted() {
+        return "allowed in"
     }
 }
