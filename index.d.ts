@@ -1,7 +1,9 @@
 export { ApiApp } from "./dist/ApiApp"
 export { ApiLambdaApp } from "./dist/ApiLambdaApp"
-export { Server } from "./dist/api/Server"
+
 export { Controller } from "./dist/api/Controller"
+export { MiddlewareRegistry } from "./dist/api/MiddlewareRegistry"
+export { Server } from "./dist/api/Server"
 
 export { ErrorInterceptor } from "./dist/api/error/ErrorInterceptor"
 export { IAuthFilter } from "./dist/api/security/IAuthFilter"

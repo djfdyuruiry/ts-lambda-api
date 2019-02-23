@@ -4,8 +4,10 @@ let produces = require("./dist/api/decorator/context/produces")
 
 exports.ApiApp = require("./dist/ApiApp").ApiApp
 exports.ApiLambdaApp = require("./dist/ApiLambdaApp").ApiLambdaApp
-exports.Server = require("./dist/api/Server").Server
+
 exports.Controller = require("./dist/api/Controller").Controller
+exports.MiddlewareRegistry = require("./dist/api/MiddlewareRegistry").MiddlewareRegistry
+exports.Server = require("./dist/api/Server").Server
 
 exports.ErrorInterceptor = require("./dist/api/error/ErrorInterceptor").ErrorInterceptor
 exports.IAuthFilter = require("./dist/api/security/IAuthFilter").IAuthFilter

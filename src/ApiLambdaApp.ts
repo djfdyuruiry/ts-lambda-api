@@ -1,9 +1,9 @@
 import { Container } from "inversify"
 
 import { ApiApp } from "./ApiApp"
-import { timed } from "./util/timed"
 import { AppConfig } from "./model/AppConfig"
 import { ApiRequest } from "./model/ApiRequest"
+import { timed } from "./util/timed"
 
 export class ApiLambdaApp extends ApiApp {
     private readonly controllersPath: string

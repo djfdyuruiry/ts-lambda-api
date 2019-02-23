@@ -2,9 +2,9 @@ import { interfaces } from "inversify"
 import { Request, Response, API } from "lambda-api"
 
 import { Controller } from "./Controller"
+import { MiddlewareRegistry } from './MiddlewareRegistry';
 import { ErrorInterceptor } from "./error/ErrorInterceptor"
 import { EndpointInfo } from "../model/reflection/EndpointInfo"
-import { IAuthFilter } from "./security/IAuthFilter"
 import { AuthResult } from "../model/security/AuthResult"
 import { Principal } from "../model/security/Principal"
 
@@ -12,8 +12,7 @@ export class Endpoint {
     public constructor(private readonly endpointInfo: EndpointInfo,
         private readonly controllerFactory: (constructor: Function) => Controller,
         private readonly errorInteceptorFactory: (type: interfaces.ServiceIdentifier<ErrorInterceptor>) => ErrorInterceptor,
-        private readonly errorInterceptors: ErrorInterceptor[] = [],
-        private readonly authFilters: IAuthFilter<any, Principal>[] = []) {
+        private readonly middlewareRegistry: MiddlewareRegistry) {
     }
 
     public register(api: API) {
@@ -28,20 +27,89 @@ export class Endpoint {
 
     // entry point for lambda-api request engine
     private async invoke(request: Request, response: Response) {
-        let authResult = await this.authenticateRequest(request)
+        let principal = await this.authenticateAndAuthorizeRequest(request, response)
 
-        if(!authResult.authenticated) {
-            response.status(401)
-                .removeHeader("content-type")
-                .header("content-type", "text/plain")
-                .send("")
-
+        if (this.responseSent(response)) {
+            // 401 or 403 response was sent
             return
         }
 
-        // build a instance of the associated controller
+        let controller = this.buildControllerInstance(request, response)
+
+        this.setResponseContentType(response)
+
+        let endpointResponse = await this.invokeControllerMethod(controller, request, response, principal)
+
+        if (!this.responseSent(response, endpointResponse)) {
+            throw new Error("no response was sent by or value returned from endpoint method, " +
+                `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
+        }
+
+        return endpointResponse
+    }
+
+    private async authenticateAndAuthorizeRequest(request: Request, response: Response) {
+        let authResult = await this.authenticateRequest(request)
+
+        if(!authResult.authenticated) {
+            this.sendStatusCodeResponse(401, response)
+        }
+
+        return authResult.principal
+    }
+
+    private async authenticateRequest(request: Request) {
+        let authResult = new AuthResult()
+
+        if (this.middlewareRegistry.authFilters.length < 1) {
+            authResult.authenticated = true
+            return authResult
+        }
+
+        for (let filter of this.middlewareRegistry.authFilters) {
+            try {
+                let authData = await filter.extractAuthData(request)
+
+                authResult.principal = await filter.authenticate(authData)
+                authResult.authenticated = true
+
+                // return after finding a filter that does not throw an error
+                return authResult
+            } catch(ex) {}
+        }
+
+        return authResult
+    }
+
+    private sendStatusCodeResponse(statusCode: number, response: Response) {
+        response.status(statusCode)
+                .removeHeader("content-type")
+                .header("content-type", "text/plain")
+                .send("")
+    }
+
+    private responseSent(response?: Response, endpointResponse?: any) {
+        let rawRes: any = response
+
+        return endpointResponse || (rawRes && rawRes._state === "done")
+    }
+
+    private buildControllerInstance(request: Request, response: Response): any {
         let controller: Controller =
             this.controllerFactory(this.endpointInfo.controller.classConstructor)
+
+        if (typeof(controller.setRequest) === "function") {
+            controller.setRequest(request)
+        }
+
+        if (typeof(controller.setResponse) === "function") {
+            controller.setResponse(response)
+        }
+
+        return controller
+    }
+
+    private setResponseContentType(response: Response) {
         let produces: string
 
         if (this.endpointInfo.produces) {
@@ -54,32 +122,9 @@ export class Endpoint {
             response.removeHeader("Content-Type")
                 .header("Content-Type", produces)
         }
-
-        if (typeof(controller.setRequest) === "function") {
-            controller.setRequest(request)
-        }
-
-        if (typeof(controller.setResponse) === "function") {
-            controller.setResponse(response)
-        }
-
-        let endpointResponse = await this.invokeControllerMethod(controller, request, response, authResult.user)
-
-        if (!this.responseDetected(endpointResponse, response)) {
-            throw new Error("no content was set in response or returned by endpoint method, " +
-                `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
-        }
-
-        return endpointResponse
     }
 
-    private responseDetected(endpointResponse: any, response: Response): any {
-        let rawRes: any = response
-
-        return endpointResponse || (rawRes && rawRes._state === "done")
-    }
-
-    private mapHttpMethodToCall(api: API, method: string): Function {
+    private mapHttpMethodToCall(api: API, method: string) {
         if (method == "GET") {
             return api.get
         } else if (method == "POST") {
@@ -114,34 +159,13 @@ export class Endpoint {
                     response: response
                 })
 
-                if(this.responseDetected(interceptorResponse, response)) {
+                if(this.responseSent(response, interceptorResponse)) {
                     return interceptorResponse
                 }
             }
 
             throw ex
         }
-    }
-
-    private async authenticateRequest(request: Request) {
-        let authResult = new AuthResult()
-
-        if (this.authFilters.length < 1) {
-            authResult.authenticated = true
-            return authResult
-        }
-
-        for (let filter of this.authFilters) {
-            try {
-                authResult.user = await filter.invoke(request)
-                authResult.authenticated = true
-
-                // return after finding a filter that does not throw an error
-                return authResult
-            } catch(ex) {}
-        }
-
-        return authResult
     }
 
     private buildEndpointParameters(request: Request, response: Response, principal: Principal): any[] {
@@ -166,7 +190,7 @@ export class Endpoint {
             return decoratorInterceptor
         }
 
-        return this.errorInterceptors
+        return this.middlewareRegistry.errorInterceptors
             .find(i => i.shouldIntercept(this.endpointInfo.controller.name, this.endpointInfo.name))
     }
 }

@@ -4,9 +4,9 @@ import { Container } from "inversify"
 import { ApiLambdaApp, AppConfig, RequestBuilder } from "../../index"
 
 import { TestBase } from "./TestBase"
+import { TestAuthFilter } from "./test-components/TestAuthFilter"
 import { TestDecoratorErrorInterceptor } from "./test-components/TestDecoratorErrorInterceptor"
 import { TestErrorInterceptor } from "./test-components/TestErrorInterceptor"
-import { TestAuthFilter } from "./test-components/TestAuthFilter"
 
 @TestFixture()
 export class ApiLambdaAppTests extends TestBase {
@@ -63,7 +63,7 @@ export class ApiLambdaAppTests extends TestBase {
     public async when_api_error_interceptor_is_configured_and_it_throws_an_error_then_interceptor_is_invoked(testCase: any) {
         let errorInterceptor = new TestErrorInterceptor(testCase.endpoint, testCase.controller)
 
-        this.app.addErrorInterceptor(errorInterceptor)
+        this.app.middlewareRegistry.addErrorInterceptor(errorInterceptor)
 
         await this.sendRequest(
             RequestBuilder.get("/test/raise-error").build()
@@ -98,7 +98,7 @@ export class ApiLambdaAppTests extends TestBase {
     public async when_api_error_interceptor_is_configured_and_no_error_is_thrown_then_interceptor_is_not_invoked() {
         let errorInterceptor = new TestErrorInterceptor(null, "TestController")
 
-        this.app.addErrorInterceptor(errorInterceptor)
+        this.app.middlewareRegistry.addErrorInterceptor(errorInterceptor)
 
         await this.sendRequest(
             RequestBuilder.get("/test").build()
@@ -109,7 +109,9 @@ export class ApiLambdaAppTests extends TestBase {
 
     @AsyncTest()
     public async when_api_error_interceptor_is_invoked_and_no_response_is_returned_by_interceptor_then_original_error_is_returned() {
-        this.app.addErrorInterceptor(new TestErrorInterceptor("TestController::raiseError"))
+        this.app.middlewareRegistry.addErrorInterceptor(
+            new TestErrorInterceptor("TestController::raiseError")
+        )
 
         let response = await this.sendRequest(
             RequestBuilder.get("/test/raise-error").build()
@@ -121,7 +123,9 @@ export class ApiLambdaAppTests extends TestBase {
 
     @AsyncTest()
     public async when_api_error_interceptor_is_invoked_and_response_is_returned_by_interceptor_then_interceptor_response_is_returned() {
-        this.app.addErrorInterceptor(new TestErrorInterceptor("TestController::raiseError", null, true))
+        this.app.middlewareRegistry.addErrorInterceptor(
+            new TestErrorInterceptor("TestController::raiseError", null, true)
+        )
 
         let response = await this.sendRequest(
             RequestBuilder.get("/test/raise-error").build()
@@ -137,7 +141,7 @@ export class ApiLambdaAppTests extends TestBase {
     public async when_global_api_error_interceptor_is_invoked_and_error_is_thrown_in_any_endpoint_then_interceptor_is_invoked(path: string) {
         let errorInterceptor = new TestErrorInterceptor("*", null)
 
-        this.app.addErrorInterceptor(errorInterceptor)
+        this.app.middlewareRegistry.addErrorInterceptor(errorInterceptor)
 
         await this.sendRequest(
             RequestBuilder.get(path).build()
@@ -150,7 +154,7 @@ export class ApiLambdaAppTests extends TestBase {
     public async when_api_auth_filter_configured_and_request_is_made_then_filter_is_invoked() {
         let authFilter = new TestAuthFilter("luke", "vaderismydad")
 
-        this.app.addAuthFilter(authFilter)
+        this.app.middlewareRegistry.addAuthFilter(authFilter)
 
         await this.sendRequest(
             RequestBuilder.get("/test")
@@ -165,7 +169,9 @@ export class ApiLambdaAppTests extends TestBase {
     @TestCase("whoismydad?", 401)
     @AsyncTest()
     public async when_api_auth_filter_configured_and_credentials_passed_then_valid_endpoint_request_returns_correct_status(password: string, expectedStatus: number) {
-        this.app.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("luke", "vaderismydad")
+        )
 
         let response = await this.sendRequest(
             RequestBuilder.get("/test")
@@ -178,7 +184,9 @@ export class ApiLambdaAppTests extends TestBase {
 
     @AsyncTest()
     public async when_api_auth_filter_configured_and_no_credentials_passed_then_valid_endpoint_request_returns_401_unauthorized() {
-        this.app.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("luke", "vaderismydad")
+        )
 
         let response = await this.sendRequest(
             RequestBuilder.get("/test")
@@ -190,7 +198,9 @@ export class ApiLambdaAppTests extends TestBase {
 
     @AsyncTest()
     public async when_api_auth_filter_configured_and_filter_throws_error_then_request_returns_401_unauthorized() {
-        this.app.addAuthFilter(new TestAuthFilter("luke", "vaderismydad", true))
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("luke", "vaderismydad", true)
+        )
 
         let response = await this.sendRequest(
             RequestBuilder.get("/test")
@@ -203,7 +213,9 @@ export class ApiLambdaAppTests extends TestBase {
 
     @AsyncTest()
     public async when_api_auth_filter_configured_and_credentials_passed_then_endpoint_is_passed_current_principal() {
-        this.app.addAuthFilter(new TestAuthFilter("stoat", "ihavenoideawhatiam"))
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("stoat", "ihavenoideawhatiam")
+        )
 
         let response = await this.sendRequest(
             RequestBuilder.get("/test/user-test")
