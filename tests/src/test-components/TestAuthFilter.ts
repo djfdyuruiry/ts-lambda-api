@@ -1,4 +1,4 @@
-import { AuthenticationError, BasicAuthFilter, BasicAuth } from "../../../index"
+import { BasicAuthFilter, BasicAuth } from "../../../index"
 
 import { TestUser } from "./model/TestUser";
 

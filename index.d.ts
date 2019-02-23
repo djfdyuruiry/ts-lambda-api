@@ -15,8 +15,6 @@ export { ApiResponse } from "./dist/model/ApiResponse"
 export { AppConfig } from "./dist/model/AppConfig"
 export { ApiError } from "./dist/model/ApiError"
 
-export { AuthenticationError } from "./dist/model/error/AuthenticationError"
-
 export { apiController } from "./dist/api/decorator/apiController"
 export { GET, POST, PUT, PATCH, DELETE } from "./dist/api/decorator/endpoints"
 export { controllerRolesAllowed, rolesAllowed } from "./dist/api/decorator/security/rolesAllowed"

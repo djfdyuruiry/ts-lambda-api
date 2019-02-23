@@ -1,7 +1,6 @@
 import { Request } from "lambda-api"
 
 import { IAuthFilter } from "./IAuthFilter"
-import { AuthenticationError } from "../../model/error/AuthenticationError"
 import { Principal } from "../../model/security/Principal"
 import { BasicAuth } from "../../model/security/BasicAuth"
 

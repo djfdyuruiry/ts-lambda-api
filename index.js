@@ -20,8 +20,6 @@ exports.ApiResponse = require("./dist/model/ApiResponse").ApiResponse
 exports.AppConfig = require("./dist/model/AppConfig").AppConfig
 exports.ApiError = require("./dist/model/ApiError").ApiError
 
-exports.AuthenticationError = require("./dist/model/error/AuthenticationError").AuthenticationError
-
 // route decorators
 exports.apiController = require("./dist/api/decorator/apiController").apiController
 exports.GET = endpoints.GET
