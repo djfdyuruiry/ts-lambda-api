@@ -1,5 +1,8 @@
+import { injectable } from "inversify";
+
 import { ApiError } from "../../model/ApiError"
 
+@injectable()
 export abstract class ErrorInterceptor {
     public endpointTarget?: string
     public controllerTarget?: string

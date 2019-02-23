@@ -138,9 +138,7 @@ export class Endpoint {
 
                 // return after finding a filter that does not throw an error
                 return authResult
-            } catch(ex) {
-                let a = 22
-            }
+            } catch(ex) {}
         }
 
         return authResult

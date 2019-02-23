@@ -72,7 +72,21 @@ export class ApiLambdaAppTests extends TestBase {
         Expect(errorInterceptor.wasInvoked).toBeTruthy()
     }
 
-    public async when_api_decorator_error_interceptor_is_present_and_it_throws_an_error_then_interceptor_is_invoked() {
+    @AsyncTest()
+    public async when_api_controller_decorator_error_interceptor_is_present_and_it_throws_an_error_then_interceptor_is_invoked() {
+        TestDecoratorErrorInterceptor.wasInvoked = false
+
+        await this.sendRequest(
+            RequestBuilder.get("/test/controller-ei-decorator").build()
+        )
+
+        Expect(TestDecoratorErrorInterceptor.wasInvoked).toBeTruthy()
+    }
+
+    @AsyncTest()
+    public async when_api_endpoint_decorator_error_interceptor_is_present_and_it_throws_an_error_then_interceptor_is_invoked() {
+        TestDecoratorErrorInterceptor.wasInvoked = false
+
         await this.sendRequest(
             RequestBuilder.get("/test/ei-decorator").build()
         )
@@ -172,5 +186,31 @@ export class ApiLambdaAppTests extends TestBase {
         )
 
         Expect(response.statusCode).toEqual(401)
+    }
+
+    @AsyncTest()
+    public async when_api_auth_filter_configured_and_filter_throws_error_then_request_returns_401_unauthorized() {
+        this.app.addAuthFilter(new TestAuthFilter("luke", "vaderismydad", true))
+
+        let response = await this.sendRequest(
+            RequestBuilder.get("/test")
+                .basicAuth("luke", "vaderismydad")
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(401)
+    }
+
+    @AsyncTest()
+    public async when_api_auth_filter_configured_and_credentials_passed_then_endpoint_is_passed_current_principal() {
+        this.app.addAuthFilter(new TestAuthFilter("stoat", "ihavenoideawhatiam"))
+
+        let response = await this.sendRequest(
+            RequestBuilder.get("/test/user-test")
+                .basicAuth("stoat", "ihavenoideawhatiam")
+                .build()
+        )
+
+        Expect(response.body).toEqual("stoat")
     }
 }
