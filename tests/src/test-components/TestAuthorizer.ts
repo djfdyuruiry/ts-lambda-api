@@ -7,7 +7,7 @@ export class TestAuthorizer implements IAuthorizer<TestUser> {
     public principalPassed: Principal
     public rolePassed: string
 
-    public constructor() {
+    public constructor(private readonly throwError: boolean = false) {
         this.wasInvoked = false
     }
 
@@ -15,6 +15,10 @@ export class TestAuthorizer implements IAuthorizer<TestUser> {
         this.wasInvoked = true
         this.principalPassed = principal
         this.rolePassed = role
+
+        if (this.throwError) {
+            throw new Error("Uh oh spaghettios!")
+        }
 
         return principal.roles.includes(role)
     }

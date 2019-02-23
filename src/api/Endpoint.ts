@@ -72,15 +72,20 @@ export class Endpoint {
         }
 
         for (let filter of this.middlewareRegistry.authFilters) {
-            try {
-                let authData = await filter.extractAuthData(request)
+            let authData = await filter.extractAuthData(request)
 
+            if (authData) {
+                // authData extraction was either aborted or failed
                 authResult.principal = await filter.authenticate(authData)
-                authResult.authenticated = true
+            }
 
-                // return after finding a filter that does not throw an error
+            authResult.authenticated =
+                (authResult.principal !== null && authResult.principal !== undefined)
+
+            if (authResult.authenticated) {
+                // return after finding a filter that authenticates the user
                 return authResult
-            } catch(ex) {}
+            }
         }
 
         return authResult
@@ -111,13 +116,13 @@ export class Endpoint {
             if (endpointRoles) {
                 // endpoint roles, if defined, override controller roles
                 for (let role of endpointRoles) {
-                    if (await this.runAuthorize(authorizer, principal, role)) {
+                    if (await authorizer.authorize(principal, role)) {
                         return true
                     }
                 }
             } else if (controllerRoles) {
                 for (let role of controllerRoles) {
-                    if (await this.runAuthorize(authorizer, principal, role)) {
+                    if (await authorizer.authorize(principal, role)) {
                         return true
                     }
                 }
@@ -125,14 +130,6 @@ export class Endpoint {
         }
 
         return false
-    }
-
-    private async runAuthorize(authorizer: IAuthorizer<Principal>, principal: Principal, role: string) {
-        try {
-            return await authorizer.authorize(principal, role)
-        } catch(ex) {
-            return false
-        }
     }
 
     private responseSent(response?: Response, endpointResponse?: any) {

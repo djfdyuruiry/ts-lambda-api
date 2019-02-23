@@ -23,10 +23,8 @@ export class TestAuthFilter extends BasicAuthFilter<TestUser> {
             throw Error("authenticate failed")
         }
 
-        if (basicAuth.username !== this.username || basicAuth.password !== this.password) {
-            throw new AuthenticationError()
+        if (basicAuth.username === this.username && basicAuth.password === this.password) {
+            return new TestUser(basicAuth.username, this.roles)
         }
-
-        return new TestUser(basicAuth.username, this.roles)
     }
 }

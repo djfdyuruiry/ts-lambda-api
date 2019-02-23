@@ -1,7 +1,7 @@
 import { Expect, AsyncTest, TestFixture, TestCase } from "alsatian"
 import { Container } from "inversify"
 
-import { ApiLambdaApp, AppConfig, RequestBuilder } from "../../index"
+import { ApiLambdaApp, AppConfig, ErrorInterceptor, RequestBuilder } from "../../index"
 
 import { TestBase } from "./TestBase"
 import { TestAuthFilter } from "./test-components/TestAuthFilter"
@@ -56,6 +56,14 @@ export class ApiLambdaAppTests extends TestBase {
         )
 
         Expect(response.statusCode).toEqual(200)
+    }
+
+    @TestCase(null)
+    @TestCase(undefined)
+    @AsyncTest()
+    public async when_invalid_api_error_interceptor_is_passed_to_app_then_throws_an_error(invalidErrorInterceptor: ErrorInterceptor) {
+        Expect(() => this.app.middlewareRegistry.addErrorInterceptor(invalidErrorInterceptor))
+            .toThrow()
     }
 
     @TestCase({ controller: "TestController" })
@@ -151,6 +159,14 @@ export class ApiLambdaAppTests extends TestBase {
         Expect(errorInterceptor.wasInvoked).toBeTruthy()
     }
 
+    @TestCase(null)
+    @TestCase(undefined)
+    @AsyncTest()
+    public async when_invalid_api_auth_filter_is_passed_to_app_then_throws_an_error(invalidAuthFilter: TestAuthFilter) {
+        Expect(() => this.app.middlewareRegistry.addAuthFilter(invalidAuthFilter))
+            .toThrow()
+    }
+
     @AsyncTest()
     public async when_api_auth_filter_configured_and_request_is_made_then_filter_is_invoked() {
         let authFilter = new TestAuthFilter("luke", "vaderismydad")
@@ -214,7 +230,7 @@ export class ApiLambdaAppTests extends TestBase {
     }
 
     @AsyncTest()
-    public async when_api_auth_filter_configured_and_filter_throws_error_then_request_returns_401_unauthorized() {
+    public async when_api_auth_filter_configured_and_filter_throws_error_then_request_returns_500_server_error() {
         this.app.middlewareRegistry.addAuthFilter(
             new TestAuthFilter("luke", "vaderismydad", true)
         )
@@ -225,7 +241,7 @@ export class ApiLambdaAppTests extends TestBase {
                 .build()
         )
 
-        Expect(response.statusCode).toEqual(401)
+        Expect(response.statusCode).toEqual(500)
     }
 
     @AsyncTest()
@@ -243,8 +259,16 @@ export class ApiLambdaAppTests extends TestBase {
         Expect(response.body).toEqual("stoat")
     }
 
+    @TestCase(null)
+    @TestCase(undefined)
     @AsyncTest()
-    public async when_api_authorizer_configured_and_no_roles_declared_then_valid_request_returns_200_ok() {
+    public async when_invalid_api_authorizer_is_passed_to_app_then_throws_an_error(invalidAuthorizer: TestAuthorizer) {
+        Expect(() => this.app.middlewareRegistry.addAuthorizer(invalidAuthorizer))
+            .toThrow()
+    }
+
+    @AsyncTest()
+    public async when_api_authorizer_configured_and_no_roles_declared_then_unprotected_resource_returns_200_ok() {
         this.app.middlewareRegistry.addAuthorizer(new TestAuthorizer())
 
         let response = await this.sendRequest(
@@ -253,6 +277,18 @@ export class ApiLambdaAppTests extends TestBase {
         )
 
         Expect(response.statusCode).toEqual(200)
+    }
+
+    @TestCase("/test/restricted")
+    @TestCase("/test-restricted")
+    @AsyncTest()
+    public async when_api_authorizer_not_configured_and_roles_declared_then_protected_resource_returns_500_server_error(path: string) {
+        let response = await this.sendRequest(
+            RequestBuilder.get(path)
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(500)
     }
 
     @TestCase({ path: "/test/restricted", userRoles: ["SPECIAL_USER"] })
@@ -272,6 +308,25 @@ export class ApiLambdaAppTests extends TestBase {
         )
 
         Expect(response.statusCode).toEqual(200)
+    }
+
+    @TestCase({ path: "/test/restricted", userRoles: ["SPECIAL_USER"] })
+    @TestCase({ path: "/test-restricted", userRoles: ["SPECIAL_USER"] })
+    @TestCase({ path: "/test-restricted", userRoles: ["SUPER_SPECIAL_USER"] })
+    @AsyncTest()
+    public async when_api_authorizer_configured_with_roles_declared_and_user_is_authorized_and_authorizer_throws_error_then_valid_request_returns_500_server_error(testCase: any) {
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("stoat", "ihavenoideawhatiam", false, testCase.userRoles)
+        )
+        this.app.middlewareRegistry.addAuthorizer(new TestAuthorizer(true))
+
+        let response = await this.sendRequest(
+            RequestBuilder.get(testCase.path)
+                .basicAuth("stoat", "ihavenoideawhatiam")
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(500)
     }
 
     @TestCase("/test/restricted")
