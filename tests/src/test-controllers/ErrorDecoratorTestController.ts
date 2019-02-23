@@ -2,7 +2,7 @@ import { injectable } from "inversify"
 
 import { apiController, errorInterceptor, Controller, GET } from "../../../index"
 
-import { TestDecoratorErrorInterceptor } from "../TestDecoratorErrorInterceptor"
+import { TestDecoratorErrorInterceptor } from "../test-components/TestDecoratorErrorInterceptor"
 
 @apiController("/test/ei-decorator")
 @injectable()

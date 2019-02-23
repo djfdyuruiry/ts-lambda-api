@@ -3,7 +3,7 @@ import { Response, Request } from "lambda-api"
 
 import { apiController, controllerProduces, header, pathParam, queryParam, response, request, produces, user, Controller, GET } from "../../../index"
 
-import { TestUser } from '../TestUser';
+import { TestUser } from '../test-components/model/TestUser';
 
 @apiController("/test")
 @controllerProduces("text/plain")

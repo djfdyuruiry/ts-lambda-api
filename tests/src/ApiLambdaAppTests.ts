@@ -4,9 +4,9 @@ import { Container } from "inversify"
 import { ApiLambdaApp, AppConfig, RequestBuilder } from "../../index"
 
 import { TestBase } from "./TestBase"
-import { TestDecoratorErrorInterceptor } from "./TestDecoratorErrorInterceptor"
-import { TestErrorInterceptor } from "./TestErrorInterceptor"
-import { TestAuthFilter } from "./TestAuthFilter"
+import { TestDecoratorErrorInterceptor } from "./test-components/TestDecoratorErrorInterceptor"
+import { TestErrorInterceptor } from "./test-components/TestErrorInterceptor"
+import { TestAuthFilter } from "./test-components/TestAuthFilter"
 
 @TestFixture()
 export class ApiLambdaAppTests extends TestBase {

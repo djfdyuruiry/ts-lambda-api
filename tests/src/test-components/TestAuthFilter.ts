@@ -1,6 +1,6 @@
-import { AuthenticationError, BasicAuthFilter, BasicAuth } from "../../index"
+import { AuthenticationError, BasicAuthFilter, BasicAuth } from "../../../index"
 
-import { TestUser } from "./TestUser";
+import { TestUser } from "./model/TestUser";
 
 export class TestAuthFilter extends BasicAuthFilter<TestUser> {
     public wasInvoked: boolean

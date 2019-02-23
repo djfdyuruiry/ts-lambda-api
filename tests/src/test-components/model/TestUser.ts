@@ -1,4 +1,4 @@
-import { Principal } from "../../index"
+import { Principal } from "../../../../index"
 
 export class TestUser extends Principal {
     public constructor(name: string) {

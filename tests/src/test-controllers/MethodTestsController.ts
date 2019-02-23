@@ -2,7 +2,7 @@ import { injectable } from "inversify"
 
 import { apiController, fromBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE } from "../../../index"
 
-import { Person } from "./model/Person"
+import { Person } from "../test-components/model/Person"
 
 @apiController("/test/methods")
 @injectable()

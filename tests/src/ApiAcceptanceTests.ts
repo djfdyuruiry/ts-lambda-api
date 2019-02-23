@@ -5,7 +5,7 @@ import { METHODS } from "lambda-api"
 import { RequestBuilder, JsonPatch } from "../../index"
 
 import { TestBase } from "./TestBase"
-import { Person } from "./test-controllers/model/Person"
+import { Person } from "./test-components/model/Person"
 
 @TestFixture()
 export class ApiAcceptanceTests extends TestBase {
