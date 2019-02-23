@@ -32,6 +32,11 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
     - [Path Parameters](#path-params)
 - [Request Parameter Binding](#request-binding)
 - [Responses](#responses)
+- [Authentication & Authorization](#auth-authorization)
+    - [Authentication and Principals](#auth-pric)
+    - [Basic Authentication](#basic-auth)
+    - [Custom Authentication](#cusom-auth)
+    - [Authorization](#authorization)
 - [Error Handling](#errors)
     - [Error Interceptors](#error-interceptors)
     - [Manual Error Interceptors](#manual-error-interceptors)
@@ -417,6 +422,197 @@ export class MessageOfTheDayController {
 
 ----
 
+## <a id="auth-authorization"></a>Authentication & Authorization
+
+----
+
+This framework supports authenticating requests and authorization for controllers and endpoints. It can be used to configure HTTP authentication, token based auth and role based access control (ACLs).
+
+Implementation is heavily inspired by the Dropwizard framework for Java.
+
+### <a id="auth-princ"></a>Authentication and Principals
+
+Authentication is preformed by filter classes that are executed before invoking an endpoint; all filter class implement the `IAuthFilter` interface.
+
+Filters use information from the HTTP request to authenticate the request. If authentication is successful, a filter will return a principal. A principal is a simple class that contains information about the current user/entity that has been granted access to the endpoint.
+
+To use authentication you must implement your own principal by extending the `Principal` class:
+
+```typescript
+import { Principal } from "typescript-lambda-api"
+
+export class StoreUser extends Principal {
+    // we will use this later, see the Authorization section
+    private roles: string[] = []
+
+    // you can define your user model properties in this class
+
+    public constructor(name: string) {
+        super(name)
+    }
+}
+```
+
+### <a id="basic-auth"></a>Basic Authentication
+
+HTTP Basic authentication is supported out of the box by the `BasicAuthFilter` filter abstract class. You extend this class to implement your authentication logic:
+
+```typescript
+import { BasicAuthFilter } from "typescript-lambda-api"
+
+import { StoreUser } from "./StoreUser"
+
+export class StoreAuthFilter extends BasicAuthFilter<StoreUser> {
+    public async authenticate(basicAuth: BasicAuth): Promise<StoreUser | undefined> {
+        let user = this.getUserFromDb(basicAuth.username)
+
+        if (user && this.getUserPassword(user) === basicAuth.password) {
+            // returning a principal signals that the request has been authorized
+            return user
+        }
+    }
+
+    private getUserFromDb(username: string): StoreUser {
+        // get the user details from a database, if it exists, otherwise we return null/undefined
+    }
+
+    private getUserPassword(user: StoreUser): string {
+        // get the user password from a database
+    }
+}
+```
+
+You register your authentication filter when setting up your application instance:
+
+```typescript
+// build config and controllers path...
+let app = new ApiLambdaApp(controllersPath, appConfig)
+let authFilter = new StoreAuthFilter()
+
+// this will protect your endpoints using the auth filter to authenticate requests
+app.middlewareRegistry.addAuthFilter(authFilter)
+// export handler
+```
+
+### <a id="custom-auth"></a>Custom Authentication
+
+If you wish to implement popular authentication mechnasims or make your own, you need to implement the `IAuthFilter` interface. It accepts two generic parameters:
+
+- `T` - The model class for your authentication data
+- `U` - A principal class
+
+Authentication data classes are free form, for example:
+
+```typescript
+export class TokenAuth {
+    public token: string
+}
+```
+
+Your auth filter implementation must provide a method for extracting your authentication data, and a method that uses that data to authenticate the current request.
+
+```typescript
+import { Request } from "lambda-api"
+
+import { IAuthFilter, Principal } from "typescript-lambda-api"
+
+import { TokenAuth } from "./TokenAuth"
+
+export class TokenAuthFilter<T extends Principal> implements IAuthFilter<TokenAuth, StoreUser> {
+    public async extractAuthData(request: Request): Promise<TokenAuth | undefined> {
+        // extract the data if the auth header is present
+        if (request.headers["Authorization"]) {
+            return {
+                token: request.headers["Authorization"]
+            }
+        }
+
+        // if you don't return any auth data, the request will be marked as unauthorized
+    }
+
+    public async authenticate(tokenAuth: TokenAuth): Promise<StoreUser | undefined> {
+        let user = getUserByTokenFromDb(tokenAuth.token)
+
+        if (user) {
+            return user
+        }
+    }
+
+    private getUserByTokenFromDb(token: string) {
+        // get the user for the token and return the user's details
+    }
+}
+```
+
+Tip: You can make your class abstract and then make the `authenticate` method abstract to enable your custom auth filter to be re-usable. This way, you simply extend your custom fiter and implement the authentication logic for your application.
+
+### <a id="authorization"></a>Authorization
+
+To implement role based authorization you implement the `IAuthorizer` interface.
+
+```typescript
+import { IAuthorizer, Principal } from "typescript-lambda-api"
+
+import { TestUser } from "./model/TestUser"
+
+export class StoreAuthorizer implements IAuthorizer<TestUser> {
+    public async authorize(user: TestUser, role: string): Promise<boolean> {
+        return user.roles.includes(role)
+    }
+}
+```
+
+When a user is successfully authorized by an auth filter, this returns a principal which is passed to the configured authorizer if a resource is marked as restricted. To restrict all endpoints in a controller, use the `controllerRolesAllowed` decorator:
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, controllerRolesAllowed, GET } from "typescript-lambda-api"
+
+@injectable()
+@apiController("/store")
+@controllerRolesAllowed("STORE_GUEST", "STORE_MANAGER")
+export class StoreController {
+    @GET("/item/:id")
+    public getItem(@pathParam("id") id: string) {
+        // this endpoint can only be accessed with principles that are authorized with the STORE_MANAGER role
+    }
+}
+```
+
+You can restrict a single enpoint using the `rolesAllowed` decorator:
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, rolesAllowed, GET } from "typescript-lambda-api"
+
+@injectable()
+@apiController("/store")
+export class StoreController {
+    @GET("/item/:id")
+    @rolesAllowed("STORE_MANAGER")
+    public getItem(@pathParam("id") id: string) {
+        // this endpoint can only be accessed with principles that are authorized with the STORE_MANAGER role
+    }
+}
+```
+
+You can combine both ther controller and endpoint decorators for roles. In this case, if endpoint roles are present, they overrides the controller roles.
+
+You register your authentication filter when setting up your application instance:
+
+```typescript
+// build config and controllers path...
+let app = new ApiLambdaApp(controllersPath, appConfig)
+let authorizer = new StoreAuthorizer()
+
+// this will protect your endpoints using the authorizer to check access roles
+app.middlewareRegistry.addAuthorizer(authorizer)
+// export handler
+```
+----
+
 ## <a id="errors"></a>Error Handling
 
 ----
@@ -436,7 +632,7 @@ Interceptor instances are built using the InversifyJS app container, so you can 
 ```typescript
 import { injectable } from "inversify";
 
-import { ApiError, ErrorInterceptor } from "../../index"
+import { ApiError, ErrorInterceptor } from "typescript-lambda-api"
 
 @injectable()
 export class StoreErrorInterceptor extends ErrorInterceptor {
@@ -490,7 +686,7 @@ let app = new ApiLambdaApp(controllersPath, appConfig)
 let errorInterceptor = new StoreErrorInterceptor()
 
 // this will intercept errors thrown by any endpoint
-app.addErrorInterceptor(errorInterceptor)
+app.middlewareRegistry.addErrorInterceptor(errorInterceptor)
 // export handler
 ```
 
