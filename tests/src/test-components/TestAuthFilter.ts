@@ -1,4 +1,4 @@
-import { BasicAuthFilter, BasicAuth } from "../../../index"
+import { BasicAuthFilter, BasicAuth } from "../../../dist/index"
 
 import { TestUser } from "./model/TestUser";
 

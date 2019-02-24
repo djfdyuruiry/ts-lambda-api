@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { apiController, controllerRolesAllowed, Controller, GET } from "../../../index"
+import { apiController, controllerRolesAllowed, Controller, GET } from "../../../dist/index"
 
 @apiController("/test-restricted")
 @controllerRolesAllowed("SUPER_SPECIAL_USER", "SPECIAL_USER")

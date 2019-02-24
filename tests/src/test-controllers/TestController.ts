@@ -1,7 +1,7 @@
 import { injectable } from "inversify"
 import { Response, Request } from "lambda-api"
 
-import { apiController, controllerProduces, header, pathParam, queryParam, response, request, rolesAllowed, produces, user, Controller, GET } from "../../../index"
+import { apiController, controllerProduces, header, pathParam, queryParam, response, request, rolesAllowed, produces, user, Controller, GET } from "../../../dist/index"
 
 import { TestUser } from '../test-components/model/TestUser';
 

@@ -55,3 +55,6 @@ LICENSE
 
 # nyc node_modules are broken by the above rules, exclude it's dependencies from cleaning
 !nyc/node_modules/**/*
+
+# typedoc has lots of non-code files, exclude it
+!typedoc-default-themes/**/*

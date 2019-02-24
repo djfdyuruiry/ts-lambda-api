@@ -1,4 +1,4 @@
-import { ApiError, ErrorInterceptor } from "../../../index"
+import { ApiError, ErrorInterceptor } from "../../../dist/index"
 
 export class TestErrorInterceptor extends ErrorInterceptor {
     public wasInvoked: boolean

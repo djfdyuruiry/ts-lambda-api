@@ -1,6 +1,6 @@
 import { AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
 
-import { RequestBuilder } from "../../index"
+import { RequestBuilder } from "../../dist/index"
 
 import { TestBase } from "./TestBase"
 import { TestAuthFilter } from "./test-components/TestAuthFilter"

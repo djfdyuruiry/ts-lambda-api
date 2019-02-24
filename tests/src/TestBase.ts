@@ -2,7 +2,7 @@ import path from "path"
 
 import { Setup } from "alsatian"
 
-import { ApiLambdaApp, ApiRequest } from "../../index"
+import { ApiLambdaApp, ApiRequest } from "../../dist/index"
 
 export class TestBase {
     protected static readonly CONTROLLERS_PATH: string = path.join(__dirname, "test-controllers")

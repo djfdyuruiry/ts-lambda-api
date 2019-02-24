@@ -1,6 +1,6 @@
 import { AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
 
-import { ErrorInterceptor, RequestBuilder } from "../../index"
+import { ErrorInterceptor, RequestBuilder } from "../../dist/index"
 
 import { TestBase } from "./TestBase"
 import { TestDecoratorErrorInterceptor } from "./test-components/TestDecoratorErrorInterceptor"

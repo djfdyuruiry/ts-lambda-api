@@ -1,4 +1,4 @@
-import { IAuthorizer, Principal } from "../../../index"
+import { IAuthorizer, Principal } from "../../../dist/index"
 
 import { TestUser } from "./model/TestUser"
 

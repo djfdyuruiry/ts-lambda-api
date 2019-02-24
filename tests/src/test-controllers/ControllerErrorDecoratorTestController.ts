@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { apiController, controllerErrorInterceptor, Controller, GET } from "../../../index"
+import { apiController, controllerErrorInterceptor, Controller, GET } from "../../../dist/index"
 
 import { TestDecoratorErrorInterceptor } from "../test-components/TestDecoratorErrorInterceptor"
 

@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { ErrorInterceptor } from "../../../index"
+import { ErrorInterceptor } from "../../../dist/index"
 
 @injectable()
 export class TestDecoratorErrorInterceptor extends ErrorInterceptor {

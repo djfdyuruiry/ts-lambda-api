@@ -8,6 +8,7 @@
   },
   "scripts": {
     "tsc": "tsc",
+    "typedoc": "typedoc",
     "alsatian": "alsatian",
     "install-with-audit": "yarn install && yarn audit",
     "build": "rm -rf dist && tsc",
@@ -19,7 +20,6 @@
   "files": [
     "README.md",
     "LICENSE",
-    "index.d.ts",
     "dist/**/*.js",
     "dist/**/*.d.ts"
   ],
@@ -29,8 +29,8 @@
       "tests/**/*"
     ]
   },
-  "main": "index.js",
-  "typings": "index.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "author": "Matthew Snoddy",
   "license": "MIT",
   "dependencies": {
@@ -46,7 +46,8 @@
     "alsatian": "^2.3.0",
     "aws-sdk": "^2.404.0",
     "nyc": "^13.3.0",
-    "tslint": "^5.12.1",
-    "typescript": "^3.3.3"
+    "typedoc": "^0.14.2",
+    "typescript": "^3.3.3",
+    "tslint": "^5.12.1"
   }
 }
