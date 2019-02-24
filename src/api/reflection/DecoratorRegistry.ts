@@ -1,5 +1,5 @@
-import { ControllerInfo } from "../model/ControllerInfo"
-import { EndpointInfo } from "../model/EndpointInfo"
+import { ControllerInfo } from "../../model/reflection/ControllerInfo"
+import { EndpointInfo } from "../../model/reflection/EndpointInfo"
 
 export class DecoratorRegistry {
     // these are required to be dictionaries, using Map here causes weird issues with persistance

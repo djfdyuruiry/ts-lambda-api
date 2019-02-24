@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"npm.packageManager": "yarn"
+	},
+	"extensions": {
+		"recommendations": [
+			"dskwrk.vscode-generate-getter-setter",
+			"loiane.ts-extension-pack"
+		]
+	}
+}

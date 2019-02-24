@@ -1,23 +1,31 @@
-import { mark, stop } from 'marky'
+import { mark, stop } from "marky"
 
-import { ProfilingEnabled } from './Environment'
+import { ProfilingEnabled } from "./Environment"
 
+/**
+ * Decorator that can be applied to a method or function to
+ * profile it's execution time in milliseconds. Timing info
+ * is output to the console.
+ *
+ * The environment variable `PROFILE_API` must be set to `1` for
+ * profiling information to be recorded and output.
+ */
 export function timed(_: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const functionToMeasure: Function = descriptor.value;
+    let functionToMeasure: Function = descriptor.value
 
-    descriptor.value = function (this: void, ...args: any[]) {
+    descriptor.value = async function (this: void, ...args: any[]) {
         if (ProfilingEnabled) {
             mark(propertyKey)
         }
 
-        var result = functionToMeasure.apply(this, args);
+        let result = await functionToMeasure.apply(this, args)
 
         if (ProfilingEnabled) {
-            var measurement = stop(propertyKey)
+            let measurement = stop(propertyKey)
 
             console.log(`method '${measurement.name}' took ${measurement.duration.toFixed(2)} ms`)
         }
 
-        return result;
+        return result
     }
 }

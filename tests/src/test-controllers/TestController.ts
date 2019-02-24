@@ -1,7 +1,9 @@
-import { injectable } from "inversify";
-import { Response, Request } from "lambda-api";
+import { injectable } from "inversify"
+import { Response, Request } from "lambda-api"
 
-import { apiController, controllerProduces, header, pathParam, queryParam, response, request, produces, Controller, GET } from "../../../index"
+import { apiController, controllerProduces, header, pathParam, queryParam, response, request, rolesAllowed, produces, principal, Controller, GET } from "../../../dist/typescript-lambda-api"
+
+import { TestUser } from '../test-components/model/TestUser';
 
 @apiController("/test")
 @controllerProduces("text/plain")
@@ -24,7 +26,7 @@ export class TestController extends Controller {
 
     @GET("/no-return")
     public get_NoReturnOrResponseModel() {
-        // this should throw an exception
+        // this should cause the framework to throw an exception
     }
 
     @GET("/no-content")
@@ -73,5 +75,21 @@ export class TestController extends Controller {
     @GET("/injected-header-test")
     public get_InjectedHeaderTest(@request request: Request) {
         this.response.send(`Header: ${request.headers["x-test-header"]}`)
+    }
+
+    @GET("/raise-error")
+    public raiseError() {
+        throw new Error("all I do is throw an error")
+    }
+
+    @GET("/user-test")
+    public userTest(@principal testUser: TestUser) {
+        return testUser.name
+    }
+
+    @GET("/restricted")
+    @rolesAllowed("SPECIAL_USER")
+    public restricted() {
+        return "allowed in"
     }
 }

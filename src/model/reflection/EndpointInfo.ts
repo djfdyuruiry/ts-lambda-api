@@ -1,5 +1,8 @@
-import { ControllerInfo } from "./ControllerInfo";
-import { IParameterExtractor } from "../api/parameters/IParameterExtractor";
+import { interfaces } from "inversify/dts/interfaces/interfaces"
+
+import { ControllerInfo } from "./ControllerInfo"
+import { ErrorInterceptor } from "../../api/error/ErrorInterceptor"
+import { IParameterExtractor } from "../../api/parameters/IParameterExtractor"
 
 export class EndpointInfo {
     public readonly method: Function
@@ -7,10 +10,12 @@ export class EndpointInfo {
     public httpMethod: string
     public path?: string
     public produces?: string
+    public rolesAllowed?: string[]
+    public errorInterceptor?: interfaces.ServiceIdentifier<ErrorInterceptor>
 
     public constructor(
-        public readonly name: string, 
-        public readonly controller: ControllerInfo, 
+        public readonly name: string,
+        public readonly controller: ControllerInfo,
         public readonly methodName: string
     ) {
         this.method = this.controller.classConstructor.prototype[methodName]

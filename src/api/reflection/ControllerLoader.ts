@@ -1,4 +1,4 @@
-import fs from 'fs'
+import * as fs from "fs"
 
 export class ControllerLoader {
     public static async loadControllers(controllersDirectory: string) {
@@ -6,6 +6,6 @@ export class ControllerLoader {
             if (file.endsWith(".js")) {
                 await import(`${controllersDirectory}/${file}`)
             }
-        };
+        }
     }
 }

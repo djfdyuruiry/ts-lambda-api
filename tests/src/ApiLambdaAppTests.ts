@@ -1,7 +1,7 @@
-import { Expect, AsyncTest, TestFixture, TestCase } from "alsatian"
+import { AsyncTest, Expect, TestFixture } from "alsatian"
 import { Container } from "inversify"
 
-import { ApiLambdaApp, AppConfig, RequestBuilder } from "../../index"
+import { AppConfig, ApiLambdaApp, RequestBuilder } from "../../dist/typescript-lambda-api"
 
 import { TestBase } from "./TestBase"
 
@@ -12,7 +12,7 @@ export class ApiLambdaAppTests extends TestBase {
         let config: AppConfig = {
             base: "api/v1/"
         }
-    
+
         this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, config)
 
         let response = await this.sendRequest(
@@ -30,10 +30,10 @@ export class ApiLambdaAppTests extends TestBase {
 
     @AsyncTest()
     public async when_custom_container_passed_to_app_then_it_is_available_for_configuration() {
-        let container = new Container({ autoBindInjectable: true })        
+        let container = new Container({ autoBindInjectable: true })
 
         let app = new ApiLambdaApp(
-            TestBase.CONTROLLERS_PATH, 
+            TestBase.CONTROLLERS_PATH,
             undefined,
             container
         )

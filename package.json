@@ -1,7 +1,7 @@
 {
   "name": "typescript-lambda-api",
   "description": "Build REST API's using Typescript & AWS Lambda. Support for decorator based routing and dependecy injection using InversifyJS. This project is built on top of the wonderful lambda-api package.",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/djfdyuruiry/typescript-lambda-api.git"
@@ -9,18 +9,16 @@
   "scripts": {
     "tsc": "tsc",
     "alsatian": "alsatian",
-    "clean": "git clean -fxd",
-    "clean-install": "yarn run clean && yarn install",
+    "install-with-audit": "yarn install && yarn audit",
     "build": "rm -rf dist && tsc",
-    "build-tests": "rm -rf tests/js && tsc -p ./tests",
-    "build-all": "yarn run build && yarn run build-tests",
-    "tests": "cat tests/banner.txt && nyc --reporter=lcov --reporter=html alsatian --tap ./tests/js/**/*Tests.js",
-    "test": "yarn run clean-install && yarn run build-all && yarn run tests"
+    "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
+    "build-all": "yarn run install-with-audit && yarn run build && yarn run build-tests",
+    "tests": "cat ./tests/banner.txt && nyc --reporter=lcov --reporter=html alsatian --tap ./tests/js/**/*Tests.js 2>&1 | tee tests/results.tap",
+    "test": "rm -rf .nyc_output && rm -rf coverage && yarn run build-all && yarn run tests"
   },
   "files": [
     "README.md",
     "LICENSE",
-    "index.d.ts",
     "dist/**/*.js",
     "dist/**/*.d.ts"
   ],
@@ -30,8 +28,8 @@
       "tests/**/*"
     ]
   },
-  "main": "index.js",
-  "typings": "index.d.ts",
+  "main": "dist/typescript-lambda-api.js",
+  "typings": "dist/typescript-lambda-api.d.ts",
   "author": "Matthew Snoddy",
   "license": "MIT",
   "dependencies": {
@@ -47,7 +45,7 @@
     "alsatian": "^2.3.0",
     "aws-sdk": "^2.404.0",
     "nyc": "^13.3.0",
-    "tslint": "^5.12.1",
+    "typedoc": "^0.14.2",
     "typescript": "^3.3.3"
   }
 }

@@ -1,4 +1,7 @@
-import { EndpointInfo } from "./EndpointInfo";
+import { interfaces } from "inversify/dts/interfaces/interfaces"
+
+import { EndpointInfo } from "./EndpointInfo"
+import { ErrorInterceptor } from "../../api/error/ErrorInterceptor"
 
 export class ControllerInfo {
     public readonly name: string
@@ -6,6 +9,8 @@ export class ControllerInfo {
 
     public path?: string
     public produces?: string
+    public rolesAllowed?: string[]
+    public errorInterceptor?: interfaces.ServiceIdentifier<ErrorInterceptor>
     public endpoints: Map<string, EndpointInfo> = new Map<string, EndpointInfo>()
 
     public constructor(name: string, classConstructor: Function) {
