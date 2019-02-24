@@ -82,4 +82,6 @@ typings/
 dist
 
 tests/js
+tests/*.tap
+
 package-lock.json

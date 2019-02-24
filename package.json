@@ -11,9 +11,9 @@
     "alsatian": "alsatian",
     "install-with-audit": "yarn install && yarn audit",
     "build": "rm -rf dist && tsc",
-    "build-tests": "rm -rf tests/js && tsc -p ./tests",
+    "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
     "build-all": "yarn run install-with-audit && yarn run build && yarn run build-tests",
-    "tests": "cat tests/banner.txt && nyc --reporter=lcov --reporter=html alsatian --tap ./tests/js/**/*Tests.js",
+    "tests": "cat ./tests/banner.txt && nyc --reporter=lcov --reporter=html alsatian --tap ./tests/js/**/*Tests.js 2>&1 | tee tests/results.tap",
     "test": "yarn run build-all && yarn run tests"
   },
   "files": [
