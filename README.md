@@ -34,7 +34,9 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 - [Responses](#responses)
 - [Authentication & Authorization](#auth-authorization)
     - [Authentication and Principals](#auth-pric)
+    - [Authentication and Principals](#auth-pric)
     - [Basic Authentication](#basic-auth)
+    - [Access Principal Context](#endpoint-princip)
     - [Custom Authentication](#cusom-auth)
     - [Authorization](#authorization)
 - [Error Handling](#errors)
@@ -49,6 +51,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 - [Dependency Injection](#di)
 - [Configuration](#config)
     - [lambda-api](#lambda-api)
+    - [Logging](#logging)
 - [Testing](#testing)
 
 - [Useful Links](#useful-links)
@@ -876,7 +879,7 @@ let app = new ApiLambdaApp(controllersPath, appConfig)
 
 app.configureApp(container => {
     // bind interface to implementation class, for example
-    container.bind<IMyService>(IMyService)
+    container.bind(IMyService)
         .to(MyServiceImplementation)
 })
 
@@ -913,7 +916,60 @@ See the [InversifyJS](https://github.com/inversify/InversifyJS) package document
 
 ----
 
-The `AppConfig` class that can be passed to the `ApiLambdaApp` constructor supports all the configuration fields documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package. (See the `Creating a new API` section)
+When building an application instance you pass a `AppConfig` instance to the constructor. If you want to provide your own application config it is recommended to extend this class .
+
+```typescript
+import { AppConfig } from "typescript-lambda-api"
+
+import { DatabaseConfig } from "./DatabaseConfig"
+
+export class MyCustomConfig extends AppConfig {
+    public databaseConfig: DatabaseConfig
+}
+```
+
+You can then configure the IOC container to bind to your configuration instance.
+
+```typescript
+// build controllers path...
+let appConfig: MyCustomConfig = buildConfig()
+let app = new ApiLambdaApp(controllersPath, appConfig)
+
+app.configureApp(container => {
+    container.bind(MyCustomConfig)
+        .toConstantValue(appConfig)
+}
+
+// export handler
+```
+
+After which, you can inject your config into your controllers or services.
+
+```typescript
+import { inject, injectable } from "inversify"
+
+import { apiController, GET } from "typescript-lambda-api"
+
+import { MyCustomConfig } from "./MyCustomConfig"
+
+@apiController("/hello-world")
+@injectable()
+export class MyController {
+    public constructor(@inject(MyCustomConfig) private readonly config: MyCustomConfig) {
+    }
+
+    @GET()
+    public get() {
+        return this.getStuffFromDb()
+    }
+
+    private getStuffFromDb() {
+        // use this.config to configure a database connection
+    }
+}
+```
+
+**Note: The `AppConfig` class supports all the configuration fields documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package.**
 
 ### <a id="lambda-api"></a>lambda-api
 
@@ -935,11 +991,14 @@ app.configureApi(api => {
         next()
     })
 })
-
 // export handler
 ```
 
 See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documentation for guidance how to use the `API` class.
+
+### <a id="logging"></a>Logging
+
+Logging is currently provided by the [lambda-api](https://github.com/jeremydaly/lambda-api) package, use the `AppConfig` instance passed to `ApiLambdaApp` to configure logging.
 
 ---
 
