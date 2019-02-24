@@ -8,7 +8,6 @@
   },
   "scripts": {
     "tsc": "tsc",
-    "typedoc": "typedoc",
     "alsatian": "alsatian",
     "install-with-audit": "yarn install && yarn audit",
     "build": "rm -rf dist && tsc",
@@ -47,7 +46,6 @@
     "aws-sdk": "^2.404.0",
     "nyc": "^13.3.0",
     "typedoc": "^0.14.2",
-    "typescript": "^3.3.3",
-    "tslint": "^5.12.1"
+    "typescript": "^3.3.3"
   }
 }
