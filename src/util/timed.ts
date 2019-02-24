@@ -2,6 +2,14 @@ import { mark, stop } from "marky"
 
 import { ProfilingEnabled } from "./Environment"
 
+/**
+ * Decorator that can be applied to a method or function to
+ * profile it's execution time in milliseconds. Timing info
+ * is output to the console.
+ *
+ * The environment variable `PROFILE_API` must be set to `1` for
+ * profiling information to be recorded and output.
+ */
 export function timed(_: any, propertyKey: string, descriptor: PropertyDescriptor) {
     let functionToMeasure: Function = descriptor.value
 

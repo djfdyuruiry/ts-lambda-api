@@ -4,9 +4,8 @@ import { IAuthFilter } from './security/IAuthFilter';
 import { Principal } from '../model/security/Principal';
 
 /**
- * Holds all the middleware that will be applied to
- * incoming HTTP requests before or after calling endpoint
- * methods.
+ * Holds all the middleware that will be applied to incoming HTTP
+ * requests before or after calling endpoint methods.
  */
 export class MiddlewareRegistry {
     private _authFilters: IAuthFilter<any, Principal>[]
