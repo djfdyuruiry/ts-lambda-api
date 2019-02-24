@@ -494,6 +494,25 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 // export handler
 ```
 
+### <a id="endpoint-princip"></a>Access Principal Context
+
+Once a user has been authenticated you can pass the principal instance into the target endpoint. You can do this by adding a `principal` parameter decorator to your endpoint method.
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, pathParam, GET } from "typescript-lambda-api"
+
+@apiController("/store")
+@injectable()
+export class StoreController {
+    @GET("/item/:id")
+    public getItem(@principal user: StoreUser, @pathParam("id") id: string) {
+        // do something with the user context
+    }
+}
+```
+
 ### <a id="custom-auth"></a>Custom Authentication
 
 If you wish to implement popular authentication mechnasims or make your own, you need to implement the `IAuthFilter` interface. It accepts two generic parameters:
