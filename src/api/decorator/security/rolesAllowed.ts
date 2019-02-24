@@ -3,9 +3,9 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry";
 /**
  * Decorator for an endpoint method that defines roles that are allowed to use it.
  *
- * Overrides the controller roles set by the @see controllerRolesAllowed decorator, if any.
+ * Overrides the controller roles set by the `controllerRolesAllowed` decorator, if any.
  *
- * Role based authorization is managed by an @see IAuthorizer implementation registered
+ * Role based authorization is managed by an `IAuthorizer` implementation registered
  * with the current app.
  *
  * @param roleNames Names of roles that are permitted to use the endpoint.
@@ -23,7 +23,7 @@ export function rolesAllowed(...roleNames: string[]) {
  * Decorator for a controller class that defines roles that are allowed to user all
  * endpoints within it.
  *
- * Role based authorization is managed by a @see IAuthorizer implementation registered
+ * Role based authorization is managed by a `IAuthorizer` implementation registered
  * with the current app.
  *
  * @param roleNames Names of roles that are permitted to use the endpoints in this controller.

@@ -3,7 +3,7 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 /**
  * Decorator for an endpoint method that sets the HTTP response Content-Type header value.
  *
- * Overrides the controller value set by the @see controllerProduces decorator, if any.
+ * Overrides the controller value set by the `controllerProduces` decorator, if any.
  *
  * @param contentType Content-Type header value.
  */

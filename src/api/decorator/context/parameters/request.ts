@@ -4,7 +4,7 @@ import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 /**
  * Decorator which injects a the current HTTP request context as a parameter value.
  *
- * Value passed to the method will be of type @see Request from the lambda-api package.
+ * Value passed to the method will be of type `Request` from the lambda-api package.
  */
 export function request(classDefinition: Object | Function, methodName: string, paramIndex: number) {
     let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)

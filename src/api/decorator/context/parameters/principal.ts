@@ -4,7 +4,7 @@ import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 /**
  * Decorator which injects the current authentication principal as a parameter value.
  *
- * Value passed to the method will be an implementation of the @see Principal interface.
+ * Value passed to the method will be an implementation of the `Principal` interface.
  */
 export function principal(classDefinition: Object | Function, methodName: string, paramIndex: number) {
     let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)

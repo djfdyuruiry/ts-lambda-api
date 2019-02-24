@@ -6,7 +6,7 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 /**
  * Decorator for an endpoint method that configures the type to use to intercept errors.
  *
- * Overrides the controller error interceptor set by the @see controllerErrorInterceptor decorator, if any.
+ * Overrides the controller error interceptor set by the `controllerErrorInterceptor` decorator, if any.
  *
  * Error interceptors instances are built using the InversifyJS IOC container for the current app.
  */
