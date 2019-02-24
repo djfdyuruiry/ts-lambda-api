@@ -1,4 +1,4 @@
-import { BasicAuthFilter, BasicAuth } from "../../../dist/index"
+import { BasicAuthFilter, BasicAuth } from "../../../src/typescript-lambda-api"
 
 import { TestUser } from "./model/TestUser";
 

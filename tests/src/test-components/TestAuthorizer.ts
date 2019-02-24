@@ -1,4 +1,4 @@
-import { IAuthorizer, Principal } from "../../../dist/index"
+import { IAuthorizer, Principal } from "../../../src/typescript-lambda-api"
 
 import { TestUser } from "./model/TestUser"
 

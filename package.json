@@ -29,8 +29,8 @@
       "tests/**/*"
     ]
   },
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/typescript-lambda-api.js",
+  "typings": "dist/typescript-lambda-api.d.ts",
   "author": "Matthew Snoddy",
   "license": "MIT",
   "dependencies": {

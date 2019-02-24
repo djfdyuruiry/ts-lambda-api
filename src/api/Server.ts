@@ -10,24 +10,43 @@ import { ControllerLoader } from "./reflection/ControllerLoader"
 import { DecoratorRegistry } from "./reflection/DecoratorRegistry"
 import { timed } from "../util/timed"
 
+/**
+ *
+ */
 @injectable()
 export class Server {
     private readonly api: API
     private readonly _middlewareRegistry: MiddlewareRegistry
 
-    get middlewareRegistry() {
+    /**
+     *
+     */
+    public get middlewareRegistry() {
         return this._middlewareRegistry
     }
 
+    /**
+     *
+     * @param apiConfig
+     */
     public constructor(@inject(AppConfig) apiConfig?: AppConfig) {
         this.api = createAPI(apiConfig)
         this._middlewareRegistry = new MiddlewareRegistry()
     }
 
+    /**
+     *
+     * @param handler
+     */
     public configure(handler: (this: void, api: API) => void) {
         handler(this.api)
     }
 
+    /**
+     *
+     * @param controllersPath
+     * @param appContainer
+     */
     @timed
     public async discoverAndBuildRoutes(controllersPath: string, appContainer: Container) {
         await ControllerLoader.loadControllers(controllersPath)
@@ -44,6 +63,11 @@ export class Server {
         }
     }
 
+    /**
+     *
+     * @param request
+     * @param context
+     */
     @timed
     public async processEvent(request: ApiRequest, context: any): Promise<ApiResponse> {
         let event: any = request

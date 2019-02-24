@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { GET } from "../../../dist/index"
+import { GET } from "../../../src/typescript-lambda-api"
 
 @injectable()
 export class NoRootPathController {
