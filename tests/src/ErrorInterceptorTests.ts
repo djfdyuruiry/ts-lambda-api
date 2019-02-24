@@ -1,6 +1,6 @@
 import { AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
 
-import { ErrorInterceptor, RequestBuilder } from "../../src/typescript-lambda-api"
+import { ErrorInterceptor, RequestBuilder } from "../../dist/typescript-lambda-api"
 
 import { TestBase } from "./TestBase"
 import { TestDecoratorErrorInterceptor } from "./test-components/TestDecoratorErrorInterceptor"
