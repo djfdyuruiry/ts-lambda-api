@@ -1,7 +1,7 @@
-import { ErrorInterceptor } from "./error/ErrorInterceptor";
-import { IAuthorizer } from './security/IAuthorizer';
-import { IAuthFilter } from './security/IAuthFilter';
-import { Principal } from '../model/security/Principal';
+import { Principal } from "../model/security/Principal"
+import { ErrorInterceptor } from "./error/ErrorInterceptor"
+import { IAuthFilter } from "./security/IAuthFilter"
+import { IAuthorizer } from "./security/IAuthorizer"
 
 /**
  * Holds all the middleware that will be applied to incoming HTTP
@@ -26,7 +26,7 @@ export class MiddlewareRegistry {
      * one of the authorizers registered needs to authorise a user against
      * a role for the request to be authorized.
      */
-    public get authAuthorizers() {
+    public get authorizers() {
         return this._authorizers
     }
 

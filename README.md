@@ -744,7 +744,7 @@ export class StoreController extends Controller {
     public getItems() {
         try {
             return this.getItemsFromDb()
-        } catch(ex) {
+        } catch (ex) {
             // log ex...maybe?
 
             this.response.status(500).send({

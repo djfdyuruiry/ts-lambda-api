@@ -1,14 +1,14 @@
 import createAPI, { API } from "lambda-api"
 import { inject, injectable, Container } from "inversify"
 
-import { Endpoint } from "./Endpoint"
-import { MiddlewareRegistry } from "./MiddlewareRegistry"
-import { AppConfig } from "../model/AppConfig"
 import { ApiRequest } from "../model/ApiRequest"
 import { ApiResponse } from "../model/ApiResponse"
+import { AppConfig } from "../model/AppConfig"
+import { timed } from "../util/timed"
+import { Endpoint } from "./Endpoint"
+import { MiddlewareRegistry } from "./MiddlewareRegistry"
 import { ControllerLoader } from "./reflection/ControllerLoader"
 import { DecoratorRegistry } from "./reflection/DecoratorRegistry"
-import { timed } from "../util/timed"
 
 /**
  * Server that discovers routes using decorators on controller
@@ -66,6 +66,10 @@ export class Server {
         await ControllerLoader.loadControllers(controllersPath)
 
         for (let endpointKey in DecoratorRegistry.Endpoints) {
+            if (!DecoratorRegistry.Endpoints.hasOwnProperty(endpointKey)) {
+                continue
+            }
+
             let apiEndpoint = new Endpoint(
                 DecoratorRegistry.Endpoints[endpointKey],
                 c => appContainer.get(c),

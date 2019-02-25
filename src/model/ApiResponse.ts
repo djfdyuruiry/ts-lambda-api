@@ -5,21 +5,20 @@ export class ApiResponse {
     /**
      * HTTP response headers as a map.
      */
-    headers: object
-
+    public headers: object
 
     /**
      * HTTP response code (201, 400, 500 etc.)
      */
-    statusCode: number
+    public statusCode: number
 
     /**
      * HTTP response body, potentially Base64 encoded.
      */
-    body: string
+    public body: string
 
     /**
      * Is the `body` property Base64 encoded?
      */
-    isBase64Encoded: boolean
+    public isBase64Encoded: boolean
 }

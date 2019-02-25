@@ -1,19 +1,23 @@
 import { interfaces } from "inversify"
-import { Request, Response, API } from "lambda-api"
+import { API, Request, Response } from "lambda-api"
 
-import { Controller } from "./Controller"
-import { MiddlewareRegistry } from './MiddlewareRegistry';
-import { ErrorInterceptor } from "./error/ErrorInterceptor"
 import { EndpointInfo } from "../model/reflection/EndpointInfo"
 import { AuthResult } from "../model/security/AuthResult"
 import { Principal } from "../model/security/Principal"
+import { Controller } from "./Controller"
+import { ErrorInterceptor } from "./error/ErrorInterceptor"
+import { MiddlewareRegistry } from "./MiddlewareRegistry"
+
+export type ControllerFactory = (constructor: Function) => Controller
+export type ErrorInterceptorFactory = (type: interfaces.ServiceIdentifier<ErrorInterceptor>) => ErrorInterceptor
 
 export class Endpoint {
-    public constructor(private readonly endpointInfo: EndpointInfo,
-        private readonly controllerFactory: (constructor: Function) => Controller,
-        private readonly errorInteceptorFactory: (type: interfaces.ServiceIdentifier<ErrorInterceptor>) => ErrorInterceptor,
-        private readonly middlewareRegistry: MiddlewareRegistry) {
-    }
+    public constructor(
+        private readonly endpointInfo: EndpointInfo,
+        private readonly controllerFactory: ControllerFactory,
+        private readonly errorInteceptorFactory: ErrorInterceptorFactory,
+        private readonly middlewareRegistry: MiddlewareRegistry
+    ) {}
 
     public register(api: API) {
         let registerMethod = this.mapHttpMethodToCall(api, this.endpointInfo.httpMethod)
@@ -51,11 +55,11 @@ export class Endpoint {
     private async authenticateAndAuthorizeRequest(request: Request, response: Response) {
         let authResult = await this.authenticateRequest(request)
 
-        if(!authResult.authenticated) {
+        if (!authResult.authenticated) {
             this.sendStatusCodeResponse(401, response)
         }
 
-        if(!await this.authorizeRequest(authResult.principal)) {
+        if (!await this.authorizeRequest(authResult.principal)) {
             this.sendStatusCodeResponse(403, response)
         }
 
@@ -106,12 +110,13 @@ export class Endpoint {
             return true
         }
 
-        if (this.middlewareRegistry.authAuthorizers.length < 1) {
-            throw new Error("Role restrictions were declared but no authorizer was registered in the middleware registry, " +
+        if (this.middlewareRegistry.authorizers.length < 1) {
+            throw new Error(
+                "Role restrictions were declared but no authorizer was registered in the middleware registry, " +
                 `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
         }
 
-        for (let authorizer of this.middlewareRegistry.authAuthorizers) {
+        for (let authorizer of this.middlewareRegistry.authorizers) {
             if (endpointRoles) {
                 // endpoint roles, if defined, override controller roles
                 for (let role of endpointRoles) {
@@ -168,41 +173,43 @@ export class Endpoint {
     }
 
     private mapHttpMethodToCall(api: API, method: string) {
-        if (method == "GET") {
+        if (method === "GET") {
             return api.get
-        } else if (method == "POST") {
+        } else if (method === "POST") {
             return api.post
-        } else if (method == "PUT") {
+        } else if (method === "PUT") {
             return api.put
-        } else if (method == "PATCH") {
+        } else if (method === "PATCH") {
             return api.patch
-        } else if (method == "DELETE") {
+        } else if (method === "DELETE") {
             return api.delete
         }
 
         throw new Error(`Unrecognised HTTP method ${method}`)
     }
 
-    private async invokeControllerMethod(controller: Controller, request: Request, response: Response, principal: Principal) {
-        var method: Function = controller[this.endpointInfo.methodName]
-        var parameters = this.buildEndpointParameters(request, response, principal)
+    private async invokeControllerMethod(
+        controller: Controller, request: Request, response: Response, principal: Principal
+    ) {
+        let method: Function = controller[this.endpointInfo.methodName]
+        let parameters = this.buildEndpointParameters(request, response, principal)
 
         try {
             return await method.apply(controller, parameters)
-        } catch(ex) {
+        } catch (ex) {
             let errorInterceptor = this.getMatchingErrorInterceptor()
 
             if (errorInterceptor) {
                 let interceptorResponse = await errorInterceptor.intercept({
-                    error: ex,
-                    endpointMethodParameters: parameters,
-                    endpointMethod: method,
                     endpointController: controller,
-                    request: request,
-                    response: response
+                    endpointMethod: method,
+                    endpointMethodParameters: parameters,
+                    error: ex,
+                    request,
+                    response
                 })
 
-                if(this.responseSent(response, interceptorResponse)) {
+                if (this.responseSent(response, interceptorResponse)) {
                     return interceptorResponse
                 }
             }

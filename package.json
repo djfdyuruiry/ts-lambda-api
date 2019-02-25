@@ -7,10 +7,9 @@
     "url": "https://github.com/djfdyuruiry/typescript-lambda-api.git"
   },
   "scripts": {
-    "tsc": "tsc",
-    "alsatian": "alsatian",
+    "lint": "tslint src/**/*.ts",
     "install-with-audit": "yarn install && yarn audit",
-    "build": "rm -rf dist && tsc",
+    "build": "yarn run lint && rm -rf dist && tsc",
     "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
     "build-all": "yarn run install-with-audit && yarn run build && yarn run build-tests",
     "tests": "cat ./tests/banner.txt && nyc --reporter=lcov --reporter=html alsatian --tap ./tests/js/**/*Tests.js 2>&1 | tee tests/results.tap",
@@ -45,6 +44,7 @@
     "alsatian": "^2.3.0",
     "aws-sdk": "^2.404.0",
     "nyc": "^13.3.0",
+    "tslint": "^5.13.0",
     "typedoc": "^0.14.2",
     "typescript": "^3.3.3"
   }
