@@ -32,7 +32,8 @@ export abstract class ApiApp {
      * Create a new app.
      *
      * @param appConfig (Optional) Application config to pass to `lambda-api`.
-     * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can build controllers and error interceptors.
+     * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can
+     *                     build controllers and error interceptors.
      */
     public constructor(appConfig?: AppConfig, appContainer?: Container) {
         this.appContainer = appContainer || new Container({ autoBindInjectable: true })

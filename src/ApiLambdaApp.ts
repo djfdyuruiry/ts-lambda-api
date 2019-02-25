@@ -20,7 +20,8 @@ export class ApiLambdaApp extends ApiApp {
      *
      * @param controllersPath Path to the directory containing controller `js` files.
      * @param appConfig (Optional) Application config to pass to `lambda-api`.
-     * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can build controllers and error interceptors.
+     * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can build
+     *                     controllers and error interceptors.
      */
     public constructor(controllersPath: string, appConfig?: AppConfig, appContainer?: Container) {
         super(appConfig, appContainer)
