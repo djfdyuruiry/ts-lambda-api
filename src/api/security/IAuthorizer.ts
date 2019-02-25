@@ -1,4 +1,4 @@
-import { Principal } from '../../model/security/Principal';
+import { Principal } from "../../model/security/Principal"
 
 /**
  * Authorizer to perform role based checks for a principal.

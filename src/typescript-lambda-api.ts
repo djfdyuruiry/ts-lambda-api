@@ -32,5 +32,6 @@ export { JsonPatch } from "./model/JsonPatch"
 export { Principal } from "./model/security/Principal"
 export { BasicAuth } from "./model/security/BasicAuth"
 
-export { IDictionary, RequestBuilder } from "./util/RequestBuilder"
+export { IDictionary } from "./util/IDictionary"
+export { RequestBuilder } from "./util/RequestBuilder"
 export { timed } from "./util/timed"

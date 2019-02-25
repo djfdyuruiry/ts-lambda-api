@@ -22,8 +22,9 @@ export class EndpointInfo {
 
         if (this.method === undefined) {
             throw new Error(
-                `Unable to read method parameters for endpoint '${this.methodName}' in controller '${controller.name}', ` +
-                "this normally happens when you have two controllers with the same class name"
+                `Unable to read method parameters for endpoint '${this.methodName}' ` +
+                `in controller '${controller.name}', this normally happens when ` +
+                "you have two controllers with the same class name"
             )
         }
 

@@ -7,7 +7,7 @@
     "url": "https://github.com/djfdyuruiry/typescript-lambda-api.git"
   },
   "scripts": {
-    "lint": "tslint src/**/*.ts",
+    "lint": "tslint 'src/**/*.ts'",
     "install-with-audit": "yarn install && yarn audit",
     "build": "yarn run lint && rm -rf dist && tsc",
     "build-tests": "rm -rf ./tests/js && tsc -p ./tests",

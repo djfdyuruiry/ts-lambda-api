@@ -4,8 +4,9 @@ import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
  * Decorator that can be placed on a method to mark it is an API endpoint
  * that responds to HTTP GET requests.
  *
- * @param path The URL path that triggers this endpoint; optional if you set a root path on the class using a `apiController` decorator.
- *             This URL can contain path parameters, prefixed with a colon (':') character.
+ * @param path The URL path that triggers this endpoint; optional if you set a root path on the
+ *             class using a `apiController` decorator. This URL can contain path parameters,
+ *             prefixed with a colon (':') character.
  */
 export function GET(path: string = "") {
     return (classDefinition: Object, methodName: string) =>
@@ -16,8 +17,9 @@ export function GET(path: string = "") {
  * Decorator that can be placed on a method to mark it is an API endpoint
  * that responds to HTTP POST requests.
  *
- * @param path The URL path that triggers this endpoint; optional if you set a root path on the class using a `apiController` decorator.
- *             This URL can contain path parameters, prefixed with a colon (':') character.
+ * @param path The URL path that triggers this endpoint; optional if you set a root path on
+ *             the class using a `apiController` decorator. This URL can contain path parameters,
+ *             prefixed with a colon (':') character.
  */
 export function POST(path: string = "") {
     return (classDefinition: Object, methodName: string) =>
@@ -28,8 +30,9 @@ export function POST(path: string = "") {
  * Decorator that can be placed on a method to mark it is an API endpoint
  * that responds to HTTP PUT requests.
  *
- * @param path The URL path that triggers this endpoint; optional if you set a root path on the class using a `apiController` decorator.
- *             This URL can contain path parameters, prefixed with a colon (':') character.
+ * @param path The URL path that triggers this endpoint; optional if you set a root path on
+ *             the class using a `apiController` decorator. This URL can contain path parameters,
+ *             prefixed with a colon (':') character.
  */
 export function PUT(path: string = "") {
     return (classDefinition: Object, methodName: string) =>
@@ -40,8 +43,9 @@ export function PUT(path: string = "") {
  * Decorator that can be placed on a method to mark it is an API endpoint
  * that responds to HTTP DELETE requests.
  *
- * @param path The URL path that triggers this endpoint; optional if you set a root path on the class using a `apiController` decorator.
- *             This URL can contain path parameters, prefixed with a colon (':') character.
+ * @param path The URL path that triggers this endpoint; optional if you set a root path on
+ *             the class using a `apiController` decorator. This URL can contain path parameters,
+ *             prefixed with a colon (':') character.
  */
 export function DELETE(path: string = "") {
     return (classDefinition: Object, methodName: string) =>
@@ -52,8 +56,9 @@ export function DELETE(path: string = "") {
  * Decorator that can be placed on a method to mark it is an API endpoint
  * that responds to HTTP PATCH requests.
  *
- * @param path The URL path that triggers this endpoint; optional if you set a root path on the class using a `apiController` decorator.
- *             This URL can contain path parameters, prefixed with a colon (':') character.
+ * @param path The URL path that triggers this endpoint; optional if you set a root path on
+ *             the class using a `apiController` decorator. This URL can contain path parameters,
+ *             prefixed with a colon (':') character.
  */
 export function PATCH(path: string = "") {
     return (classDefinition: Object, methodName: string) =>

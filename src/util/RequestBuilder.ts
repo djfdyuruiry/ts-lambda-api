@@ -1,8 +1,7 @@
 import { METHODS } from "lambda-api"
 
 import { ApiRequest } from "../model/ApiRequest"
-
-export interface IDictionary<T> { [key: string]: T}
+import { IDictionary } from "./IDictionary"
 
 /**
  * Builds `ApiRequest` instances using the builder

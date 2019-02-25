@@ -1,10 +1,11 @@
 import { ControllerInfo } from "../../model/reflection/ControllerInfo"
 import { EndpointInfo } from "../../model/reflection/EndpointInfo"
+import { IDictionary } from "../../util/IDictionary"
 
 export class DecoratorRegistry {
     // these are required to be dictionaries, using Map here causes weird issues with persistance
-    public static readonly Endpoints: { [key: string] : EndpointInfo} = {}
-    public static readonly Controllers: { [key: string]: ControllerInfo } = {}
+    public static readonly Endpoints: IDictionary<EndpointInfo> = {}
+    public static readonly Controllers: IDictionary<ControllerInfo> = {}
 
     public static getOrCreateController(constructor: Function): ControllerInfo {
         let name = constructor.name

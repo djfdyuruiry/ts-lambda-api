@@ -17,8 +17,8 @@ export abstract class BasicAuthFilter<T extends Principal> implements IAuthFilte
     public async extractAuthData(request: Request): Promise<BasicAuth | undefined> {
         if (request.auth.type === "Basic") {
             return {
-                username: request.auth.username,
-                password: request.auth.password
+                password: request.auth.password,
+                username: request.auth.username
             }
         }
     }
