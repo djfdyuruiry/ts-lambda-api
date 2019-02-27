@@ -22,11 +22,10 @@ export class Endpoint {
     public register(api: API) {
         let registerMethod = this.mapHttpMethodToCall(api, this.endpointInfo.httpMethod)
 
-        let rootPath = this.endpointInfo.controller.path || ""
-        let endpointPath = this.endpointInfo.path || ""
-        let path = `${rootPath}${endpointPath}`
-
-        registerMethod(path, async (req, res) => await this.invoke(req, res))
+        registerMethod(
+            this.endpointInfo.fullPath,
+            async (req, res) => await this.invoke(req, res)
+        )
     }
 
     // entry point for lambda-api request engine

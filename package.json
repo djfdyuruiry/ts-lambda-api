@@ -37,6 +37,7 @@
     "inversify": "^5.0.1",
     "lambda-api": "^0.10.1",
     "marky": "^1.2.1",
+    "openapi3-ts": "^1.2.0",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {

@@ -19,5 +19,8 @@
         "trailing-comma": [{"multiline": "never"}],
         "variable-name": ["check-format", "allow-leading-underscore"]
     },
-    "rulesDirectory": []
+    "rulesDirectory": [],
+    "linterOptions": {
+        "exclude": ["tests/**/*.ts"]
+    }
 }

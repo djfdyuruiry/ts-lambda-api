@@ -13,6 +13,13 @@ export class EndpointInfo {
     public rolesAllowed?: string[]
     public errorInterceptor?: interfaces.ServiceIdentifier<ErrorInterceptor>
 
+    public get fullPath() {
+        let rootPath = this.controller.path || ""
+        let endpointPath = this.path || ""
+
+        return `${rootPath}${endpointPath}`
+    }
+
     public constructor(
         public readonly name: string,
         public readonly controller: ControllerInfo,
