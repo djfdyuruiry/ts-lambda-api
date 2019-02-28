@@ -1,6 +1,6 @@
 import { OpenApiBuilder, OpenAPIObject } from "openapi3-ts"
 
-import { DecoratorRegistry } from "../reflection/DecoratorRegistry";
+import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
 
 export type SwaggerFormat = "json" | "yml" | "object"
 
