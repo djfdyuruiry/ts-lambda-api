@@ -9,7 +9,7 @@ export { ErrorInterceptor } from "./api/error/ErrorInterceptor"
 export { IAuthFilter } from "./api/security/IAuthFilter"
 export { IAuthorizer } from "./api/security/IAuthorizer"
 export { BasicAuthFilter } from "./api/security/BasicAuthFilter"
-export { buildApiSwaggerSpec } from "./api/swagger/SwaggerGenerator"
+export { buildApiSwaggerSpec, exportApiSwaggerSpec } from "./api/swagger/SwaggerGenerator"
 
 export { ApiRequest } from "./model/ApiRequest"
 export { ApiResponse } from "./model/ApiResponse"

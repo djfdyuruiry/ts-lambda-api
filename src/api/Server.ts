@@ -15,7 +15,6 @@ import { DecoratorRegistry } from "./reflection/DecoratorRegistry"
  * classes and methods. Processing of requests is preformed by the
  * `lambda-api` package.
  */
-@injectable()
 export class Server {
     private readonly api: API
     private readonly _middlewareRegistry: MiddlewareRegistry
@@ -27,9 +26,10 @@ export class Server {
     /**
      * Create a new server.
      *
+     * @param appContainer Application container to use to build containers.
      * @param appConfig Application config to pass to `lambda-api`.
      */
-    public constructor(@inject(AppConfig) appConfig?: AppConfig) {
+    public constructor(private appContainer: Container, appConfig?: AppConfig) {
         this.api = createAPI(appConfig)
         this._middlewareRegistry = new MiddlewareRegistry()
     }
@@ -62,7 +62,7 @@ export class Server {
      * @param appContainer `InversifyJS` IOC `Container` instance which can build controllers and error interceptors.
      */
     @timed
-    public async discoverAndBuildRoutes(controllersPath: string, appContainer: Container) {
+    public async discoverAndBuildRoutes(controllersPath: string) {
         await ControllerLoader.loadControllers(controllersPath)
 
         for (let endpointKey in DecoratorRegistry.Endpoints) {
@@ -72,8 +72,8 @@ export class Server {
 
             let apiEndpoint = new Endpoint(
                 DecoratorRegistry.Endpoints[endpointKey],
-                c => appContainer.get(c),
-                ei => appContainer.get(ei),
+                c => this.appContainer.get(c),
+                ei => this.appContainer.get(ei),
                 this._middlewareRegistry
             )
 

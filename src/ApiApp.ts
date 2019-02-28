@@ -22,7 +22,6 @@ import { ApiResponse } from "./model/ApiResponse"
  */
 export abstract class ApiApp {
     protected readonly apiServer: Server
-    protected readonly appContainer: Container
 
     public get middlewareRegistry() {
         return this.apiServer.middlewareRegistry
@@ -31,13 +30,17 @@ export abstract class ApiApp {
     /**
      * Create a new app.
      *
+     * @param controllersPath Path to a directory containing `js` files containing that declare controllers.
      * @param appConfig (Optional) Application config to pass to `lambda-api`.
      * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can
      *                     build controllers and error interceptors.
      */
-    public constructor(appConfig?: AppConfig, appContainer?: Container) {
-        this.appContainer = appContainer || new Container({ autoBindInjectable: true })
-        this.apiServer = new Server(appConfig || new AppConfig())
+    public constructor(
+        protected readonly controllersPath: string,
+        protected appConfig: AppConfig = new AppConfig(),
+        protected appContainer: Container = new Container({ autoBindInjectable: true })
+    ) {
+        this.apiServer = new Server(appContainer, appConfig)
     }
 
     /**
@@ -69,12 +72,9 @@ export abstract class ApiApp {
     public abstract async run(event: ApiRequest, context: any): Promise<ApiResponse>
 
     /**
-     * Convience method for invoking the `apiServer` instance `discoverAndBuildRoutes`
-     * method.
-     *
-     * @param controllersPath Path to the directory containing controller `js` files.
+     * Initialise all controllers and endpoints declared using decorators.
      */
-    protected async initialiseControllers(controllersPath: string) {
-        await this.apiServer.discoverAndBuildRoutes(controllersPath, this.appContainer)
+    public async initialiseControllers() {
+        await this.apiServer.discoverAndBuildRoutes(this.controllersPath)
     }
 }

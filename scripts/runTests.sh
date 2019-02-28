@@ -1,6 +1,4 @@
 #!/usr/bin/env sh
-set -e
-
 resultsDir="tests"
 resultsFileName="results.xml"
 resultsFile="${resultsDir}/${resultsFileName}"
