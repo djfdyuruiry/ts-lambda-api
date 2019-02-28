@@ -58,3 +58,4 @@ LICENSE
 
 # typedoc has lots of non-code files, exclude it
 !typedoc-default-themes/**/*
+!xunit-viewer/**/*

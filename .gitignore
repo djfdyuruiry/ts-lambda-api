@@ -82,6 +82,7 @@ typings/
 dist
 
 tests/js
-tests/*.tap
+tests/*.html
+tests/*.xml
 
 package-lock.json
