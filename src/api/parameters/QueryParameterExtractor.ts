@@ -3,10 +3,12 @@ import { Request } from "lambda-api"
 import { IParameterExtractor } from "./IParameterExtractor"
 
 export class QueryParameterExtractor implements IParameterExtractor {
-    public constructor(private readonly paramName: string) {
+    public readonly source = "query"
+
+    public constructor(public readonly name: string) {
     }
 
     public extract(request: Request) {
-        return request.query[this.paramName]
+        return request.query[this.name]
     }
 }

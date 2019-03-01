@@ -1,6 +1,8 @@
 import { OpenApiBuilder } from "openapi3-ts"
+import { OperationObject, PathItemObject, ParameterObject } from "openapi3-ts/dist/model"
 
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
+import { EndpointInfo } from "../../model/reflection/EndpointInfo"
 
 export type SwaggerFormat = "json" | "yml"
 
@@ -24,12 +26,35 @@ function generateApiSwaggerSpecBuilder() {
         }
 
         let endpointInfo = endpoints[endpoint]
-        let pathInfo = {}
+        let pathInfo: PathItemObject = {}
+        let endpointMethod = endpointInfo.httpMethod.toLowerCase()
+        let endpointOperation: OperationObject = {
+            responses: {}
+        }
 
-        pathInfo[endpointInfo.httpMethod.toLowerCase()] = {}
+        addParametersToEndpoint(endpointOperation, endpointInfo)
+
+        pathInfo[endpointMethod] = endpointOperation
 
         openApiBuilder = openApiBuilder.addPath(endpointInfo.fullPath, pathInfo)
     }
 
     return openApiBuilder
+}
+
+function addParametersToEndpoint(endpointOperation: OperationObject, endpointInfo: EndpointInfo) {
+    endpointOperation.parameters = []
+
+    endpointInfo.parameterExtractors.forEach(p => {
+        if (p.source === "virtual") {
+            return
+        }
+
+        let paramInfo: ParameterObject = {
+            in: p.source,
+            name: p.name
+        }
+
+        endpointOperation.parameters.push(paramInfo)
+    })
 }
