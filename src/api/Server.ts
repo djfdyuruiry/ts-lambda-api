@@ -9,6 +9,7 @@ import { Endpoint } from "./Endpoint"
 import { MiddlewareRegistry } from "./MiddlewareRegistry"
 import { ControllerLoader } from "./reflection/ControllerLoader"
 import { DecoratorRegistry } from "./reflection/DecoratorRegistry"
+import { exportApiSwaggerSpec } from "./swagger/SwaggerGenerator"
 
 /**
  * Server that discovers routes using decorators on controller
@@ -29,7 +30,7 @@ export class Server {
      * @param appContainer Application container to use to build containers.
      * @param appConfig Application config to pass to `lambda-api`.
      */
-    public constructor(private appContainer: Container, appConfig?: AppConfig) {
+    public constructor(private appContainer: Container, private appConfig?: AppConfig) {
         this.api = createAPI(appConfig)
         this._middlewareRegistry = new MiddlewareRegistry()
     }
@@ -64,6 +65,15 @@ export class Server {
     @timed
     public async discoverAndBuildRoutes(controllersPath: string) {
         await ControllerLoader.loadControllers(controllersPath)
+
+        if (this.appConfig.swagger &&
+            this.appConfig.swagger.enabled) {
+            this.api.get("/swagger.json", async () => await exportApiSwaggerSpec())
+            this.api.get("/swagger.yml", async (_, res) =>
+                res.header("Content-Type", "application/yml")
+                    .send(await exportApiSwaggerSpec("yml"))
+            )
+        }
 
         for (let endpointKey in DecoratorRegistry.Endpoints) {
             if (!DecoratorRegistry.Endpoints.hasOwnProperty(endpointKey)) {

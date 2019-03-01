@@ -1031,3 +1031,15 @@ https://github.com/inversify/InversifyJS
 https://www.npmjs.com/package/marky
 
 https://www.meziantou.net/2018/01/11/aspect-oriented-programming-in-typescript
+
+
+
+
+## TODO: SWAGGER
+
+For YAML support, you need to install the following:
+
+```bash
+npm install js-yaml
+npm install -D @types/js-yaml
+```

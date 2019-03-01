@@ -10,10 +10,16 @@ export function buildApiSwaggerSpec() {
     return generateApiSwaggerSpecBuilder().getSpec()
 }
 
-export function exportApiSwaggerSpec(format: SwaggerFormat = "json") {
+export async function exportApiSwaggerSpec(format: SwaggerFormat = "json") {
     let openApiBuilder = generateApiSwaggerSpecBuilder()
 
-    return format === "json" ? openApiBuilder.getSpecAsJson() : openApiBuilder.getSpecAsYaml()
+    if (format === "json") {
+        return openApiBuilder.getSpecAsJson()
+    }
+
+    let jsyaml = await import ("js-yaml")
+
+    return jsyaml.safeDump(openApiBuilder.getSpec())
 }
 
 function generateApiSwaggerSpecBuilder() {
