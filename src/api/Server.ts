@@ -1,5 +1,5 @@
 import createAPI, { API } from "lambda-api"
-import { inject, injectable, Container } from "inversify"
+import { Container } from "inversify"
 
 import { ApiRequest } from "../model/ApiRequest"
 import { ApiResponse } from "../model/ApiResponse"
