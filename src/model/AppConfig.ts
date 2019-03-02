@@ -1,7 +1,7 @@
 import { injectable } from "inversify"
 import { LoggerOptions, Options, SerializerFunction } from "lambda-api"
 
-import { SwaggerConfig } from "./SwaggerConfig"
+import { OpenApiConfig } from "./OpenApiConfig"
 
 /**
  * Base class for app configuration. Extend this
@@ -55,7 +55,7 @@ export class AppConfig implements Options {
     public version?: string
 
     /**
-     * Swagger configuration.
+     * OpenAPI configuration.
      */
-    public swagger?: SwaggerConfig = new SwaggerConfig()
+    public openApi?: OpenApiConfig = new OpenApiConfig()
 }

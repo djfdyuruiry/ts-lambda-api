@@ -8,10 +8,10 @@ import { EndpointInfo } from "../model/reflection/EndpointInfo";
 import { timed } from "../util/timed"
 import { Endpoint } from "./Endpoint"
 import { MiddlewareRegistry } from "./MiddlewareRegistry"
+import { OpenApiGenerator, OpenApiFormat } from "./open-api/OpenApiGenerator"
 import { ControllerLoader } from "./reflection/ControllerLoader"
 import { DecoratorRegistry } from "./reflection/DecoratorRegistry"
 import { BasicAuthFilter } from "./security/BasicAuthFilter"
-import { SwaggerGenerator, SwaggerFormat } from "./swagger/SwaggerGenerator"
 
 /**
  * Server that discovers routes using decorators on controller
@@ -59,8 +59,8 @@ export class Server {
      * Controllers and error interceptors registered by decorators are built using
      * an IOC container, which allows dependency injection.
      *
-     * Swagger endpoints will be registered here, if they are enabled in the app
-     * config by setting the `swagger.enabled` flag to true.
+     * OpenAPI endpoints will be registered here, if they are enabled in the app
+     * config by setting the `openApi.enabled` flag to true.
      *
      * This method must be called before invoking the `processEvent` method.
      *
@@ -71,8 +71,8 @@ export class Server {
     public async discoverAndBuildRoutes(controllersPath: string) {
         await ControllerLoader.loadControllers(controllersPath)
 
-        if (this.appConfig.swagger && this.appConfig.swagger.enabled) {
-            this.registerSwaggerEndpoints()
+        if (this.appConfig.openApi && this.appConfig.openApi.enabled) {
+            this.registerOpenApiEndpoints()
         }
 
         for (let endpointKey in DecoratorRegistry.Endpoints) {
@@ -84,27 +84,24 @@ export class Server {
         }
     }
 
-    private registerSwaggerEndpoints() {
-        let useAuthInSpecRequests = (this.appConfig.swagger &&
-            this.appConfig.swagger.requireAuthentication) || false
-
-        this.registerSwaggerEndpoint("json", useAuthInSpecRequests)
-        this.registerSwaggerEndpoint("yml", useAuthInSpecRequests)
+    private registerOpenApiEndpoints() {
+        this.registerOpenApiEndpoint("json")
+        this.registerOpenApiEndpoint("yml")
     }
 
-    private registerSwaggerEndpoint(format: SwaggerFormat, useAuthInSpecRequests: boolean) {
+    private registerOpenApiEndpoint(format: OpenApiFormat) {
         let specEndpoint = new EndpointInfo(
-            `interal__swagger::${format}`,
-            async () => await SwaggerGenerator.exportApiSwaggerSpec(
+            `internal__openapi::${format}`,
+            async () => await OpenApiGenerator.exportOpenApiSpec(
                 format,
                 this.middlewareRegistry.authFilters
                     .find(f => f instanceof BasicAuthFilter) !== undefined
             )
         )
 
-        specEndpoint.path = `/swagger.${format}`
+        specEndpoint.path = `/open-api.${format}`
         specEndpoint.httpMethod = "GET"
-        specEndpoint.noAuth = !useAuthInSpecRequests
+        specEndpoint.noAuth = !this.appConfig.openApi.useAuthentication
         specEndpoint.produces = `application/${format}`
 
         this.registerEndpoint(specEndpoint)

@@ -5,22 +5,22 @@ import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
 import { EndpointInfo } from "../../model/reflection/EndpointInfo"
 import { timed } from "../../util/timed";
 
-export type SwaggerFormat = "json" | "yml"
+export type OpenApiFormat = "json" | "yml"
 
-export class SwaggerGenerator {
+export class OpenApiGenerator {
     private static readonly ENDPOINTS = DecoratorRegistry.Endpoints
 
     @timed
-    public static buildApiSwaggerSpec(basicAuthEnabled?: boolean) {
-        return SwaggerGenerator.generateApiSwaggerSpecBuilder(basicAuthEnabled).getSpec()
+    public static buildOpenApiSpec(basicAuthEnabled?: boolean) {
+        return OpenApiGenerator.generateApiOpenApiSpecBuilder(basicAuthEnabled).getSpec()
     }
 
     @timed
-    public static async exportApiSwaggerSpec(
-        format: SwaggerFormat = "json",
+    public static async exportOpenApiSpec(
+        format: OpenApiFormat = "json",
         basicAuthEnabled?: boolean
     ) {
-        let openApiBuilder = SwaggerGenerator.generateApiSwaggerSpecBuilder(basicAuthEnabled)
+        let openApiBuilder = OpenApiGenerator.generateApiOpenApiSpecBuilder(basicAuthEnabled)
 
         if (format === "json") {
             return openApiBuilder.getSpecAsJson()
@@ -36,7 +36,7 @@ export class SwaggerGenerator {
         }
     }
 
-    private static generateApiSwaggerSpecBuilder(basicAuthEnabled: boolean) {
+    private static generateApiOpenApiSpecBuilder(basicAuthEnabled: boolean) {
         let openApiBuilder = OpenApiBuilder.create()
 
         if (basicAuthEnabled) {
@@ -46,13 +46,13 @@ export class SwaggerGenerator {
             })
         }
 
-        for (let endpoint in SwaggerGenerator.ENDPOINTS) {
-            if (!SwaggerGenerator.ENDPOINTS.hasOwnProperty(endpoint)) {
+        for (let endpoint in OpenApiGenerator.ENDPOINTS) {
+            if (!OpenApiGenerator.ENDPOINTS.hasOwnProperty(endpoint)) {
                 continue
             }
 
-            openApiBuilder = SwaggerGenerator.addEndpoint(
-                SwaggerGenerator.ENDPOINTS[endpoint],
+            openApiBuilder = OpenApiGenerator.addEndpoint(
+                OpenApiGenerator.ENDPOINTS[endpoint],
                 openApiBuilder
             )
         }
@@ -68,12 +68,12 @@ export class SwaggerGenerator {
         }
 
         if (endpointInfo.responseContentType) {
-            SwaggerGenerator.setEndpointResponseContentType(
+            OpenApiGenerator.setEndpointResponseContentType(
                 endpointOperation, endpointInfo.responseContentType
             )
         }
 
-        SwaggerGenerator.addParametersToEndpoint(endpointOperation, endpointInfo)
+        OpenApiGenerator.addParametersToEndpoint(endpointOperation, endpointInfo)
 
         pathInfo[endpointMethod] = endpointOperation
 

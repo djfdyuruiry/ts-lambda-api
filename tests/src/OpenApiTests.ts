@@ -8,11 +8,11 @@ import { TestBase } from "./TestBase"
 import { TestAuthFilter } from "./test-components/TestAuthFilter";
 
 @TestFixture()
-export class SwaggerTests extends TestBase {
+export class OpenApiTests extends TestBase {
     @AsyncSetup
     public async setup() {
         super.setup({
-            swagger: {
+            openApi: {
                 enabled: true
             }
         })
@@ -20,10 +20,10 @@ export class SwaggerTests extends TestBase {
         await this.app.initialiseControllers()
     }
 
-    @TestCase("swagger.json")
-    @TestCase("swagger.yml")
+    @TestCase("open-api.json")
+    @TestCase("open-api.yml")
     @AsyncTest()
-    public async when_swagger_enabled_then_request_to_swagger_spec_returns_200_ok(specFileName: string) {
+    public async when_openapi_enabled_then_request_to_openapi_spec_returns_200_ok(specFileName: string) {
         let response = await this.sendRequest(
             RequestBuilder.get(`/${specFileName}`).build()
         )
@@ -31,10 +31,10 @@ export class SwaggerTests extends TestBase {
         Expect(response.statusCode).toEqual(200)
     }
 
-    @TestCase("swagger.json", JSON.parse)
-    @TestCase("swagger.yml", safeLoad)
+    @TestCase("open-api.json", JSON.parse)
+    @TestCase("open-api.yml", safeLoad)
     @AsyncTest()
-    public async when_swagger_enabled_then_swagger_spec_contains_all_declared_endpoints(specFileName: string, deserialize: (body: string) => OpenAPIObject) {
+    public async when_openapi_enabled_then_openapi_spec_contains_all_declared_endpoints(specFileName: string, deserialize: (body: string) => OpenAPIObject) {
         let response = await this.sendRequest(
             RequestBuilder.get(`/${specFileName}`).build()
         )
@@ -44,10 +44,10 @@ export class SwaggerTests extends TestBase {
         Expect(Object.keys(spec.paths).length).toBe(26)
     }
 
-    @TestCase("swagger.json", JSON.parse)
-    @TestCase("swagger.yml", safeLoad)
+    @TestCase("open-api.json", JSON.parse)
+    @TestCase("open-api.yml", safeLoad)
     @AsyncTest()
-    public async when_swagger_enabled_and_basic_auth_filter_defined_then_swagger_spec_contains_security_scheme(specFileName: string, deserialize: (body: string) => OpenAPIObject) {
+    public async when_openapi_enabled_and_basic_auth_filter_defined_then_openapi_spec_contains_security_scheme(specFileName: string, deserialize: (body: string) => OpenAPIObject) {
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
         let response = await this.sendRequest(
@@ -60,10 +60,10 @@ export class SwaggerTests extends TestBase {
         Expect(securitySchemes).toContain("basic")
     }
 
-    @TestCase("swagger.json", JSON.parse)
-    @TestCase("swagger.yml", safeLoad)
+    @TestCase("open-api.json", JSON.parse)
+    @TestCase("open-api.yml", safeLoad)
     @AsyncTest()
-    public async when_swagger_enabled_and_basic_auth_filter_defined_then_swagger_spec_contains_http_basic_security_scheme(specFileName: string, deserialize: (body: string) => OpenAPIObject) {
+    public async when_openapi_enabled_and_basic_auth_filter_defined_then_openapi_spec_contains_http_basic_security_scheme(specFileName: string, deserialize: (body: string) => OpenAPIObject) {
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
         let response = await this.sendRequest(
@@ -77,12 +77,12 @@ export class SwaggerTests extends TestBase {
         Expect(scheme.scheme).toEqual("Basic")
     }
 
-    @TestCase("swagger.json")
-    @TestCase("swagger.yml")
+    @TestCase("open-api.json")
+    @TestCase("open-api.yml")
     @AsyncTest()
-    public async when_swagger_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_unauthorized_then_swagger_spec_request_returns_401_unauthroized(specFileName: string) {
+    public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_unauthorized_then_openapi_spec_request_returns_401_unauthroized(specFileName: string) {
         this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, {
-            swagger: {
+            openApi: {
                 enabled: true,
                 useAuthentication: true
             }
@@ -97,12 +97,12 @@ export class SwaggerTests extends TestBase {
         Expect(response.statusCode).toEqual(401)
     }
 
-    @TestCase("swagger.json")
-    @TestCase("swagger.yml")
+    @TestCase("open-api.json")
+    @TestCase("open-api.yml")
     @AsyncTest()
-    public async when_swagger_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_authorized_then_swagger_spec_request_returns_200_ok(specFileName: string) {
+    public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_authorized_then_openapi_spec_request_returns_200_ok(specFileName: string) {
         this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, {
-            swagger: {
+            openApi: {
                 enabled: true,
                 useAuthentication: true
             }

@@ -1070,6 +1070,8 @@ Logging is currently provided by the [lambda-api](https://github.com/jeremydaly/
 
 The OpenAPI Specification, also known as Swagger, is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
 
+**This framework only supports OpenAPI v3**
+
 The following features are supported:
 
 - Generating of an OpenAPI Specification, which includes:
@@ -1079,7 +1081,7 @@ The following features are supported:
     - HTTP Basic Security scheme (when a basic auth filter is configured)
 - Specification files can be generated in `JSON` or `YAML` format (see [YAML Support](#open-api-yaml))
 
-To enable it, use the `swagger` property in the `AppConfig` class when building your app:
+To enable it, use the `openApi` property in the `AppConfig` class when building your app:
 
 ```typescript
 // build controllers path...
@@ -1087,7 +1089,7 @@ let appConfig = new AppConfig()
 
 appConfig.base = "/api/v1"
 appConfig.version = "v1"
-appConfig.swagger.enabled = true
+appConfig.openApi.enabled = true
 
 let app = new ApiLambdaApp(controllersPath, appConfig)
 // export handler
@@ -1095,8 +1097,8 @@ let app = new ApiLambdaApp(controllersPath, appConfig)
 
 You can then request your specification using the paths:
 
-- `/api/v1/swagger.json` - JSON format
-- `/api/v1/swagger.yml` - YAML format
+- `/api/v1/open-api.json` - JSON format
+- `/api/v1/open-api.yml` - YAML format
 
 ### <a id="open-api-yaml"></a>YAML Support
 
@@ -1109,7 +1111,7 @@ npm install -D @types/js-yaml
 
 ### <a id="open-api-auth"></a>Authentication
 
-By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a specification, use the `useAuthentication` key in the swagger config:
+By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a specification, use the `useAuthentication` key in the `openApi` config:
 
 
 ```typescript
@@ -1118,8 +1120,8 @@ let appConfig = new AppConfig()
 
 appConfig.base = "/api/v1"
 appConfig.version = "v1"
-appConfig.swagger.enabled = true
-appConfig.swagger.useAuthentication = true
+appConfig.openApi.enabled = true
+appConfig.openApi.useAuthentication = true
 
 let app = new ApiLambdaApp(controllersPath, appConfig)
 // export handler
