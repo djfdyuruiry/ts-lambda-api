@@ -84,17 +84,6 @@ export class Server {
         }
     }
 
-    private registerEndpoint(endpointInfo: EndpointInfo) {
-        let apiEndpoint = new Endpoint(
-            endpointInfo,
-            c => this.appContainer.get(c),
-            ei => this.appContainer.get(ei),
-            this._middlewareRegistry
-        )
-
-        apiEndpoint.register(this.api)
-    }
-
     private registerSwaggerEndpoints() {
         let useAuthInSpecRequests = (this.appConfig.swagger &&
             this.appConfig.swagger.useAuthentication) || false
@@ -119,6 +108,17 @@ export class Server {
         specEndpoint.produces = `application/${format}`
 
         this.registerEndpoint(specEndpoint)
+    }
+
+    private registerEndpoint(endpointInfo: EndpointInfo) {
+        let apiEndpoint = new Endpoint(
+            endpointInfo,
+            c => this.appContainer.get(c),
+            ei => this.appContainer.get(ei),
+            this._middlewareRegistry
+        )
+
+        apiEndpoint.register(this.api)
     }
 
     /**

@@ -3,16 +3,19 @@ import { OperationObject, PathItemObject, ParameterObject, ContentObject } from 
 
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
 import { EndpointInfo } from "../../model/reflection/EndpointInfo"
+import { timed } from "../../util/timed";
 
 export type SwaggerFormat = "json" | "yml"
 
 export class SwaggerGenerator {
     private static readonly ENDPOINTS = DecoratorRegistry.Endpoints
 
+    @timed
     public static buildApiSwaggerSpec(basicAuthEnabled?: boolean) {
         return SwaggerGenerator.generateApiSwaggerSpecBuilder(basicAuthEnabled).getSpec()
     }
 
+    @timed
     public static async exportApiSwaggerSpec(
         format: SwaggerFormat = "json",
         basicAuthEnabled?: boolean
