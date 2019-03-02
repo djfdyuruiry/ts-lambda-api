@@ -4,11 +4,13 @@ import { inject, injectable, Container } from "inversify"
 import { ApiRequest } from "../model/ApiRequest"
 import { ApiResponse } from "../model/ApiResponse"
 import { AppConfig } from "../model/AppConfig"
+import { EndpointInfo } from "../model/reflection/EndpointInfo";
 import { timed } from "../util/timed"
 import { Endpoint } from "./Endpoint"
 import { MiddlewareRegistry } from "./MiddlewareRegistry"
 import { ControllerLoader } from "./reflection/ControllerLoader"
 import { DecoratorRegistry } from "./reflection/DecoratorRegistry"
+import { BasicAuthFilter } from "./security/BasicAuthFilter"
 import { SwaggerGenerator } from "./swagger/SwaggerGenerator"
 
 /**
@@ -75,28 +77,55 @@ export class Server {
                 continue
             }
 
-            let apiEndpoint = new Endpoint(
-                DecoratorRegistry.Endpoints[endpointKey],
-                c => this.appContainer.get(c),
-                ei => this.appContainer.get(ei),
-                this._middlewareRegistry
-            )
-
-            apiEndpoint.register(this.api)
+            this.registerEndpoint(DecoratorRegistry.Endpoints[endpointKey])
         }
     }
 
-    private registerSwaggerEndpoints() {
-        this.api.get("/swagger.json", async () =>
-            await SwaggerGenerator.exportApiSwaggerSpec()
+    private registerEndpoint(endpointInfo: EndpointInfo) {
+        let apiEndpoint = new Endpoint(
+            endpointInfo,
+            c => this.appContainer.get(c),
+            ei => this.appContainer.get(ei),
+            this._middlewareRegistry
         )
 
-        this.api.get("/swagger.yml", async (_, res) =>
-            res.header("Content-Type", "application/yml")
-                .send(
-                    await SwaggerGenerator.exportApiSwaggerSpec("yml")
-                )
+        apiEndpoint.register(this.api)
+    }
+
+    private registerSwaggerEndpoints() {
+        let useAuthInSpecRequests = (this.appConfig.swagger &&
+            this.appConfig.swagger.useAuthentication) || false
+
+        // JSON swagger spec endpoint
+        let jsonSpecEndpoint = new EndpointInfo(
+            "interal__swagger::json",
+            async () => await SwaggerGenerator.exportApiSwaggerSpec(
+                "json",
+                this.middlewareRegistry.authFilters
+                    .find(f => f instanceof BasicAuthFilter) !== undefined
+            )
         )
+
+        jsonSpecEndpoint.path = "/swagger.json"
+        jsonSpecEndpoint.httpMethod = "GET"
+        jsonSpecEndpoint.noAuth = !useAuthInSpecRequests
+
+        // YAML swagger spec endpoint
+        let ymlSpecEndpoint = new EndpointInfo(
+            "interal__swagger::yml",
+            async () => await SwaggerGenerator.exportApiSwaggerSpec(
+                "yml",
+                this.middlewareRegistry.authFilters
+                    .find(f => f instanceof BasicAuthFilter) !== undefined
+            )
+        )
+        ymlSpecEndpoint.path = "/swagger.yml"
+        ymlSpecEndpoint.httpMethod = "GET"
+        ymlSpecEndpoint.noAuth = !useAuthInSpecRequests
+        ymlSpecEndpoint.produces = "application/yml"
+
+        this.registerEndpoint(jsonSpecEndpoint)
+        this.registerEndpoint(ymlSpecEndpoint)
     }
 
     /**

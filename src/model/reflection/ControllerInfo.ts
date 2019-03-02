@@ -9,6 +9,7 @@ export class ControllerInfo {
 
     public path?: string
     public produces?: string
+    public noAuth?: boolean
     public rolesAllowed?: string[]
     public errorInterceptor?: interfaces.ServiceIdentifier<ErrorInterceptor>
     public endpoints: Map<string, EndpointInfo> = new Map<string, EndpointInfo>()

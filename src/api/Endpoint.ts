@@ -52,6 +52,10 @@ export class Endpoint {
     }
 
     private async authenticateAndAuthorizeRequest(request: Request, response: Response) {
+        if (this.endpointInfo.noAuth) {
+            return
+        }
+
         let authResult = await this.authenticateRequest(request)
 
         if (!authResult.authenticated) {
@@ -101,11 +105,9 @@ export class Endpoint {
     }
 
     private async authorizeRequest(principal: Principal) {
-        let controllerRoles = this.endpointInfo.controller.rolesAllowed
-        let endpointRoles = this.endpointInfo.rolesAllowed
-        let roleRequired = controllerRoles || endpointRoles
+        let roles = this.endpointInfo.roles
 
-        if (!roleRequired) {
+        if (!roles || roles.length < 1) {
             return true
         }
 
@@ -116,18 +118,10 @@ export class Endpoint {
         }
 
         for (let authorizer of this.middlewareRegistry.authorizers) {
-            if (endpointRoles) {
-                // endpoint roles, if defined, override controller roles
-                for (let role of endpointRoles) {
-                    if (await authorizer.authorize(principal, role)) {
-                        return true
-                    }
-                }
-            } else if (controllerRoles) {
-                for (let role of controllerRoles) {
-                    if (await authorizer.authorize(principal, role)) {
-                        return true
-                    }
+            // endpoint roles, if defined, override controller roles
+            for (let role of roles) {
+                if (await authorizer.authorize(principal, role)) {
+                    return true
                 }
             }
         }
@@ -142,6 +136,10 @@ export class Endpoint {
     }
 
     private buildControllerInstance(request: Request, response: Response): any {
+        if (!this.endpointInfo.controller) {
+            return this.buildDynamicControllerInstance(request, response)
+        }
+
         let controller: Controller =
             this.controllerFactory(this.endpointInfo.controller.classConstructor)
 
@@ -154,6 +152,21 @@ export class Endpoint {
         }
 
         return controller
+    }
+
+    /**
+     * If an endpoint is function only (has no controller bound to it), we
+     * build a dynamic controller which simulates a controller instance.
+     */
+    private buildDynamicControllerInstance(request: Request, response: Response) {
+        let dynamiController = {
+            request,
+            response
+        }
+
+        dynamiController[this.endpointInfo.methodName] = this.endpointInfo.method
+
+        return dynamiController
     }
 
     private setResponseContentType(response: Response) {
@@ -220,20 +233,23 @@ export class Endpoint {
     private getMatchingErrorInterceptor() {
         let decoratorInterceptor: ErrorInterceptor
 
-        if (this.endpointInfo.errorInterceptor) {
-            decoratorInterceptor = this.errorInteceptorFactory(this.endpointInfo.errorInterceptor)
-        } else if (this.endpointInfo.controller.errorInterceptor) {
-            decoratorInterceptor = this.errorInteceptorFactory(this.endpointInfo.controller.errorInterceptor)
+        if (this.endpointInfo.endpointErrorInterceptor) {
+            decoratorInterceptor = this.errorInteceptorFactory(this.endpointInfo.endpointErrorInterceptor)
         }
 
         if (decoratorInterceptor) {
-            decoratorInterceptor.controllerTarget = this.endpointInfo.controller.name
+            decoratorInterceptor.controllerTarget = this.endpointInfo.getControllerPropOrDefault(c => c.name)
             decoratorInterceptor.endpointTarget = this.endpointInfo.name
 
             return decoratorInterceptor
         }
 
         return this.middlewareRegistry.errorInterceptors
-            .find(i => i.shouldIntercept(this.endpointInfo.controller.name, this.endpointInfo.name))
+            .find(i =>
+                i.shouldIntercept(
+                    this.endpointInfo.getControllerPropOrDefault(c => c.name),
+                    this.endpointInfo.name
+                )
+            )
     }
 }

@@ -9,12 +9,15 @@ export type SwaggerFormat = "json" | "yml"
 export class SwaggerGenerator {
     private static readonly ENDPOINTS = DecoratorRegistry.Endpoints
 
-    public static buildApiSwaggerSpec() {
-        return SwaggerGenerator.generateApiSwaggerSpecBuilder().getSpec()
+    public static buildApiSwaggerSpec(basicAuthEnabled?: boolean) {
+        return SwaggerGenerator.generateApiSwaggerSpecBuilder(basicAuthEnabled).getSpec()
     }
 
-    public static async exportApiSwaggerSpec(format: SwaggerFormat = "json") {
-        let openApiBuilder = SwaggerGenerator.generateApiSwaggerSpecBuilder()
+    public static async exportApiSwaggerSpec(
+        format: SwaggerFormat = "json",
+        basicAuthEnabled?: boolean
+    ) {
+        let openApiBuilder = SwaggerGenerator.generateApiSwaggerSpecBuilder(basicAuthEnabled)
 
         if (format === "json") {
             return openApiBuilder.getSpecAsJson()
@@ -30,8 +33,15 @@ export class SwaggerGenerator {
         }
     }
 
-    private static generateApiSwaggerSpecBuilder() {
+    private static generateApiSwaggerSpecBuilder(basicAuthEnabled: boolean) {
         let openApiBuilder = OpenApiBuilder.create()
+
+        if (basicAuthEnabled) {
+            openApiBuilder = openApiBuilder.addSecurityScheme("basic", {
+                scheme: "Basic",
+                type: "http"
+            })
+        }
 
         for (let endpoint in SwaggerGenerator.ENDPOINTS) {
             if (!SwaggerGenerator.ENDPOINTS.hasOwnProperty(endpoint)) {
