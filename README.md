@@ -36,6 +36,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
     - [Authentication and Principals](#auth-princ)
     - [Basic Authentication](#basic-auth)
     - [Access Principal Context](#endpoint-princip)
+    - [Unauthenticated Endpoints](#no-auth-endpoints)
     - [Custom Authentication](#custom-auth)
     - [Authorization](#authorization)
 - [Error Handling](#errors)
@@ -512,6 +513,64 @@ export class StoreController {
     public getItem(@principal user: StoreUser, @pathParam("id") id: string) {
         // do something with the user context
     }
+}
+```
+
+### <a id="no-auth-endpoints"></a>Unauthenticated Endpoints
+
+There are several situations where you might want to disable authentication for a specific endpoint:
+
+- Healthcheck / Status endpoint
+- Login Endpoint
+- Public API endpoints for unauthenticated users (browsing products without logging in)
+
+To do this you need to use the `noAuth` and `controllerNoAuth` decorators.
+
+For an endpoint:
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, fromBody, principal, GET, POST } from "typescript-lambda-api"
+
+import { LoginRequest } from "./LoginRequest"
+import { StoreUser } from "./StoreUser"
+
+@apiController("/user")
+@injectable()
+export class UserController {
+    @POST("/login")
+    @noAuth
+    public login(@fromBody loginRequest: LoginRequest) {
+        // attempt to log in...
+    }
+
+    @GET("/profile")
+    public login(@principal user: StoreUser) {
+        // only authorised users can call this endpoint...
+    }
+}
+```
+
+For all endpoints in a controller:
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, controllerNoAuth, fromBody, POST } from "typescript-lambda-api"
+
+import { SearchRequest } from "./SearchRequest"
+
+@apiController("/public")
+@controllerNoAuth
+@injectable()
+export class UserController {
+    @POST("/search/products")
+    public searchProducts(@fromBody searchRequest: SearchRequest) {
+        // I can be called without authentication
+    }
+
+    // ...other declared endpoints are also be called without authentication...
 }
 ```
 
