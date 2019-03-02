@@ -59,6 +59,9 @@ export class Server {
      * Controllers and error interceptors registered by decorators are built using
      * an IOC container, which allows dependency injection.
      *
+     * Swagger endpoints will be registered here, if they are enabled in the app
+     * config by setting the `swagger.enabled` flag to true.
+     *
      * This method must be called before invoking the `processEvent` method.
      *
      * @param controllersPath Path to the directory containing controller `js` files.
