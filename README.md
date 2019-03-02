@@ -52,6 +52,9 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 - [Configuration](#config)
     - [lambda-api](#lambda-api)
     - [Logging](#logging)
+- [Swagger (OpenAPI)](#open-api)
+    - [YAML Support](#open-api-yaml)
+    - [Authentication](#open-api-auth)
 - [Testing](#testing)
 
 - [Useful Links](#useful-links)
@@ -1059,6 +1062,69 @@ See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documenta
 
 Logging is currently provided by the [lambda-api](https://github.com/jeremydaly/lambda-api) package, use the `AppConfig` instance passed to `ApiLambdaApp` to configure logging.
 
+----
+
+## <a id="open-api"></a>OpenAPI (Swagger)
+
+----
+
+The OpenAPI Specification, also known as Swagger, is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
+
+The following features are supported:
+
+- Generating of an OpenAPI Specification, which includes:
+    - All endpoints with full path and HTTP method
+    - Endpoint query, path and header parameters (set by parameter decorators)
+    - Response content type headers (set by `produces` or `controllerProduces` decorators)
+    - HTTP Basic Security scheme (when a basic auth filter is configured)
+- Specification files can be generated in `JSON` or `YAML` format (see [YAML Support](#open-api-yaml))
+
+To enable it, use the `swagger` property in the `AppConfig` class when building your app:
+
+```typescript
+// build controllers path...
+let appConfig = new AppConfig()
+
+appConfig.base = "/api/v1"
+appConfig.version = "v1"
+appConfig.swagger.enabled = true
+
+let app = new ApiLambdaApp(controllersPath, appConfig)
+// export handler
+```
+
+You can then request your specification using the paths:
+
+- `/api/v1/swagger.json` - JSON format
+- `/api/v1/swagger.yml` - YAML format
+
+### <a id="open-api-yaml"></a>YAML Support
+
+For `YAML` specification support, you need to install the following packages in your project:
+
+```bash
+npm install js-yaml
+npm install -D @types/js-yaml
+```
+
+### <a id="open-api-auth"></a>Authentication
+
+By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a specification, use the `useAuthentication` key in the swagger config:
+
+
+```typescript
+// build controllers path...
+let appConfig = new AppConfig()
+
+appConfig.base = "/api/v1"
+appConfig.version = "v1"
+appConfig.swagger.enabled = true
+appConfig.swagger.useAuthentication = true
+
+let app = new ApiLambdaApp(controllersPath, appConfig)
+// export handler
+```
+
 ---
 
 ## <a id="testing"></a>Testing
@@ -1090,15 +1156,3 @@ https://github.com/inversify/InversifyJS
 https://www.npmjs.com/package/marky
 
 https://www.meziantou.net/2018/01/11/aspect-oriented-programming-in-typescript
-
-
-
-
-## TODO: SWAGGER
-
-For YAML support, you need to install the following:
-
-```bash
-npm install js-yaml
-npm install -D @types/js-yaml
-```

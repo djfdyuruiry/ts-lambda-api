@@ -86,7 +86,7 @@ export class Server {
 
     private registerSwaggerEndpoints() {
         let useAuthInSpecRequests = (this.appConfig.swagger &&
-            this.appConfig.swagger.useAuthentication) || false
+            this.appConfig.swagger.requireAuthentication) || false
 
         this.registerSwaggerEndpoint("json", useAuthInSpecRequests)
         this.registerSwaggerEndpoint("yml", useAuthInSpecRequests)

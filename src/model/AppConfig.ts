@@ -57,5 +57,5 @@ export class AppConfig implements Options {
     /**
      * Swagger configuration.
      */
-    public swagger?: SwaggerConfig
+    public swagger?: SwaggerConfig = new SwaggerConfig()
 }
