@@ -13,7 +13,7 @@ export function noAuth(classDefinition: Object | Function, methodName: string) {
 /**
  * Decorator for a controller class that marks it as not requiring authentication.
  */
-export function controllerProduces(classDefinition: Function) {
+export function controllerNoAuth(classDefinition: Function) {
     let apiController = DecoratorRegistry.getOrCreateController(classDefinition)
 
     apiController.noAuth = true

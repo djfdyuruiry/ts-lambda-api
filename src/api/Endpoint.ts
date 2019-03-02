@@ -52,7 +52,7 @@ export class Endpoint {
     }
 
     private async authenticateAndAuthorizeRequest(request: Request, response: Response) {
-        if (this.endpointInfo.noAuth) {
+        if (this.endpointInfo.authenticationDisabled) {
             return
         }
 

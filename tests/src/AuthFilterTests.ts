@@ -77,6 +77,21 @@ export class ApiLambdaAppTests extends TestBase {
         Expect(response.statusCode).toEqual(401)
     }
 
+    @TestCase("/test-no-auth")
+    @TestCase("/test/no-auth")
+    @AsyncTest()
+    public async when_api_auth_filter_configured_and_credentials_not_passed_then_valid_no_auth_endpoint_request_returns_200_ok(path: string) {
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("luke", "vaderismydad")
+        )
+
+        let response = await this.sendRequest(
+            RequestBuilder.get(path).build()
+        )
+
+        Expect(response.statusCode).toEqual(200)
+    }
+
     @AsyncTest()
     public async when_api_auth_filter_configured_and_filter_throws_error_then_request_returns_500_server_error() {
         this.app.middlewareRegistry.addAuthFilter(

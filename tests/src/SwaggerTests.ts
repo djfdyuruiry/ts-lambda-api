@@ -41,7 +41,7 @@ export class SwaggerTests extends TestBase {
 
         let spec: OpenAPIObject = deserialize(response.body)
 
-        Expect(Object.keys(spec.paths).length).toBe(24)
+        Expect(Object.keys(spec.paths).length).toBe(26)
     }
 
     @TestCase("swagger.json", JSON.parse)
