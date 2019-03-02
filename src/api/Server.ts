@@ -11,7 +11,7 @@ import { MiddlewareRegistry } from "./MiddlewareRegistry"
 import { ControllerLoader } from "./reflection/ControllerLoader"
 import { DecoratorRegistry } from "./reflection/DecoratorRegistry"
 import { BasicAuthFilter } from "./security/BasicAuthFilter"
-import { SwaggerGenerator } from "./swagger/SwaggerGenerator"
+import { SwaggerGenerator, SwaggerFormat } from "./swagger/SwaggerGenerator"
 
 /**
  * Server that discovers routes using decorators on controller
@@ -96,36 +96,26 @@ export class Server {
         let useAuthInSpecRequests = (this.appConfig.swagger &&
             this.appConfig.swagger.useAuthentication) || false
 
-        // JSON swagger spec endpoint
-        let jsonSpecEndpoint = new EndpointInfo(
-            "interal__swagger::json",
+        this.registerSwaggerEndpoint("json", useAuthInSpecRequests)
+        this.registerSwaggerEndpoint("yml", useAuthInSpecRequests)
+    }
+
+    private registerSwaggerEndpoint(format: SwaggerFormat, useAuthInSpecRequests: boolean) {
+        let specEndpoint = new EndpointInfo(
+            `interal__swagger::${format}`,
             async () => await SwaggerGenerator.exportApiSwaggerSpec(
-                "json",
+                format,
                 this.middlewareRegistry.authFilters
                     .find(f => f instanceof BasicAuthFilter) !== undefined
             )
         )
 
-        jsonSpecEndpoint.path = "/swagger.json"
-        jsonSpecEndpoint.httpMethod = "GET"
-        jsonSpecEndpoint.noAuth = !useAuthInSpecRequests
+        specEndpoint.path = `/swagger.${format}`
+        specEndpoint.httpMethod = "GET"
+        specEndpoint.noAuth = !useAuthInSpecRequests
+        specEndpoint.produces = `application/${format}`
 
-        // YAML swagger spec endpoint
-        let ymlSpecEndpoint = new EndpointInfo(
-            "interal__swagger::yml",
-            async () => await SwaggerGenerator.exportApiSwaggerSpec(
-                "yml",
-                this.middlewareRegistry.authFilters
-                    .find(f => f instanceof BasicAuthFilter) !== undefined
-            )
-        )
-        ymlSpecEndpoint.path = "/swagger.yml"
-        ymlSpecEndpoint.httpMethod = "GET"
-        ymlSpecEndpoint.noAuth = !useAuthInSpecRequests
-        ymlSpecEndpoint.produces = "application/yml"
-
-        this.registerEndpoint(jsonSpecEndpoint)
-        this.registerEndpoint(ymlSpecEndpoint)
+        this.registerEndpoint(specEndpoint)
     }
 
     /**
