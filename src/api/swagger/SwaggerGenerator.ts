@@ -1,66 +1,99 @@
 import { OpenApiBuilder } from "openapi3-ts"
-import { OperationObject, PathItemObject, ParameterObject } from "openapi3-ts/dist/model"
+import { OperationObject, PathItemObject, ParameterObject, ContentObject } from "openapi3-ts/dist/model"
 
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
 import { EndpointInfo } from "../../model/reflection/EndpointInfo"
 
 export type SwaggerFormat = "json" | "yml"
 
-export function buildApiSwaggerSpec() {
-    return generateApiSwaggerSpecBuilder().getSpec()
-}
+export class SwaggerGenerator {
+    private static readonly ENDPOINTS = DecoratorRegistry.Endpoints
 
-export async function exportApiSwaggerSpec(format: SwaggerFormat = "json") {
-    let openApiBuilder = generateApiSwaggerSpecBuilder()
-
-    if (format === "json") {
-        return openApiBuilder.getSpecAsJson()
+    public static buildApiSwaggerSpec() {
+        return SwaggerGenerator.generateApiSwaggerSpecBuilder().getSpec()
     }
 
-    let jsyaml = await import ("js-yaml")
+    public static async exportApiSwaggerSpec(format: SwaggerFormat = "json") {
+        let openApiBuilder = SwaggerGenerator.generateApiSwaggerSpecBuilder()
 
-    return jsyaml.safeDump(openApiBuilder.getSpec())
-}
-
-function generateApiSwaggerSpecBuilder() {
-    let endpoints = DecoratorRegistry.Endpoints
-    let openApiBuilder = OpenApiBuilder.create()
-
-    for (let endpoint in endpoints) {
-        if (!endpoints.hasOwnProperty(endpoint)) {
-            continue
+        if (format === "json") {
+            return openApiBuilder.getSpecAsJson()
         }
 
-        let endpointInfo = endpoints[endpoint]
+        try {
+            const jsyaml = await import("js-yaml")
+
+            return jsyaml.safeDump(openApiBuilder.getSpec())
+        } catch (ex) {
+            // TODO: log warning to check that `js-yaml` needs to be installed for yml specs
+            throw ex
+        }
+    }
+
+    private static generateApiSwaggerSpecBuilder() {
+        let openApiBuilder = OpenApiBuilder.create()
+
+        for (let endpoint in SwaggerGenerator.ENDPOINTS) {
+            if (!SwaggerGenerator.ENDPOINTS.hasOwnProperty(endpoint)) {
+                continue
+            }
+
+            openApiBuilder = SwaggerGenerator.addEndpoint(
+                SwaggerGenerator.ENDPOINTS[endpoint],
+                openApiBuilder
+            )
+        }
+
+        return openApiBuilder
+    }
+
+    private static addEndpoint(endpointInfo: EndpointInfo, openApiBuilder: OpenApiBuilder) {
         let pathInfo: PathItemObject = {}
         let endpointMethod = endpointInfo.httpMethod.toLowerCase()
         let endpointOperation: OperationObject = {
             responses: {}
         }
 
-        addParametersToEndpoint(endpointOperation, endpointInfo)
+        if (endpointInfo.responseContentType) {
+            SwaggerGenerator.setEndpointResponseContentType(
+                endpointOperation, endpointInfo.responseContentType
+            )
+        }
+
+        SwaggerGenerator.addParametersToEndpoint(endpointOperation, endpointInfo)
 
         pathInfo[endpointMethod] = endpointOperation
 
-        openApiBuilder = openApiBuilder.addPath(endpointInfo.fullPath, pathInfo)
+        return openApiBuilder.addPath(endpointInfo.fullPath, pathInfo)
     }
 
-    return openApiBuilder
-}
+    private static setEndpointResponseContentType(
+        endpointOperation: OperationObject, responseContentType: string
+    ) {
+        let responseContent: ContentObject = {}
 
-function addParametersToEndpoint(endpointOperation: OperationObject, endpointInfo: EndpointInfo) {
-    endpointOperation.parameters = []
+        responseContent[responseContentType] = {}
 
-    endpointInfo.parameterExtractors.forEach(p => {
-        if (p.source === "virtual") {
-            return
+        endpointOperation.responses.default = {
+            content: responseContent,
+            description: ""
         }
+    }
 
-        let paramInfo: ParameterObject = {
-            in: p.source,
-            name: p.name
-        }
+    private static addParametersToEndpoint(endpointOperation: OperationObject, endpointInfo: EndpointInfo) {
+        endpointOperation.parameters = []
 
-        endpointOperation.parameters.push(paramInfo)
-    })
+        endpointInfo.parameterExtractors.forEach(p => {
+            if (p.source === "virtual") {
+                return
+            }
+
+            let paramInfo: ParameterObject = {
+                in: p.source,
+                name: p.name
+            }
+
+            endpointOperation.parameters.push(paramInfo)
+        })
+    }
 }

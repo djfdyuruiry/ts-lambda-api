@@ -157,13 +157,7 @@ export class Endpoint {
     }
 
     private setResponseContentType(response: Response) {
-        let produces: string
-
-        if (this.endpointInfo.produces) {
-            produces = this.endpointInfo.produces
-        } else if (this.endpointInfo.controller.produces) {
-            produces = this.endpointInfo.controller.produces
-        }
+        let produces = this.endpointInfo.responseContentType
 
         if (produces) {
             response.removeHeader("Content-Type")

@@ -20,6 +20,10 @@ export class EndpointInfo {
         return `${rootPath}${endpointPath}`
     }
 
+    public get responseContentType() {
+        return this.produces || this.controller.produces
+    }
+
     public constructor(
         public readonly name: string,
         public readonly controller: ControllerInfo,

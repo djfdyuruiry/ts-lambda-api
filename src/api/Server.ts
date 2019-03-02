@@ -9,7 +9,7 @@ import { Endpoint } from "./Endpoint"
 import { MiddlewareRegistry } from "./MiddlewareRegistry"
 import { ControllerLoader } from "./reflection/ControllerLoader"
 import { DecoratorRegistry } from "./reflection/DecoratorRegistry"
-import { exportApiSwaggerSpec } from "./swagger/SwaggerGenerator"
+import { SwaggerGenerator } from "./swagger/SwaggerGenerator"
 
 /**
  * Server that discovers routes using decorators on controller
@@ -66,13 +66,8 @@ export class Server {
     public async discoverAndBuildRoutes(controllersPath: string) {
         await ControllerLoader.loadControllers(controllersPath)
 
-        if (this.appConfig.swagger &&
-            this.appConfig.swagger.enabled) {
-            this.api.get("/swagger.json", async () => await exportApiSwaggerSpec())
-            this.api.get("/swagger.yml", async (_, res) =>
-                res.header("Content-Type", "application/yml")
-                    .send(await exportApiSwaggerSpec("yml"))
-            )
+        if (this.appConfig.swagger && this.appConfig.swagger.enabled) {
+            this.registerSwaggerEndpoints()
         }
 
         for (let endpointKey in DecoratorRegistry.Endpoints) {
@@ -89,6 +84,19 @@ export class Server {
 
             apiEndpoint.register(this.api)
         }
+    }
+
+    private registerSwaggerEndpoints() {
+        this.api.get("/swagger.json", async () =>
+            await SwaggerGenerator.exportApiSwaggerSpec()
+        )
+
+        this.api.get("/swagger.yml", async (_, res) =>
+            res.header("Content-Type", "application/yml")
+                .send(
+                    await SwaggerGenerator.exportApiSwaggerSpec("yml")
+                )
+        )
     }
 
     /**
