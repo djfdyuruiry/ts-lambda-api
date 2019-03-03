@@ -71,6 +71,11 @@ export class OpenApiGenerator {
             OpenApiGenerator.setEndpointResponseContentType(
                 endpointOperation, endpointInfo.responseContentType
             )
+        } else {
+            // required or swagger ui will throw errors
+            endpointOperation.responses.default = {
+                description: ""
+            }
         }
 
         OpenApiGenerator.addParametersToEndpoint(endpointOperation, endpointInfo)
@@ -103,7 +108,13 @@ export class OpenApiGenerator {
 
             let paramInfo: ParameterObject = {
                 in: p.source,
-                name: p.name
+                name: p.name,
+                schema: {} // required, or breaks query parameters
+            }
+
+            if (p.source === "path") {
+                // swagger ui will break if this is not set to true
+                paramInfo.required = true
             }
 
             endpointOperation.parameters.push(paramInfo)
