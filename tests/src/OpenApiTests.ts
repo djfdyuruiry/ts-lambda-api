@@ -10,6 +10,9 @@ import { ResponseWithValue } from './test-components/model/ResponseWithValue';
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
+    private static readonly ROUTE_COUNT = 31
+    private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
+
     @AsyncSetup
     public async setup() {
         super.setup({
@@ -35,8 +38,26 @@ export class OpenApiTests extends TestBase {
     @AsyncTest()
     public async when_openapi_enabled_then_openapi_spec_contains_all_declared_endpoints(specFormat: string, deserialize: (body: string) => OpenAPIObject) {
         let response = await this.requestOpenApiSpec(specFormat, deserialize)
+        let paths = response.value.paths
+        let actualPathCount = 0
 
-        Expect(Object.keys(response.value.paths).length).toBe(26)
+        for (let path in paths) {
+            if (!paths.hasOwnProperty(path)) {
+                continue
+            }
+
+            for (let method in paths[path]) {
+                if (!paths[path].hasOwnProperty(method)) {
+                    continue
+                }
+
+                if (OpenApiTests.HTTP_METHODS.includes(method)) {
+                    actualPathCount++
+                }
+            }
+        }
+
+        Expect(actualPathCount).toBe(OpenApiTests.ROUTE_COUNT)
     }
 
     @TestCase("json", JSON.parse)

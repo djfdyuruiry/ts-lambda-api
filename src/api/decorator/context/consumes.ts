@@ -8,18 +8,19 @@ import { ApiBodyInfo } from "../../../model/open-api/ApiBodyInfo"
  *
  * @param contentType Request content type.
  */
-export function consumes(contentType: string, type?: symbol, classDef?: Function) {
+export function consumes(contentType: string, apiBodyInfo?: ApiBodyInfo) {
     return (classDefinition: Object | Function, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
+        let operationInfo = endpoint.getOrCreateApiOperationInfo()
+        let requestInfo = operationInfo.getOrCreateRequest()
 
         endpoint.consumes = contentType
-
-        let requestInfo = endpoint.apiRequestInfo
-
         requestInfo.contentType = contentType
-        requestInfo.type = type
-        requestInfo.typeConstructor = classDef
+
+        if (apiBodyInfo) {
+            requestInfo.mergeInfo(apiBodyInfo)
+        }
     }
 }
 
@@ -29,18 +30,15 @@ export function consumes(contentType: string, type?: symbol, classDef?: Function
  *
  * @param contentType Request content type.
  */
-export function controllerConsumes(contentType: string, type?: symbol, classDef?: Function) {
+export function controllerConsumes(contentType: string, apiBodyInfo?: ApiBodyInfo) {
     return (classDefinition: Function) => {
         let apiController = DecoratorRegistry.getOrCreateController(classDefinition)
 
         apiController.consumes = contentType
+        apiController.apiRequestInfo.contentType = contentType
 
-        if (type || classDef) {
-            apiController.apiRequestInfo = new ApiBodyInfo()
-
-            apiController.apiRequestInfo.contentType = contentType
-            apiController.apiRequestInfo.type = type
-            apiController.apiRequestInfo.typeConstructor = classDef
+        if (apiBodyInfo) {
+            apiController.apiRequestInfo.mergeInfo(apiBodyInfo)
         }
     }
 }

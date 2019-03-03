@@ -1,9 +1,11 @@
 import { OpenApiBuilder } from "openapi3-ts"
-import { OperationObject, PathItemObject, ParameterObject, ContentObject } from "openapi3-ts/dist/model"
+import { OperationObject, PathItemObject, ParameterObject, ContentObject, ResponseObject } from "openapi3-ts/dist/model"
 
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
 import { EndpointInfo } from "../../model/reflection/EndpointInfo"
 import { timed } from "../../util/timed";
+import { ApiBodyInfo } from "../../model/open-api/ApiBodyInfo"
+import { IDictionary } from "../../util/IDictionary"
 
 export type OpenApiFormat = "json" | "yml"
 
@@ -38,6 +40,7 @@ export class OpenApiGenerator {
 
     private static generateApiOpenApiSpecBuilder(basicAuthEnabled: boolean) {
         let openApiBuilder = OpenApiBuilder.create()
+        let paths: IDictionary<PathItemObject> = {}
 
         if (basicAuthEnabled) {
             openApiBuilder = openApiBuilder.addSecurityScheme("basic", {
@@ -51,22 +54,59 @@ export class OpenApiGenerator {
                 continue
             }
 
-            openApiBuilder = OpenApiGenerator.addEndpoint(
-                OpenApiGenerator.ENDPOINTS[endpoint],
-                openApiBuilder
+            OpenApiGenerator.addEndpoint(
+                paths,
+                OpenApiGenerator.ENDPOINTS[endpoint]
             )
+        }
+
+        for (let path in paths) {
+            if (!paths.hasOwnProperty(path)) {
+                continue
+            }
+
+            openApiBuilder = openApiBuilder.addPath(path, paths[path])
         }
 
         return openApiBuilder
     }
 
-    private static addEndpoint(endpointInfo: EndpointInfo, openApiBuilder: OpenApiBuilder) {
-        let pathInfo: PathItemObject = {}
+    private static addEndpoint(
+        paths: IDictionary<PathItemObject>,
+        endpointInfo: EndpointInfo
+    ) {
+        let path = endpointInfo.fullPath
+
+        if (path.endsWith("/")) {
+            // trim trailing forward slash from path
+            path = path.substring(0, path.length - 1)
+        }
+
+        let pathInfo: PathItemObject = paths[path] || {}
         let endpointMethod = endpointInfo.httpMethod.toLowerCase()
         let endpointOperation: OperationObject = {
             responses: {}
         }
 
+        if (endpointInfo.apiOperationInfo) {
+            let operationInfo = endpointInfo.apiOperationInfo
+
+            endpointOperation.description = operationInfo.name
+            endpointOperation.summary = operationInfo.description
+
+            // TODO: investigate potential issue with same path and multiple http methods
+
+            for (let statusCode in endpointOperation.responses) {
+                if (!endpointOperation.responses.hasOwnProperty(statusCode)) {
+                    continue
+                }
+
+                OpenApiGenerator.setEndpointResponseContentType(
+                    endpointOperation, endpointInfo.responseContentType,
+                    statusCode, endpointOperation.responses[statusCode]
+                )
+            }
+        }
         if (endpointInfo.responseContentType) {
             OpenApiGenerator.setEndpointResponseContentType(
                 endpointOperation, endpointInfo.responseContentType
@@ -80,27 +120,37 @@ export class OpenApiGenerator {
         OpenApiGenerator.addParametersToEndpoint(endpointOperation, endpointInfo)
 
         pathInfo[endpointMethod] = endpointOperation
-
-        let path = endpointInfo.fullPath
-
-        if (path.endsWith("/")) {
-            // trim trailing forward slash from path
-            path = path.substring(0, path.length - 1)
-        }
-
-        return openApiBuilder.addPath(path, pathInfo)
+        paths[path] = pathInfo
     }
 
     private static setEndpointResponseContentType(
-        endpointOperation: OperationObject, responseContentType: string
+        endpointOperation: OperationObject, responseContentType: string,
+        statusCode?: string, apiBodyInfo?: ApiBodyInfo
     ) {
-        let responseContent: ContentObject = {}
+        let response: ResponseObject
 
-        responseContent[responseContentType] = {}
+        if (apiBodyInfo) {
+            let responseContent: ContentObject = {}
+            responseContent[apiBodyInfo.contentType || responseContentType] = {}
 
-        endpointOperation.responses.default = {
-            content: responseContent,
-            description: "" // required or swagger ui will throw errors
+            response = {
+                content: responseContent,
+                description: apiBodyInfo.description || ""
+            }
+        } else {
+            let responseContent: ContentObject = {}
+            responseContent[responseContentType] = {}
+
+            response = {
+                content: responseContent,
+                description: "" // required or swagger ui will throw errors
+            }
+        }
+
+        if (statusCode) {
+            endpointOperation.responses[statusCode] = response
+        } else {
+            endpointOperation.responses.default = response
         }
     }
 

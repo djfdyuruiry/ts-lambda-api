@@ -45,9 +45,9 @@ export class EndpointInfo {
     }
 
     public get apiRequestInfo() {
-        return this.getControllerPropOrDefault(c => c.apiRequestInfo) ||
-            this.apiOperationInfo.getOrCreateRequest()
-    }
+        return this.apiOperationInfo.getOrCreateRequest() ||
+            this.getControllerPropOrDefault(c => c.apiRequestInfo)
+     }
 
     public get endpointErrorInterceptor() {
         return this.errorInterceptor || this.getControllerPropOrDefault(c => c.errorInterceptor )
