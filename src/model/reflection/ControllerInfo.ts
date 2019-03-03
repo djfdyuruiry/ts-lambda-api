@@ -2,12 +2,16 @@ import { interfaces } from "inversify/dts/interfaces/interfaces"
 
 import { EndpointInfo } from "./EndpointInfo"
 import { ErrorInterceptor } from "../../api/error/ErrorInterceptor"
+import { ApiBodyInfo } from "../open-api/ApiBodyInfo"
 
 export class ControllerInfo {
     public readonly name: string
     public readonly classConstructor: Function
 
+    public apiName?: string
     public path?: string
+    public consumes?: string
+    public apiRequestInfo?: ApiBodyInfo
     public produces?: string
     public noAuth?: boolean
     public rolesAllowed?: string[]

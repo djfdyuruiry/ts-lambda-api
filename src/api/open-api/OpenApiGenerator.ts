@@ -84,6 +84,7 @@ export class OpenApiGenerator {
         let path = endpointInfo.fullPath
 
         if (path.endsWith("/")) {
+            // trim trailing forward slash from path
             path = path.substring(0, path.length - 1)
         }
 

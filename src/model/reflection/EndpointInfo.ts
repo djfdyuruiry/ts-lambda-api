@@ -3,6 +3,7 @@ import { interfaces } from "inversify/dts/interfaces/interfaces"
 import { ControllerInfo } from "./ControllerInfo"
 import { ErrorInterceptor } from "../../api/error/ErrorInterceptor"
 import { IParameterExtractor } from "../../api/parameters/IParameterExtractor"
+import { ApiOperationInfo } from "../open-api/ApiOperationInfo"
 
 export class EndpointInfo {
     public readonly controller?: ControllerInfo
@@ -10,16 +11,22 @@ export class EndpointInfo {
     public readonly parameterExtractors: IParameterExtractor[]
     public httpMethod: string
     public path?: string
+    public consumes?: string
     public produces?: string
     public noAuth?: boolean
     public rolesAllowed?: string[]
     public errorInterceptor?: interfaces.ServiceIdentifier<ErrorInterceptor>
+    public apiOperationInfo?: ApiOperationInfo
 
     public get fullPath() {
         let rootPath = this.getControllerPropOrDefault(c => c.path) || ""
         let endpointPath = this.path || ""
 
         return `${rootPath}${endpointPath}`
+    }
+
+    public get requestContentType() {
+        return this.consumes || this.getControllerPropOrDefault(c => c.consumes)
     }
 
     public get responseContentType() {
@@ -35,6 +42,11 @@ export class EndpointInfo {
         let endpointRoles = this.rolesAllowed || []
 
         return endpointRoles.concat(controllerRoles)
+    }
+
+    public get apiRequestInfo() {
+        return this.getControllerPropOrDefault(c => c.apiRequestInfo) ||
+            this.apiOperationInfo.getOrCreateRequest()
     }
 
     public get endpointErrorInterceptor() {
@@ -68,5 +80,13 @@ export class EndpointInfo {
 
     public getControllerPropOrDefault<T>(lookup: (c: ControllerInfo) => T, defaultValue?: T) {
         return this.controller ? lookup(this.controller) : defaultValue
+    }
+
+    public getOrCreateApiOperationInfo() {
+        if (!this.apiOperationInfo) {
+            this.apiOperationInfo = new ApiOperationInfo()
+        }
+
+        return this.apiOperationInfo
     }
 }
