@@ -1,24 +1,21 @@
-export class ApiBodyInfo {
-    public contentType?: string
-    public type?: symbol
-    public clazz?: Function
-    public description?: string
+import { ApiBody } from "./ApiBody"
 
-    public mergeInfo(apiBodyInfo: ApiBodyInfo) {
-        if (apiBodyInfo.contentType) {
-            this.contentType = apiBodyInfo.contentType
+export class ApiBodyInfo extends ApiBody {
+    public mergeInfo(otherInstance: ApiBody) {
+        if (otherInstance.contentType) {
+            this.contentType = otherInstance.contentType
         }
 
-        if (apiBodyInfo.type) {
-            this.type = apiBodyInfo.type
+        if (otherInstance.type) {
+            this.type = otherInstance.type
         }
 
-        if (apiBodyInfo.clazz) {
-            this.clazz = apiBodyInfo.clazz
+        if (otherInstance.clazz) {
+            this.clazz = otherInstance.clazz
         }
 
-        if (apiBodyInfo.description) {
-            this.description = apiBodyInfo.description
+        if (otherInstance.description) {
+            this.description = otherInstance.description
         }
     }
 }

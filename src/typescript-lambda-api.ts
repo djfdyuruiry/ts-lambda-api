@@ -29,6 +29,10 @@ export { request } from "./api/decorator/context/parameters/request"
 export { response } from "./api/decorator/context/parameters/response"
 export { principal } from "./api/decorator/context/parameters/principal"
 
+export { api } from "./api/decorator/open-api/api"
+export { apiOperation } from "./api/decorator/open-api/apiOperation"
+export { apiResponse } from "./api/decorator/open-api/apiResponse"
+
 export { JsonPatch } from "./model/JsonPatch"
 export { Principal } from "./model/security/Principal"
 export { BasicAuth } from "./model/security/BasicAuth"

@@ -1,6 +1,6 @@
 import { AsyncSetup, AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
 import { safeLoad } from "js-yaml"
-import { OpenAPIObject, SecuritySchemeObject, PathsObject, PathItemObject, ParameterObject, ResponseObject } from "openapi3-ts"
+import { OpenAPIObject, SecuritySchemeObject, PathItemObject, ParameterObject, ResponseObject } from "openapi3-ts"
 
 import { RequestBuilder, ApiLambdaApp } from "../../dist/typescript-lambda-api"
 
@@ -10,7 +10,7 @@ import { ResponseWithValue } from './test-components/model/ResponseWithValue';
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 31
+    private static readonly ROUTE_COUNT = 36
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup

@@ -1,11 +1,19 @@
 import { OpenApiBuilder } from "openapi3-ts"
-import { OperationObject, PathItemObject, ParameterObject, ContentObject, ResponseObject } from "openapi3-ts/dist/model"
+import {
+    OperationObject,
+    PathItemObject,
+    ParameterObject,
+    ContentObject,
+    ResponseObject,
+    TagObject
+} from "openapi3-ts/dist/model"
 
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
-import { EndpointInfo } from "../../model/reflection/EndpointInfo"
-import { timed } from "../../util/timed";
 import { ApiBodyInfo } from "../../model/open-api/ApiBodyInfo"
+import { ControllerInfo } from "../../model/reflection/ControllerInfo"
+import { EndpointInfo } from "../../model/reflection/EndpointInfo"
 import { IDictionary } from "../../util/IDictionary"
+import { timed } from "../../util/timed";
 
 export type OpenApiFormat = "json" | "yml"
 
@@ -41,6 +49,7 @@ export class OpenApiGenerator {
     private static generateApiOpenApiSpecBuilder(basicAuthEnabled: boolean) {
         let openApiBuilder = OpenApiBuilder.create()
         let paths: IDictionary<PathItemObject> = {}
+        let tags: IDictionary<TagObject> = {}
 
         if (basicAuthEnabled) {
             openApiBuilder = openApiBuilder.addSecurityScheme("basic", {
@@ -54,10 +63,19 @@ export class OpenApiGenerator {
                 continue
             }
 
-            OpenApiGenerator.addEndpoint(
-                paths,
-                OpenApiGenerator.ENDPOINTS[endpoint]
-            )
+            let endpointInfo = OpenApiGenerator.ENDPOINTS[endpoint]
+
+            OpenApiGenerator.addTag(tags, endpointInfo.controller)
+
+            OpenApiGenerator.addEndpoint(paths, endpointInfo)
+        }
+
+        for (let tag in tags) {
+            if (!tags.hasOwnProperty(tag)) {
+                continue
+            }
+
+            openApiBuilder = openApiBuilder.addTag(tags[tag])
         }
 
         for (let path in paths) {
@@ -69,6 +87,17 @@ export class OpenApiGenerator {
         }
 
         return openApiBuilder
+    }
+
+    private static addTag(tags: IDictionary<TagObject>, controller: ControllerInfo) {
+        if (!controller.apiName || tags[controller.apiName]) {
+            return
+        }
+
+        tags[controller.apiName] = {
+            description: controller.apiDescription,
+            name: controller.apiName
+        }
     }
 
     private static addEndpoint(
@@ -91,10 +120,8 @@ export class OpenApiGenerator {
         if (endpointInfo.apiOperationInfo) {
             let operationInfo = endpointInfo.apiOperationInfo
 
-            endpointOperation.description = operationInfo.name
-            endpointOperation.summary = operationInfo.description
-
-            // TODO: investigate potential issue with same path and multiple http methods
+            endpointOperation.summary = operationInfo.name
+            endpointOperation.description = operationInfo.description
 
             for (let statusCode in endpointOperation.responses) {
                 if (!endpointOperation.responses.hasOwnProperty(statusCode)) {
@@ -118,6 +145,10 @@ export class OpenApiGenerator {
         }
 
         OpenApiGenerator.addParametersToEndpoint(endpointOperation, endpointInfo)
+
+        if (endpointInfo.controller.apiName) {
+            endpointOperation.tags = [endpointInfo.controller.apiName]
+        }
 
         pathInfo[endpointMethod] = endpointOperation
         paths[path] = pathInfo

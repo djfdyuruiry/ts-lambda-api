@@ -1,5 +1,5 @@
 import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
-import { ApiOperationInfo } from "../../../model/open-api/ApiOperationInfo"
+import { ApiOperation } from "../../../model/open-api/ApiOperation"
 
 /**
  * Decorator that can be placed on an endpoint to describe it in any generated
@@ -9,7 +9,7 @@ import { ApiOperationInfo } from "../../../model/open-api/ApiOperationInfo"
  *                         existing info if present, replacing any existing properties,
  *                         if provided in this parameter.
  */
-export function apiOperation(apiOperationInfo: ApiOperationInfo) {
+export function apiOperation(apiOperationInfo: ApiOperation) {
     return (classDefinition: Object, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)

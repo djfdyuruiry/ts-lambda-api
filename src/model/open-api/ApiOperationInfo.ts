@@ -1,13 +1,9 @@
-import { IDictionary } from "../../util/IDictionary";
-
 import { ApiBodyInfo } from "./ApiBodyInfo"
+import { ApiOperation } from "./ApiOperation"
+import { ApiBody } from "./ApiBody"
+import { IDictionary } from "../../util/IDictionary"
 
-export class ApiOperationInfo {
-    public name?: string
-    public description?: string
-    public request?: ApiBodyInfo
-    public responses: IDictionary<ApiBodyInfo> = {}
-
+export class ApiOperationInfo extends ApiOperation {
     public getOrCreateRequest() {
         if (!this.request) {
             this.request = new ApiBodyInfo()
@@ -16,7 +12,7 @@ export class ApiOperationInfo {
         return this.request
     }
 
-    public mergeInfo(otherInstance: ApiOperationInfo) {
+    public mergeInfo(otherInstance: ApiOperation) {
         if (otherInstance.name) {
             this.name = otherInstance.name
         }
@@ -34,13 +30,19 @@ export class ApiOperationInfo {
         }
     }
 
-    public mergeResponses(otherResponses: IDictionary<ApiBodyInfo>) {
+    public mergeResponses(otherResponses: IDictionary<ApiBody>) {
         for (let statusCode in otherResponses) {
             if (!otherResponses.hasOwnProperty(statusCode)) {
                 continue
             }
 
-            this.responses[statusCode] = otherResponses[statusCode]
+            let response = new ApiBodyInfo()
+
+            if (otherResponses[statusCode]) {
+                response.mergeInfo(otherResponses[statusCode])
+            }
+
+            this.responses[statusCode] = response
         }
     }
 }

@@ -1,5 +1,5 @@
 import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
-import { ApiBodyInfo } from "../../../model/open-api/ApiBodyInfo";
+import { ApiBody } from "../../../model/open-api/ApiBody";
 import { IDictionary } from "../../../util/IDictionary"
 
 /**
@@ -9,11 +9,11 @@ import { IDictionary } from "../../../util/IDictionary"
  * @param statusCode HTTP status code that will be sent in this response.
  * @param apiBodyInfo Information about the response body generated.
  */
-export function apiRespone(statusCode: number, apiBodyInfo?: ApiBodyInfo) {
+export function apiResponse(statusCode: number, apiBodyInfo?: ApiBody) {
     return (classDefinition: Object, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
-        let responses: IDictionary<ApiBodyInfo> = {}
+        let responses: IDictionary<ApiBody> = {}
 
         responses[`${statusCode}`] = apiBodyInfo
 

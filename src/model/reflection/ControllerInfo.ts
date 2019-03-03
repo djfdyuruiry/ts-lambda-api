@@ -9,6 +9,7 @@ export class ControllerInfo {
     public readonly classConstructor: Function
 
     public apiName?: string
+    public apiDescription?: string
     public path?: string
     public consumes?: string
     public apiRequestInfo?: ApiBodyInfo

@@ -6,10 +6,11 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
  *
  * @param name Name of the API used to categorise endpoints in this controller.
  */
-export function api(name: string) {
+export function api(name: string, description?: string) {
     return (classDefinition: Function) => {
         let apiController = DecoratorRegistry.getOrCreateController(classDefinition)
 
         apiController.apiName = name
+        apiController.apiDescription = description
     }
 }
