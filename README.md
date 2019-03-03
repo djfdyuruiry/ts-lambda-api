@@ -1038,23 +1038,26 @@ export class MyController {
 Configuring `lambda-api` directly can be done by calling the `configureApi` method like below:
 
 ```typescript
+import * as xmljs from "xml-js"
+
 // build config and controllers path...
 let app = new ApiLambdaApp(controllersPath, appConfig)
 
 app.configureApi(api: API => {
     // add middleware handler, for example
     api.use((req,res,next) => {
-        if (req.headers.authorization !== "secretToken") {
-            res.error(401, "Not Authorized")
-            return
+        // parses any incoming XML data into an object
+        if (req.headers["content-type"] === "application/xml") {
+            req.body = xmljs.xml2json(req.body, {compact: true})
         }
 
-        req.authorized = true
         next()
     })
 })
 // export handler
 ```
+
+**Note: any middleware handlers and manual routes will not apply auth filters, authorizers or error interceptors**
 
 See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documentation for guidance how to use the `API` class.
 
