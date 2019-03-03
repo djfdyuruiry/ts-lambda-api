@@ -72,17 +72,22 @@ export class OpenApiGenerator {
                 endpointOperation, endpointInfo.responseContentType
             )
         } else {
-            // required or swagger ui will throw errors
-            endpointOperation.responses.default = {
-                description: ""
-            }
+            OpenApiGenerator.setEndpointResponseContentType(
+                endpointOperation, "application/json" // use lambda-api content-type default
+            )
         }
 
         OpenApiGenerator.addParametersToEndpoint(endpointOperation, endpointInfo)
 
         pathInfo[endpointMethod] = endpointOperation
 
-        return openApiBuilder.addPath(endpointInfo.fullPath, pathInfo)
+        let path = endpointInfo.fullPath
+
+        if (path.endsWith("/")) {
+            path = path.substring(0, path.length - 1)
+        }
+
+        return openApiBuilder.addPath(path, pathInfo)
     }
 
     private static setEndpointResponseContentType(
@@ -94,7 +99,7 @@ export class OpenApiGenerator {
 
         endpointOperation.responses.default = {
             content: responseContent,
-            description: ""
+            description: "" // required or swagger ui will throw errors
         }
     }
 
