@@ -10,8 +10,8 @@ export class ApiBodyInfo extends ApiBody {
             this.type = otherInstance.type
         }
 
-        if (otherInstance.clazz) {
-            this.clazz = otherInstance.clazz
+        if (otherInstance.class) {
+            this.class = otherInstance.class
         }
 
         if (otherInstance.description) {

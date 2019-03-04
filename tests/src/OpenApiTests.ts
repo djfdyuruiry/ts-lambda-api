@@ -33,11 +33,11 @@ export class OpenApiTests extends TestBase {
         Expect(response.statusCode).toEqual(200)
     }
 
-    @TestCase("json", JSON.parse)
-    @TestCase("yml", safeLoad)
+    @TestCase("json")
+    @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_all_declared_endpoints(specFormat: string, deserialize: (body: string) => OpenAPIObject) {
-        let response = await this.requestOpenApiSpec(specFormat, deserialize)
+    public async when_openapi_enabled_then_openapi_spec_contains_all_declared_endpoints(specFormat: string) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
         let paths = response.value.paths
         let actualPathCount = 0
 
@@ -60,31 +60,31 @@ export class OpenApiTests extends TestBase {
         Expect(actualPathCount).toBe(OpenApiTests.ROUTE_COUNT)
     }
 
-    @TestCase("json", JSON.parse)
-    @TestCase("yml", safeLoad)
+    @TestCase("json")
+    @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_parameters(specFormat: string, deserialize: (body: string) => OpenAPIObject) {
-        let response = await this.requestOpenApiSpec(specFormat, deserialize)
+    public async when_openapi_enabled_then_openapi_spec_contains_parameters(specFormat: string) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
         let pathEndpoint: PathItemObject = response.value.paths["/test/path-test/:name/:age"]
 
         Expect(pathEndpoint["get"].parameters).toBeDefined()
     }
 
-    @TestCase("json", JSON.parse)
-    @TestCase("yml", safeLoad)
+    @TestCase("json")
+    @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_multiple_parameters(specFormat: string, deserialize: (body: string) => OpenAPIObject) {
-        let response = await this.requestOpenApiSpec(specFormat, deserialize)
+    public async when_openapi_enabled_then_openapi_spec_contains_multiple_parameters(specFormat: string) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
         let pathEndpoint: PathItemObject = response.value.paths["/test/path-test/:name/:age"]
 
         Expect(pathEndpoint["get"].parameters.length).toBe(2)
     }
 
-    @TestCase("json", JSON.parse)
-    @TestCase("yml", safeLoad)
+    @TestCase("json")
+    @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_header_parameters(specFormat: string, deserialize: (body: string) => OpenAPIObject) {
-        let response = await this.requestOpenApiSpec(specFormat, deserialize)
+    public async when_openapi_enabled_then_openapi_spec_contains_header_parameters(specFormat: string) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
         let headerEndpoint: PathItemObject = response.value.paths["/test/header-test"]
         let headerParameter = headerEndpoint["get"].parameters[0] as ParameterObject
 
@@ -93,11 +93,11 @@ export class OpenApiTests extends TestBase {
         Expect(headerParameter.schema).toEqual({})
     }
 
-    @TestCase("json", JSON.parse)
-    @TestCase("yml", safeLoad)
+    @TestCase("json")
+    @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_path_parameters(specFormat: string, deserialize: (body: string) => OpenAPIObject) {
-        let response = await this.requestOpenApiSpec(specFormat, deserialize)
+    public async when_openapi_enabled_then_openapi_spec_contains_path_parameters(specFormat: string) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
         let pathEndpoint: PathItemObject = response.value.paths["/test/path-test/:name/:age"]
         let nameParameter = pathEndpoint["get"].parameters[0] as ParameterObject
         let ageParameter = pathEndpoint["get"].parameters[1] as ParameterObject
@@ -113,11 +113,11 @@ export class OpenApiTests extends TestBase {
         Expect(ageParameter.schema).toEqual({})
     }
 
-    @TestCase("json", JSON.parse)
-    @TestCase("yml", safeLoad)
+    @TestCase("json")
+    @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_query_parameters(specFormat: string, deserialize: (body: string) => OpenAPIObject) {
-        let response = await this.requestOpenApiSpec(specFormat, deserialize)
+    public async when_openapi_enabled_then_openapi_spec_contains_query_parameters(specFormat: string) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
         let pathEndpoint: PathItemObject = response.value.paths["/test/query-test"]
         let queryParameter = pathEndpoint["get"].parameters[0] as ParameterObject
 
@@ -126,11 +126,11 @@ export class OpenApiTests extends TestBase {
         Expect(queryParameter.schema).toEqual({})
     }
 
-    @TestCase("json", JSON.parse)
-    @TestCase("yml", safeLoad)
+    @TestCase("json")
+    @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_response_content_type(specFormat: string, deserialize: (body: string) => OpenAPIObject) {
-        let response = await this.requestOpenApiSpec(specFormat, deserialize)
+    public async when_openapi_enabled_then_openapi_spec_contains_response_content_type(specFormat: string) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
         let pathEndpoint: PathItemObject = response.value.paths["/test"]
         let defaultResponse = pathEndpoint["get"].responses.default as ResponseObject
 
@@ -139,30 +139,28 @@ export class OpenApiTests extends TestBase {
         Expect(defaultResponse.description).toEqual("")
     }
 
-    @TestCase("json", JSON.parse)
-    @TestCase("yml", safeLoad)
+    @TestCase("json")
+    @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_and_basic_auth_filter_defined_then_openapi_spec_contains_security_scheme(specFormat: string, deserialize: (body: string) => OpenAPIObject) {
+    public async when_openapi_enabled_and_basic_auth_filter_defined_then_openapi_spec_contains_security_scheme(specFormat: string) {
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
-        let response = await this.requestOpenApiSpec(specFormat, deserialize)
+        let response = await this.requestParsedOpenApiSpec(specFormat)
 
         let securitySchemes = Object.keys(response.value.components.securitySchemes)
 
         Expect(securitySchemes).toContain("basic")
     }
 
-    @TestCase("open-api.json", JSON.parse)
-    @TestCase("open-api.yml", safeLoad)
+    @TestCase("json")
+    @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_and_basic_auth_filter_defined_then_openapi_spec_contains_http_basic_security_scheme(specFileName: string, deserialize: (body: string) => OpenAPIObject) {
+    public async when_openapi_enabled_and_basic_auth_filter_defined_then_openapi_spec_contains_http_basic_security_scheme(specFileFormat: string) {
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
-        let response = await this.sendRequest(
-            RequestBuilder.get(`/${specFileName}`).build()
-        )
+        let response = await this.requestOpenApiSpec(specFileFormat)
+        let spec = response.value
 
-        let spec: OpenAPIObject = deserialize(response.body)
         let scheme = spec.components.securitySchemes["basic"] as SecuritySchemeObject
 
         Expect(scheme.type).toEqual("http")
@@ -172,7 +170,7 @@ export class OpenApiTests extends TestBase {
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_unauthorized_then_openapi_spec_request_returns_401_unauthroized(specFormat: string) {
+    public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_unauthorized_then_openapi_spec_request_returns_401_unauthroized(specFileFormat: string) {
         this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, {
             openApi: {
                 enabled: true,
@@ -182,7 +180,7 @@ export class OpenApiTests extends TestBase {
 
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
-        let response = await this.requestOpenApiSpec(specFormat)
+        let response = await this.requestOpenApiSpec(specFileFormat)
 
         Expect(response.statusCode).toEqual(401)
     }
@@ -190,7 +188,7 @@ export class OpenApiTests extends TestBase {
     @TestCase("open-api.json")
     @TestCase("open-api.yml")
     @AsyncTest()
-    public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_authorized_then_openapi_spec_request_returns_200_ok(specFileName: string) {
+    public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_authorized_then_openapi_spec_request_returns_200_ok(specFileFormat: string) {
         this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, {
             openApi: {
                 enabled: true,
@@ -200,22 +198,26 @@ export class OpenApiTests extends TestBase {
 
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
-        let response = await this.sendRequest(
-            RequestBuilder.get(`/${specFileName}`)
-                .basicAuth("luke", "vaderismydad")
-                .build()
-        )
+        let response = await this.requestOpenApiSpec(specFileFormat)
 
         Expect(response.statusCode).toEqual(200)
     }
 
-    private async requestOpenApiSpec(specFileFormat: string = "json", deserialize?: (body: string) => OpenAPIObject) {
+    private async requestParsedOpenApiSpec(specFileFormat: string = "json") {
+        return await this.requestOpenApiSpec(specFileFormat, true)
+    }
+
+    private async requestOpenApiSpec(specFileFormat: string = "json", derserialize: boolean = false) {
         let response: ResponseWithValue<OpenAPIObject> = await this.sendRequest(
             RequestBuilder.get(`/open-api.${specFileFormat}`).build()
         )
 
-        if (deserialize) {
-            response.value = deserialize(response.body)
+        if (derserialize) {
+            if (specFileFormat === "json") {
+                response.value = JSON.parse(response.body)
+            } else {
+                response.value = safeLoad(response.body)
+            }
         }
 
         return response

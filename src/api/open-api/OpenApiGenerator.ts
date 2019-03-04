@@ -7,7 +7,8 @@ import {
     ResponseObject,
     TagObject,
     RequestBodyObject,
-    MediaTypeObject
+    MediaTypeObject,
+    SchemaObject
 } from "openapi3-ts/dist/model"
 
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
@@ -21,6 +22,7 @@ export type OpenApiFormat = "json" | "yml"
 
 export class OpenApiGenerator {
     private static readonly ENDPOINTS = DecoratorRegistry.Endpoints
+    private static readonly OPEN_API_TYPES = ["number", "string", "boolean", "object", "array"]
 
     @timed
     public static buildOpenApiSpec(basicAuthEnabled?: boolean) {
@@ -164,31 +166,37 @@ export class OpenApiGenerator {
         let requestInfo = endpointInfo.apiRequestInfo
         let operationRequestType: string
 
-        if (requestInfo && requestInfo.contentType) {
-            operationRequestType = requestInfo.contentType
+        if (requestInfo) {
+            operationRequestType = requestInfo.contentType || "application/json"
         }
 
         operationRequestType = operationRequestType || endpointInfo.requestContentType
 
-        if (operationRequestType) {
-            // user declared request content type
-            let mediaTypeObject = OpenApiGenerator.setEndpointRequestContentType(
-                endpointOperation,
-                operationRequestType
+        if (!operationRequestType) {
+            return
+        }
+
+        operationRequestType = operationRequestType.toLowerCase()
+
+        // user declared request content type
+        let mediaTypeObject = OpenApiGenerator.setEndpointRequestContentType(
+            endpointOperation,
+            operationRequestType
+        )
+
+        if (!requestInfo || (!requestInfo.type && !requestInfo.class)) {
+            // no type info for request body
+            return
+        }
+
+        mediaTypeObject.schema = {}
+
+        if (requestInfo.type) {
+            OpenApiGenerator.addPrimitiveToMediaTypeObject(mediaTypeObject, requestInfo)
+        } else if (requestInfo.class) {
+            OpenApiGenerator.addClassToMediaTypeObject(
+                mediaTypeObject, requestInfo, operationRequestType
             )
-
-            if (!requestInfo || (!requestInfo.type && !requestInfo.clazz)) {
-                // no type info for request body
-                return
-            }
-
-            if (requestInfo.type) {
-                mediaTypeObject.schema = {
-                    type: requestInfo.type
-                }
-            } else if (requestInfo.clazz) {
-                // TODO: build schema for class
-            }
         }
     }
 
@@ -238,8 +246,9 @@ export class OpenApiGenerator {
             // user defined response body info
             let responseContent: ContentObject = {}
             let mediaTypeObject: MediaTypeObject = {}
+            let responseType = (apiBodyInfo.contentType || responseContentType).toLowerCase()
 
-            responseContent[apiBodyInfo.contentType || responseContentType] = mediaTypeObject
+            responseContent[responseType] = mediaTypeObject
 
             response = {
                 content: responseContent,
@@ -247,11 +256,11 @@ export class OpenApiGenerator {
             }
 
             if (apiBodyInfo.type) {
-                mediaTypeObject.schema = {
-                    type: apiBodyInfo.type
-                }
-            } else if (apiBodyInfo.clazz) {
-                // TODO: build schema for class
+                OpenApiGenerator.addPrimitiveToMediaTypeObject(mediaTypeObject, apiBodyInfo)
+            } else if (apiBodyInfo.class) {
+                OpenApiGenerator.addClassToMediaTypeObject(
+                    mediaTypeObject, apiBodyInfo, responseType
+                )
             }
         } else {
             // response content type only
@@ -269,6 +278,97 @@ export class OpenApiGenerator {
         } else {
             endpointOperation.responses.default = response
         }
+    }
+
+    private static addPrimitiveToMediaTypeObject(mediaTypeObject: MediaTypeObject, apiBodyInfo: ApiBodyInfo) {
+        let type = apiBodyInfo.type.toLowerCase()
+
+        if (type !== "file") {
+            mediaTypeObject.schema = {
+                type: apiBodyInfo.type
+            }
+        } else {
+            mediaTypeObject.schema = {
+                format: "binary",
+                type: "string"
+            }
+        }
+    }
+
+    private static addClassToMediaTypeObject(
+        mediaTypeObject: MediaTypeObject,
+        apiBodyInfo: ApiBodyInfo,
+        responseContentType: string
+    ) {
+        let clazz: any = apiBodyInfo.class
+        let instance: any
+
+        if ((typeof clazz.example) === "function") {
+            instance = clazz.example()
+        } else {
+            instance = new clazz()
+        }
+
+        let schema: SchemaObject = {
+            properties: {},
+            type: "object"
+        }
+
+        mediaTypeObject.schema = schema
+
+        if (responseContentType === "application/json") {
+            let exampleJson = JSON.stringify(instance, null, 4)
+
+            mediaTypeObject.example  = exampleJson
+            schema.example = exampleJson
+        }
+
+        OpenApiGenerator.addClassPropertiesToSchema(mediaTypeObject.schema, instance)
+    }
+
+    private static addClassPropertiesToSchema(schema: SchemaObject, instance: any) {
+        for (let property of Object.getOwnPropertyNames(instance)) {
+            let type = OpenApiGenerator.getTypeOfInstanceProperty(instance, property)
+
+            if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
+                // not a supported type or null/undefined, ommit this property
+                continue
+            }
+
+            let propertySchema: SchemaObject = {
+                type
+            }
+
+            if (type === "object") {
+                // get schema for property object
+                OpenApiGenerator.addClassPropertiesToSchema(propertySchema, instance[property])
+            } else if (type === "array") {
+                if (instance[property].length > 0) {
+                    schema.items = {
+                        type: OpenApiGenerator.getTypeOfInstanceProperty(instance[property], 0)
+                    }
+
+                    // get schema for array item type
+                    OpenApiGenerator.addClassPropertiesToSchema(schema.items, instance)
+                } else {
+                    // no way to determine array item type, so better to ommit this property
+                    continue
+                }
+            }
+
+            schema.properties[property] = propertySchema
+        }
+    }
+
+    private static getTypeOfInstanceProperty(instance: any, property: string | number) {
+        let type = ((typeof instance[property])).toLowerCase()
+
+        if (type === "object" && Array.isArray(instance[property])) {
+            // detect if the property is actually an array
+            type = "array"
+        }
+
+        return type
     }
 
     private static addParametersToEndpoint(endpointOperation: OperationObject, endpointInfo: EndpointInfo) {

@@ -1,5 +1,5 @@
 import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
-import { ApiBodyInfo } from "../../../model/open-api/ApiBodyInfo"
+import { ApiBody } from "../../../model/open-api/ApiBody"
 
 /**
  * Decorator for an endpoint method that details the HTTP request Content-Type header value.
@@ -8,7 +8,7 @@ import { ApiBodyInfo } from "../../../model/open-api/ApiBodyInfo"
  *
  * @param contentType Request content type.
  */
-export function consumes(contentType: string, apiBodyInfo?: ApiBodyInfo) {
+export function consumes(contentType?: string, apiBodyInfo?: ApiBody) {
     return (classDefinition: Object | Function, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
@@ -30,7 +30,7 @@ export function consumes(contentType: string, apiBodyInfo?: ApiBodyInfo) {
  *
  * @param contentType Request content type.
  */
-export function controllerConsumes(contentType: string, apiBodyInfo?: ApiBodyInfo) {
+export function controllerConsumes(contentType: string, apiBodyInfo?: ApiBody) {
     return (classDefinition: Function) => {
         let apiController = DecoratorRegistry.getOrCreateController(classDefinition)
         let requestInfo = apiController.getOrCreateRequestInfo()
