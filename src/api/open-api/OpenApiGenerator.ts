@@ -128,12 +128,8 @@ export class OpenApiGenerator {
             responses: {}
         }
 
-        if (endpointInfo.requestContentType) {
-            // user declared request content type
-            OpenApiGenerator.setEndpointRequestContentType(
-                endpointOperation,
-                endpointInfo.requestContentType
-            )
+        if (endpointMethod !== "get" && endpointMethod !== "delete") {
+            OpenApiGenerator.setRequestInfo(endpointOperation, endpointInfo)
         }
 
         if (endpointInfo.responseContentType) {
@@ -164,22 +160,61 @@ export class OpenApiGenerator {
         paths[path] = pathInfo
     }
 
+    private static setRequestInfo(endpointOperation: OperationObject, endpointInfo: EndpointInfo) {
+        let requestInfo = endpointInfo.apiRequestInfo
+        let operationRequestType: string
+
+        if (requestInfo && requestInfo.contentType) {
+            operationRequestType = requestInfo.contentType
+        }
+
+        operationRequestType = operationRequestType || endpointInfo.requestContentType
+
+        if (operationRequestType) {
+            // user declared request content type
+            let mediaTypeObject = OpenApiGenerator.setEndpointRequestContentType(
+                endpointOperation,
+                operationRequestType
+            )
+
+            if (!requestInfo || (!requestInfo.type && !requestInfo.clazz)) {
+                // no type info for request body
+                return
+            }
+
+            if (requestInfo.type) {
+                mediaTypeObject.schema = {
+                    type: requestInfo.type
+                }
+            } else if (requestInfo.clazz) {
+                // TODO: build schema for class
+            }
+        }
+    }
+
     private static setEndpointRequestContentType(endpointOperation: OperationObject, requestContentType: string) {
         let requestBody: RequestBodyObject = {
             content: {}
         }
-        let content: MediaTypeObject = {}
+        let mediaTypeObject: MediaTypeObject = {}
 
-        requestBody.content[requestContentType] = content
+        requestBody.content[requestContentType] = mediaTypeObject
 
         endpointOperation.requestBody = requestBody
+
+        return mediaTypeObject
     }
 
     private static addEndpointOperationInfo(endpointInfo: EndpointInfo, endpointOperation: OperationObject) {
         let operationInfo = endpointInfo.apiOperationInfo
+        let responseContentType = endpointInfo.responseContentType || "application/json"
 
         endpointOperation.summary = operationInfo.name
         endpointOperation.description = operationInfo.description
+
+        if (operationInfo.request) {
+            OpenApiGenerator.setRequestInfo(endpointOperation, endpointInfo)
+        }
 
         for (let statusCode in operationInfo.responses) {
             if (!operationInfo.responses.hasOwnProperty(statusCode)) {
@@ -187,7 +222,7 @@ export class OpenApiGenerator {
             }
 
             OpenApiGenerator.setEndpointResponseContentType(
-                endpointOperation, endpointInfo.responseContentType || "application/json",
+                endpointOperation, responseContentType,
                 statusCode, operationInfo.responses[statusCode]
             )
         }
@@ -200,14 +235,26 @@ export class OpenApiGenerator {
         let response: ResponseObject
 
         if (apiBodyInfo) {
+            // user defined response body info
             let responseContent: ContentObject = {}
-            responseContent[apiBodyInfo.contentType || responseContentType] = {}
+            let mediaTypeObject: MediaTypeObject = {}
+
+            responseContent[apiBodyInfo.contentType || responseContentType] = mediaTypeObject
 
             response = {
                 content: responseContent,
                 description: apiBodyInfo.description || ""
             }
+
+            if (apiBodyInfo.type) {
+                mediaTypeObject.schema = {
+                    type: apiBodyInfo.type
+                }
+            } else if (apiBodyInfo.clazz) {
+                // TODO: build schema for class
+            }
         } else {
+            // response content type only
             let responseContent: ContentObject = {}
             responseContent[responseContentType] = {}
 

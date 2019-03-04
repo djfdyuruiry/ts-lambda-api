@@ -4,6 +4,7 @@ import { ControllerInfo } from "./ControllerInfo"
 import { ErrorInterceptor } from "../../api/error/ErrorInterceptor"
 import { IParameterExtractor } from "../../api/parameters/IParameterExtractor"
 import { ApiOperationInfo } from "../open-api/ApiOperationInfo"
+import { ApiBodyInfo } from "../open-api/ApiBodyInfo";
 
 export class EndpointInfo {
     public readonly controller?: ControllerInfo
@@ -45,7 +46,13 @@ export class EndpointInfo {
     }
 
     public get apiRequestInfo() {
-        return this.apiOperationInfo.getOrCreateRequest() ||
+        let request: ApiBodyInfo
+
+        if (this.apiOperationInfo) {
+            request = this.apiOperationInfo.request
+        }
+
+        return request ||
             this.getControllerPropOrDefault(c => c.apiRequestInfo)
      }
 
