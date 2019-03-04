@@ -33,12 +33,13 @@ export function consumes(contentType: string, apiBodyInfo?: ApiBodyInfo) {
 export function controllerConsumes(contentType: string, apiBodyInfo?: ApiBodyInfo) {
     return (classDefinition: Function) => {
         let apiController = DecoratorRegistry.getOrCreateController(classDefinition)
+        let requestInfo = apiController.getOrCreateRequestInfo()
 
         apiController.consumes = contentType
-        apiController.apiRequestInfo.contentType = contentType
+        requestInfo.contentType = contentType
 
         if (apiBodyInfo) {
-            apiController.apiRequestInfo.mergeInfo(apiBodyInfo)
+            requestInfo.mergeInfo(apiBodyInfo)
         }
     }
 }

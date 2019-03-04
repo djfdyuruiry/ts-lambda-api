@@ -23,4 +23,12 @@ export class ControllerInfo {
         this.name = name
         this.classConstructor = classConstructor
     }
+
+    public getOrCreateRequestInfo() {
+        if (!this.apiRequestInfo) {
+            this.apiRequestInfo = new ApiBodyInfo()
+        }
+
+        return this.apiRequestInfo
+    }
 }

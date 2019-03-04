@@ -5,7 +5,9 @@ import {
     ParameterObject,
     ContentObject,
     ResponseObject,
-    TagObject
+    TagObject,
+    RequestBodyObject,
+    MediaTypeObject
 } from "openapi3-ts/dist/model"
 
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
@@ -58,18 +60,9 @@ export class OpenApiGenerator {
             })
         }
 
-        for (let endpoint in OpenApiGenerator.ENDPOINTS) {
-            if (!OpenApiGenerator.ENDPOINTS.hasOwnProperty(endpoint)) {
-                continue
-            }
+        OpenApiGenerator.discoverTagsAndPaths(paths, tags)
 
-            let endpointInfo = OpenApiGenerator.ENDPOINTS[endpoint]
-
-            OpenApiGenerator.addTag(tags, endpointInfo.controller)
-
-            OpenApiGenerator.addEndpoint(paths, endpointInfo)
-        }
-
+        // add all discovered tags
         for (let tag in tags) {
             if (!tags.hasOwnProperty(tag)) {
                 continue
@@ -78,6 +71,7 @@ export class OpenApiGenerator {
             openApiBuilder = openApiBuilder.addTag(tags[tag])
         }
 
+        // add all discovered paths
         for (let path in paths) {
             if (!paths.hasOwnProperty(path)) {
                 continue
@@ -89,8 +83,25 @@ export class OpenApiGenerator {
         return openApiBuilder
     }
 
-    private static addTag(tags: IDictionary<TagObject>, controller: ControllerInfo) {
+    private static discoverTagsAndPaths(paths: IDictionary<PathItemObject>, tags: IDictionary<TagObject>) {
+        for (let endpoint in OpenApiGenerator.ENDPOINTS) {
+            if (!OpenApiGenerator.ENDPOINTS.hasOwnProperty(endpoint)) {
+                continue
+            }
+
+            let endpointInfo = OpenApiGenerator.ENDPOINTS[endpoint]
+
+            if (endpointInfo.controller) {
+                OpenApiGenerator.addTagIfPresent(tags, endpointInfo.controller)
+            }
+
+            OpenApiGenerator.addEndpoint(paths, endpointInfo)
+        }
+    }
+
+    private static addTagIfPresent(tags: IDictionary<TagObject>, controller: ControllerInfo) {
         if (!controller.apiName || tags[controller.apiName]) {
+            // tag name not defined or already recorded
             return
         }
 
@@ -117,41 +128,69 @@ export class OpenApiGenerator {
             responses: {}
         }
 
-        if (endpointInfo.apiOperationInfo) {
-            let operationInfo = endpointInfo.apiOperationInfo
-
-            endpointOperation.summary = operationInfo.name
-            endpointOperation.description = operationInfo.description
-
-            for (let statusCode in endpointOperation.responses) {
-                if (!endpointOperation.responses.hasOwnProperty(statusCode)) {
-                    continue
-                }
-
-                OpenApiGenerator.setEndpointResponseContentType(
-                    endpointOperation, endpointInfo.responseContentType,
-                    statusCode, endpointOperation.responses[statusCode]
-                )
-            }
+        if (endpointInfo.requestContentType) {
+            // user declared request content type
+            OpenApiGenerator.setEndpointRequestContentType(
+                endpointOperation,
+                endpointInfo.requestContentType
+            )
         }
+
         if (endpointInfo.responseContentType) {
+            // user declared response content type
             OpenApiGenerator.setEndpointResponseContentType(
                 endpointOperation, endpointInfo.responseContentType
             )
         } else {
+            // default response content type
             OpenApiGenerator.setEndpointResponseContentType(
                 endpointOperation, "application/json" // use lambda-api content-type default
             )
         }
 
+        if (endpointInfo.apiOperationInfo) {
+            // user declared endpoint info
+            OpenApiGenerator.addEndpointOperationInfo(endpointInfo, endpointOperation)
+        }
+
         OpenApiGenerator.addParametersToEndpoint(endpointOperation, endpointInfo)
 
-        if (endpointInfo.controller.apiName) {
+        if (endpointInfo.getControllerPropOrDefault(c => c.apiName)) {
+            // associate endpoint with controller tag name
             endpointOperation.tags = [endpointInfo.controller.apiName]
         }
 
         pathInfo[endpointMethod] = endpointOperation
         paths[path] = pathInfo
+    }
+
+    private static setEndpointRequestContentType(endpointOperation: OperationObject, requestContentType: string) {
+        let requestBody: RequestBodyObject = {
+            content: {}
+        }
+        let content: MediaTypeObject = {}
+
+        requestBody.content[requestContentType] = content
+
+        endpointOperation.requestBody = requestBody
+    }
+
+    private static addEndpointOperationInfo(endpointInfo: EndpointInfo, endpointOperation: OperationObject) {
+        let operationInfo = endpointInfo.apiOperationInfo
+
+        endpointOperation.summary = operationInfo.name
+        endpointOperation.description = operationInfo.description
+
+        for (let statusCode in operationInfo.responses) {
+            if (!operationInfo.responses.hasOwnProperty(statusCode)) {
+                continue
+            }
+
+            OpenApiGenerator.setEndpointResponseContentType(
+                endpointOperation, endpointInfo.responseContentType || "application/json",
+                statusCode, operationInfo.responses[statusCode]
+            )
+        }
     }
 
     private static setEndpointResponseContentType(

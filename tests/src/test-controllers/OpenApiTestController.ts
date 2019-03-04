@@ -1,10 +1,11 @@
 import { injectable } from "inversify"
 
-import { api, apiController, apiOperation, apiResponse, fromBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE } from "../../../dist/typescript-lambda-api"
+import { api, apiController, apiOperation, apiResponse, controllerConsumes, fromBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE } from "../../../dist/typescript-lambda-api"
 
 import { Person } from "../test-components/model/Person"
 
 @apiController("/test/open-api")
+@controllerConsumes("application/json")
 @api("Open API Test", "Endpoints with OpenAPI decorators")
 @injectable()
 export class OpenApiTestControllerController extends Controller {
