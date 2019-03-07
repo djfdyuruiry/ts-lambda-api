@@ -10,7 +10,7 @@ import { ResponseWithValue } from './test-components/model/ResponseWithValue';
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 36
+    private static readonly ROUTE_COUNT = 37
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup
@@ -158,7 +158,7 @@ export class OpenApiTests extends TestBase {
     public async when_openapi_enabled_and_basic_auth_filter_defined_then_openapi_spec_contains_http_basic_security_scheme(specFileFormat: string) {
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
-        let response = await this.requestOpenApiSpec(specFileFormat)
+        let response = await this.requestParsedOpenApiSpec(specFileFormat)
         let spec = response.value
 
         let scheme = spec.components.securitySchemes["basic"] as SecuritySchemeObject
@@ -185,8 +185,8 @@ export class OpenApiTests extends TestBase {
         Expect(response.statusCode).toEqual(401)
     }
 
-    @TestCase("open-api.json")
-    @TestCase("open-api.yml")
+    @TestCase("json")
+    @TestCase("yml")
     @AsyncTest()
     public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_authorized_then_openapi_spec_request_returns_200_ok(specFileFormat: string) {
         this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, {
@@ -198,7 +198,11 @@ export class OpenApiTests extends TestBase {
 
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
-        let response = await this.requestOpenApiSpec(specFileFormat)
+        let response = await this.sendRequest(
+            RequestBuilder.get(`/open-api.${specFileFormat}`)
+                .basicAuth("luke", "vaderismydad")
+                .build()
+        )
 
         Expect(response.statusCode).toEqual(200)
     }
