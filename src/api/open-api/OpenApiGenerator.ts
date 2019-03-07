@@ -167,10 +167,13 @@ export class OpenApiGenerator {
         let operationRequestType: string
 
         if (requestInfo) {
-            operationRequestType = requestInfo.contentType || "application/json"
+            operationRequestType = requestInfo.contentType ||
+            endpointInfo.requestContentType ||
+            "application/json"
         }
 
-        operationRequestType = operationRequestType || endpointInfo.requestContentType
+        operationRequestType = operationRequestType ||
+            endpointInfo.requestContentType
 
         if (!operationRequestType) {
             return
@@ -181,7 +184,8 @@ export class OpenApiGenerator {
         // user declared request content type
         let mediaTypeObject = OpenApiGenerator.setEndpointRequestContentType(
             endpointOperation,
-            operationRequestType
+            operationRequestType,
+            requestInfo
         )
 
         if (!requestInfo || (!requestInfo.type && !requestInfo.class)) {
@@ -198,11 +202,20 @@ export class OpenApiGenerator {
                 mediaTypeObject, requestInfo, operationRequestType
             )
         }
+
+        if (requestInfo.example) {
+            mediaTypeObject.example = requestInfo.example
+        }
     }
 
-    private static setEndpointRequestContentType(endpointOperation: OperationObject, requestContentType: string) {
+    private static setEndpointRequestContentType(
+        endpointOperation: OperationObject,
+        requestContentType: string,
+        requestInfo: ApiBodyInfo
+    ) {
         let requestBody: RequestBodyObject = {
-            content: {}
+            content: {},
+            description: requestInfo ? (requestInfo.description || "") : ""
         }
         let mediaTypeObject: MediaTypeObject = {}
 
@@ -323,11 +336,13 @@ export class OpenApiGenerator {
             schema.example = exampleJson
         }
 
-        OpenApiGenerator.addClassPropertiesToSchema(mediaTypeObject.schema, instance)
+        OpenApiGenerator.addObjectPropertiesToSchema(mediaTypeObject.schema, instance)
     }
 
-    private static addClassPropertiesToSchema(schema: SchemaObject, instance: any) {
-        for (let property of Object.getOwnPropertyNames(instance)) {
+    private static addObjectPropertiesToSchema(schema: SchemaObject, instance: any) {
+        let objectProperties = Object.getOwnPropertyNames(instance)
+
+        for (let property of objectProperties) {
             let type = OpenApiGenerator.getTypeOfInstanceProperty(instance, property)
 
             if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
@@ -341,29 +356,70 @@ export class OpenApiGenerator {
 
             if (type === "object") {
                 // get schema for property object
-                OpenApiGenerator.addClassPropertiesToSchema(propertySchema, instance[property])
+                propertySchema.example = JSON.stringify(instance[property], null, 4)
+
+                OpenApiGenerator.addObjectPropertiesToSchema(propertySchema, instance[property])
             } else if (type === "array") {
                 if (instance[property].length > 0) {
-                    schema.items = {
-                        type: OpenApiGenerator.getTypeOfInstanceProperty(instance[property], 0)
+                    if (!OpenApiGenerator.addArrayToSchema(propertySchema, instance[property])) {
+                        // unsupported array item type or null/undefined, ommit this property
+                        continue
                     }
-
-                    // get schema for array item type
-                    OpenApiGenerator.addClassPropertiesToSchema(schema.items, instance)
                 } else {
                     // no way to determine array item type, so better to ommit this property
                     continue
                 }
+            } else {
+                propertySchema.example = instance[property]
+            }
+
+            if (!schema.properties) {
+                schema.properties = {}
             }
 
             schema.properties[property] = propertySchema
         }
     }
 
-    private static getTypeOfInstanceProperty(instance: any, property: string | number) {
-        let type = ((typeof instance[property])).toLowerCase()
+    private static addArrayToSchema(propertySchema: SchemaObject, instance: any) {
+        let itemType = OpenApiGenerator.getInstanceType(instance[0])
 
-        if (type === "object" && Array.isArray(instance[property])) {
+        if (!OpenApiGenerator.OPEN_API_TYPES.includes(itemType)) {
+            return false
+        }
+
+        propertySchema.example = JSON.stringify(instance, null, 4)
+        propertySchema.items = {
+            type: itemType
+        }
+
+        if (itemType === "object") {
+            propertySchema.items.example = JSON.stringify(instance[0], null, 4)
+
+            // get schema for array item type
+            OpenApiGenerator.addObjectPropertiesToSchema(
+                propertySchema.items,
+                instance[0]
+            )
+        } else if (itemType === "array") {
+            if (instance.length > 0) {
+                OpenApiGenerator.addArrayToSchema(propertySchema.items, instance[0])
+            }
+        } else {
+            propertySchema.items.example = instance[0]
+        }
+
+        return true
+    }
+
+    private static getTypeOfInstanceProperty(instance: any, property: string | number) {
+        return OpenApiGenerator.getInstanceType(instance[property])
+    }
+
+    private static getInstanceType(instance: any) {
+        let type = ((typeof instance)).toLowerCase()
+
+        if (type === "object" && Array.isArray(instance)) {
             // detect if the property is actually an array
             type = "array"
         }

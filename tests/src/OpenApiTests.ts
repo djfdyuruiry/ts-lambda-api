@@ -1,6 +1,6 @@
 import { AsyncSetup, AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
 import { safeLoad } from "js-yaml"
-import { OpenAPIObject, SecuritySchemeObject, PathItemObject, ParameterObject, ResponseObject } from "openapi3-ts"
+import { OpenAPIObject, SecuritySchemeObject, PathItemObject, ParameterObject, ResponseObject, RequestBodyObject } from "openapi3-ts"
 
 import { RequestBuilder, ApiLambdaApp } from "../../dist/typescript-lambda-api"
 
@@ -10,7 +10,7 @@ import { ResponseWithValue } from './test-components/model/ResponseWithValue';
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 37
+    private static readonly ROUTE_COUNT = 39
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup
@@ -126,16 +126,39 @@ export class OpenApiTests extends TestBase {
         Expect(queryParameter.schema).toEqual({})
     }
 
-    @TestCase("json")
-    @TestCase("yml")
+    @TestCase("json", {path: "/test/consumes", contentType: "text/plain"})
+    @TestCase("json", {path: "/test/consumes/xml", contentType: "application/xml"})
+    @TestCase("json", {path: "/test/open-api", contentType: "application/json"})
+    @TestCase("yml", {path: "/test/consumes", contentType: "text/plain"})
+    @TestCase("yml", {path: "/test/consumes/xml", contentType: "application/xml"})
+    @TestCase("yml", {path: "/test/open-api", contentType: "application/json"})
     @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_response_content_type(specFormat: string) {
+    public async when_openapi_enabled_then_openapi_spec_contains_request_content_type(specFormat: string, params: any) {
         let response = await this.requestParsedOpenApiSpec(specFormat)
-        let pathEndpoint: PathItemObject = response.value.paths["/test"]
+        let pathEndpoint: PathItemObject = response.value.paths[params.path]
+        let requestBody = pathEndpoint["post"].requestBody as RequestBodyObject
+
+        Expect(requestBody.content).toBeDefined()
+        Expect(Object.keys(requestBody.content)).toContain(params.contentType)
+        Expect(requestBody.description).toEqual("")
+    }
+
+    @TestCase("json", {path: "/test", contentType: "text/plain"})
+    @TestCase("json", {path: "/test/ei-decorator", contentType: "application/json"})
+    @TestCase("json", {path: "/test/open-api", contentType: "application/json"})
+    @TestCase("json", {path: "/test/produces", contentType: "application/json"})
+    @TestCase("yml", {path: "/test", contentType: "text/plain"})
+    @TestCase("yml", {path: "/test/ei-decorator", contentType: "application/json"})
+    @TestCase("yml", {path: "/test/open-api", contentType: "application/json"})
+    @TestCase("yml", {path: "/test/produces", contentType: "application/json"})
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_response_content_type(specFormat: string, params: any) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
+        let pathEndpoint: PathItemObject = response.value.paths[params.path]
         let defaultResponse = pathEndpoint["get"].responses.default as ResponseObject
 
         Expect(defaultResponse.content).toBeDefined()
-        Expect(Object.keys(defaultResponse.content)).toContain("text/plain")
+        Expect(Object.keys(defaultResponse.content)).toContain(params.contentType)
         Expect(defaultResponse.description).toEqual("")
     }
 
