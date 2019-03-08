@@ -22,7 +22,12 @@
     "dist/**/*.d.ts"
   ],
   "nyc": {
+    "check-coverage": true,
+    "per-file": true,
     "lines": 70,
+    "statements": 70,
+    "functions": 70,
+    "branches": 70,
     "exclude": [
       "tests/**/*"
     ]
