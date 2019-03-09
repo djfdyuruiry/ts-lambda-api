@@ -16,13 +16,44 @@ import { ApiBodyInfo } from "../../model/open-api/ApiBodyInfo"
 import { ControllerInfo } from "../../model/reflection/ControllerInfo"
 import { EndpointInfo } from "../../model/reflection/EndpointInfo"
 import { IDictionary } from "../../util/IDictionary"
-import { timed } from "../../util/timed";
+import { toJson } from "../../util/jsonUtils"
+import { timed } from "../../util/timed"
 
 export type OpenApiFormat = "json" | "yml"
 
 export class OpenApiGenerator {
     private static readonly ENDPOINTS = DecoratorRegistry.Endpoints
-    private static readonly OPEN_API_TYPES = ["number", "string", "boolean", "object", "array"]
+    private static readonly OPEN_API_TYPES = [
+        "number",
+        "int",
+        "double",
+        "string",
+        "boolean",
+        "object",
+        "array",
+        "string-array",
+        "number-array",
+        "int-array",
+        "double-array",
+        "boolean-array",
+        "array-array",
+        "object-array"
+    ]
+    private static readonly OPEN_API_TYPE_EXAMPLES: IDictionary<any> = {
+        "array": [],
+        "array-array": [[], [], []],
+        "boolean": true,
+        "boolean-array": [true, false, true],
+        "double": 1.1,
+        "double-array": [1.1, 2.2, 3.3],
+        "int": 1,
+        "int-array": [1, 2, 3],
+        "number": 1.1,
+        "object": {},
+        "object-array": [{}, {}, {}],
+        "string": "a string",
+        "string-array": ["1st string", "2nd string", "3rd string"]
+    }
 
     @timed
     public static buildOpenApiSpec(basicAuthEnabled?: boolean) {
@@ -205,6 +236,12 @@ export class OpenApiGenerator {
 
         if (requestInfo.example) {
             mediaTypeObject.example = requestInfo.example
+        } else if (mediaTypeObject.schema) {
+            let schema = mediaTypeObject.schema as SchemaObject
+
+            if (schema && schema.example) {
+                mediaTypeObject.example = schema.example
+            }
         }
     }
 
@@ -275,6 +312,16 @@ export class OpenApiGenerator {
                     mediaTypeObject, apiBodyInfo, responseType
                 )
             }
+
+            if (apiBodyInfo.example) {
+                mediaTypeObject.example = apiBodyInfo.example
+            } else if (mediaTypeObject.schema) {
+                let schema = mediaTypeObject.schema as SchemaObject
+
+                if (schema && schema.example) {
+                    mediaTypeObject.example = schema.example
+                }
+            }
         } else {
             // response content type only
             let responseContent: ContentObject = {}
@@ -296,8 +343,13 @@ export class OpenApiGenerator {
     private static addPrimitiveToMediaTypeObject(mediaTypeObject: MediaTypeObject, apiBodyInfo: ApiBodyInfo) {
         let type = apiBodyInfo.type.toLowerCase()
 
+        if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
+            return
+        }
+
         if (type !== "file") {
             mediaTypeObject.schema = {
+                example: OpenApiGenerator.getPrimitiveTypeExample(apiBodyInfo.type),
                 type: apiBodyInfo.type
             }
         } else {
@@ -306,6 +358,12 @@ export class OpenApiGenerator {
                 type: "string"
             }
         }
+    }
+
+    private static getPrimitiveTypeExample(type: string) {
+        let example = OpenApiGenerator.OPEN_API_TYPE_EXAMPLES[type]
+
+        return toJson(example)
     }
 
     private static addClassToMediaTypeObject(
@@ -330,7 +388,7 @@ export class OpenApiGenerator {
         mediaTypeObject.schema = schema
 
         if (responseContentType === "application/json") {
-            let exampleJson = JSON.stringify(instance, null, 4)
+            let exampleJson = toJson(instance)
 
             mediaTypeObject.example  = exampleJson
             schema.example = exampleJson
@@ -356,7 +414,7 @@ export class OpenApiGenerator {
 
             if (type === "object") {
                 // get schema for property object
-                propertySchema.example = JSON.stringify(instance[property], null, 4)
+                propertySchema.example = toJson(instance[property])
 
                 OpenApiGenerator.addObjectPropertiesToSchema(propertySchema, instance[property])
             } else if (type === "array") {
@@ -388,13 +446,13 @@ export class OpenApiGenerator {
             return false
         }
 
-        propertySchema.example = JSON.stringify(instance, null, 4)
+        propertySchema.example = toJson(instance)
         propertySchema.items = {
             type: itemType
         }
 
         if (itemType === "object") {
-            propertySchema.items.example = JSON.stringify(instance[0], null, 4)
+            propertySchema.items.example = toJson(instance[0])
 
             // get schema for array item type
             OpenApiGenerator.addObjectPropertiesToSchema(

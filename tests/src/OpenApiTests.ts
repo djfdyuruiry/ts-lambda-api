@@ -188,30 +188,30 @@ export class OpenApiTests extends TestBase {
         let content_201: MediaTypeObject = response_201.content["application/json"]
 
         Expect(content_201.example).toBe(`{
-    "name": "name",
-    "age": 18,
-    "location": {
-        "city": "city",
-        "country": "country",
-        "localeCodes": [
-            10,
-            20,
-            30
-        ]
-    },
-    "roles": [
-        "role1",
-        "role2",
-        "roleN"
+  "name": "name",
+  "age": 18,
+  "location": {
+    "city": "city",
+    "country": "country",
+    "localeCodes": [
+      10,
+      20,
+      30
     ]
+  },
+  "roles": [
+    "role1",
+    "role2",
+    "roleN"
+  ]
 }`)
 
     let response_400: ResponseObject = endpoint.responses["400"]
     let content_400: MediaTypeObject = response_400.content["application/json"]
 
     Expect(content_400.example).toBe(`{
-    "statusCode": 500,
-    "error": "error description"
+  "statusCode": 500,
+  "error": "error description"
 }`)
     }
 
@@ -226,42 +226,42 @@ export class OpenApiTests extends TestBase {
 
         Expect(schema_201.type).toEqual("object")
         Expect(schema_201.properties).toEqual({
-            name: {
-                type: "string",
-                example: "name"
+            "name": {
+                "type": "string",
+                "example": "name"
             },
-            age: {
-                type: "number",
-                example: 18
+            "age": {
+                "type": "number",
+                "example": 18
             },
-            location: {
-                type: "object",
-                example: "{\n    \"city\": \"city\",\n    \"country\": \"country\",\n    \"localeCodes\": [\n        10,\n        20,\n        30\n    ]\n}",
-                properties: {
-                    city: {
-                        type: "string",
-                        example: "city"
+            "location": {
+                "type": "object",
+                "example": "{\n  \"city\": \"city\",\n  \"country\": \"country\",\n  \"localeCodes\": [\n    10,\n    20,\n    30\n  ]\n}",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "example": "city"
                     },
-                    country: {
-                        type: "string",
-                        example: "country"
+                    "country": {
+                        "type": "string",
+                        "example": "country"
                     },
-                    localeCodes: {
-                        type: "array",
-                        example: "[\n    10,\n    20,\n    30\n]",
-                        items: {
-                            type: "number",
-                            example: 10
+                    "localeCodes": {
+                        "type": "array",
+                        "example": "[\n  10,\n  20,\n  30\n]",
+                        "items": {
+                            "type": "number",
+                            "example": 10
                         }
                     }
                 }
             },
-            roles: {
-                type: "array",
-                example: "[\n    \"role1\",\n    \"role2\",\n    \"roleN\"\n]",
-                items: {
-                    type: "string",
-                    example: "role1"
+            "roles": {
+                "type": "array",
+                "example": "[\n  \"role1\",\n  \"role2\",\n  \"roleN\"\n]",
+                "items": {
+                    "type": "string",
+                    "example": "role1"
                 }
             }
         })
@@ -281,6 +281,31 @@ export class OpenApiTests extends TestBase {
                 example: "error description"
             }
         })
+    }
+
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_response_example_for_primitive_types(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
+        let response: ResponseObject = endpoint.responses["200"]
+        let content: MediaTypeObject = response.content["application/json"]
+
+        Expect(content.example).toBe(`"a string"`)
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_response_schema_for_primitive_types(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
+        let response: ResponseObject = endpoint.responses["200"]
+        let content: MediaTypeObject = response.content["application/json"]
+        let schema: SchemaObject = content.schema
+
+        Expect(schema.type).toEqual("string")
+        Expect(schema.example).toEqual(`"a string"`)
     }
 
     @TestCase("json")
