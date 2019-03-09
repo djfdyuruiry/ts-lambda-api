@@ -2,6 +2,7 @@ import { injectable } from "inversify"
 
 import { api, apiController, apiOperation, apiRequest, apiResponse, fromBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/typescript-lambda-api"
 
+import { ApiError } from "../test-components/model/ApiError"
 import { Person } from "../test-components/model/Person"
 
 @apiController("/test/open-api")
@@ -19,6 +20,8 @@ export class OpenApiTestControllerController extends Controller {
     @apiOperation({name: "add stuff", description: "go add some stuff"})
     @apiRequest({class: Person})
     @apiResponse(201, {class: Person})
+    @apiResponse(400, {class: ApiError})
+    @apiResponse(500, {class: ApiError})
     public post(@fromBody person: Person) {
         return person
     }
