@@ -9,7 +9,7 @@ import { apiSecurity } from "../decorator/open-api/apiSecurity";
  * IAuthFilter implementation that supports the HTTP Basic authentication scheme.
  */
 @apiSecurity("basic", {
-    scheme: "Basic",
+    scheme: "basic",
     type: "http"
 })
 export abstract class BasicAuthFilter<T extends Principal> implements IAuthFilter<BasicAuth, T> {

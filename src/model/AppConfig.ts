@@ -16,6 +16,16 @@ import { OpenApiConfig } from "./OpenApiConfig"
 @injectable()
 export class AppConfig implements Options {
     /**
+     * API human readable name.
+     */
+    public name?: string
+
+    /**
+     * Version number accessible via `Request` context instances.
+     */
+    public version?: string
+
+    /**
      * Base path for all routes, e.g. base: 'v1' would
      * prefix all routes with /v1.
      */
@@ -48,11 +58,6 @@ export class AppConfig implements Options {
      * body of a response and must return a string. Defaults to JSON.stringify
      */
     public serializer?: SerializerFunction
-
-    /**
-     * Version number accessible via `Request` context instances.
-     */
-    public version?: string
 
     /**
      * OpenAPI configuration.

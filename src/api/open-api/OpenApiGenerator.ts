@@ -14,6 +14,7 @@ import {
 import { MiddlewareRegistry } from "../MiddlewareRegistry"
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
 import { BasicAuthFilter } from "../security/BasicAuthFilter"
+import { AppConfig } from "../../model/AppConfig"
 import { ApiBodyInfo } from "../../model/open-api/ApiBodyInfo"
 import { ControllerInfo } from "../../model/reflection/ControllerInfo"
 import { EndpointInfo } from "../../model/reflection/EndpointInfo"
@@ -78,13 +79,17 @@ export class OpenApiGenerator {
     }
 
     @timed
-    public static buildOpenApiSpec(middlewareRegistry: MiddlewareRegistry) {
-        return OpenApiGenerator.generateApiOpenApiSpecBuilder(middlewareRegistry).getSpec()
+    public static buildOpenApiSpec(appConfig: AppConfig, middlewareRegistry: MiddlewareRegistry) {
+        return OpenApiGenerator.generateApiOpenApiSpecBuilder(appConfig, middlewareRegistry).getSpec()
     }
 
     @timed
-    public static async exportOpenApiSpec(format: OpenApiFormat = "json", middlewareRegistry: MiddlewareRegistry) {
-        let openApiBuilder = OpenApiGenerator.generateApiOpenApiSpecBuilder(middlewareRegistry)
+    public static async exportOpenApiSpec(
+        format: OpenApiFormat = "json",
+        appConfig: AppConfig,
+        middlewareRegistry: MiddlewareRegistry
+    ) {
+        let openApiBuilder = OpenApiGenerator.generateApiOpenApiSpecBuilder(appConfig, middlewareRegistry)
 
         if (format === "json") {
             return openApiBuilder.getSpecAsJson()
@@ -100,10 +105,18 @@ export class OpenApiGenerator {
         }
     }
 
-    private static generateApiOpenApiSpecBuilder(middlewareRegistry: MiddlewareRegistry) {
+    private static generateApiOpenApiSpecBuilder(appConfig: AppConfig, middlewareRegistry: MiddlewareRegistry) {
         let openApiBuilder = OpenApiBuilder.create()
         let paths: IDictionary<PathItemObject> = {}
         let tags: IDictionary<TagObject> = {}
+
+        if (appConfig.name) {
+            openApiBuilder.addTitle(appConfig.name)
+        }
+
+        if (appConfig.version) {
+            openApiBuilder.addVersion(appConfig.version)
+        }
 
         OpenApiGenerator.discoverSecuritySchemes(openApiBuilder, middlewareRegistry)
 
@@ -219,6 +232,11 @@ export class OpenApiGenerator {
         if (endpointInfo.getControllerPropOrDefault(c => c.apiName)) {
             // associate endpoint with controller tag name
             endpointOperation.tags = [endpointInfo.controller.apiName]
+        }
+
+        if (endpointInfo.noAuth) {
+            // no authentication required, exclude from global security constraints
+            endpointOperation.security = []
         }
 
         pathInfo[endpointMethod] = endpointOperation

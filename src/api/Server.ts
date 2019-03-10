@@ -92,7 +92,7 @@ export class Server {
     private registerOpenApiEndpoint(format: OpenApiFormat) {
         let specEndpoint = new EndpointInfo(
             `internal__openapi::${format}`,
-            async () => await OpenApiGenerator.exportOpenApiSpec(format, this._middlewareRegistry)
+            async () => await OpenApiGenerator.exportOpenApiSpec(format, this.appConfig, this._middlewareRegistry)
         )
 
         specEndpoint.path = `/open-api.${format}`

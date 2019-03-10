@@ -17,6 +17,8 @@ export class OpenApiTests extends TestBase {
     @AsyncSetup
     public async setup() {
         super.setup({
+            name: "Test API",
+            version: "v1",
             openApi: {
                 enabled: true
             }
@@ -32,6 +34,17 @@ export class OpenApiTests extends TestBase {
         let response = await this.requestOpenApiSpec(specFormat)
 
         Expect(response.statusCode).toEqual(200)
+    }
+
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_api_info(specFormat: string) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
+
+        Expect(response.value.info.title).toEqual("Test API")
+        Expect(response.value.info.version).toEqual("v1")
     }
 
     @TestCase("json")
@@ -474,6 +487,16 @@ export class OpenApiTests extends TestBase {
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_empty_security_for_no_auth_endpoints(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/no-auth", "get")
+
+        Expect(endpoint.security).toBeDefined()
+        Expect(endpoint.security).toBeEmpty()
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
     public async when_openapi_enabled_and_basic_auth_filter_defined_then_openapi_spec_contains_security_scheme(specFormat: string) {
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
@@ -496,7 +519,19 @@ export class OpenApiTests extends TestBase {
         let scheme = spec.components.securitySchemes["basic"] as SecuritySchemeObject
 
         Expect(scheme.type).toEqual("http")
-        Expect(scheme.scheme).toEqual("Basic")
+        Expect(scheme.scheme).toEqual("basic")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_and_custom_auth_filter_defined_then_openapi_spec_contains_security_scheme(specFileFormat: string) {
+        this.app.middlewareRegistry.addAuthFilter(new TestCustomAuthFilter("luke"))
+
+        let response = await this.requestParsedOpenApiSpec(specFileFormat)
+        let securitySchemes = Object.keys(response.value.components.securitySchemes)
+
+        Expect(securitySchemes).toContain("bearerAuth")
     }
 
     @TestCase("json")
@@ -514,6 +549,22 @@ export class OpenApiTests extends TestBase {
         Expect(scheme.scheme).toEqual("bearer")
         Expect(scheme.bearerFormat).toEqual("JWT")
     }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_and_basic_auth_filter_and_custom_auth_filter_defined_then_openapi_spec_contains_both_security_scheme(specFormat: string) {
+        this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
+        this.app.middlewareRegistry.addAuthFilter(new TestCustomAuthFilter("luke"))
+
+        let response = await this.requestParsedOpenApiSpec(specFormat)
+
+        let securitySchemes = Object.keys(response.value.components.securitySchemes)
+
+        Expect(securitySchemes).toContain("basic")
+        Expect(securitySchemes).toContain("bearerAuth")
+    }
+
 
     @TestCase("json")
     @TestCase("yml")
