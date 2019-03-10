@@ -36,7 +36,6 @@ export class OpenApiTests extends TestBase {
         Expect(response.statusCode).toEqual(200)
     }
 
-
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
