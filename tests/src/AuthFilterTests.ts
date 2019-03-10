@@ -6,7 +6,7 @@ import { TestBase } from "./TestBase"
 import { TestAuthFilter } from "./test-components/TestAuthFilter"
 
 @TestFixture()
-export class ApiLambdaAppTests extends TestBase {
+export class AuthFilterTests extends TestBase {
     @TestCase(null)
     @TestCase(undefined)
     @AsyncTest()
