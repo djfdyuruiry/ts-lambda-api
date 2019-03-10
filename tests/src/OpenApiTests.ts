@@ -7,6 +7,7 @@ import { RequestBuilder, ApiLambdaApp } from "../../dist/typescript-lambda-api"
 import { TestBase } from "./TestBase"
 import { TestAuthFilter } from "./test-components/TestAuthFilter";
 import { ResponseWithValue } from './test-components/model/ResponseWithValue';
+import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
@@ -457,6 +458,19 @@ export class OpenApiTests extends TestBase {
         Expect(schema.example).toEqual(`"a string"`)
     }
 
+    /**
+     * TODO these tests:
+     *
+     *   - custom request & response examples
+     *   - request & response descriptions
+     *   - file body
+     *   - building schema object from constructor
+     *   - unsupported array item type in schema (should not add array)
+     *   - an array of objects in schema
+     *   - an array of arrays in schema
+     *
+     */
+
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
@@ -483,6 +497,22 @@ export class OpenApiTests extends TestBase {
 
         Expect(scheme.type).toEqual("http")
         Expect(scheme.scheme).toEqual("Basic")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_and_custom_auth_filter_defined_then_openapi_spec_contains_custom_security_scheme(specFileFormat: string) {
+        this.app.middlewareRegistry.addAuthFilter(new TestCustomAuthFilter("luke"))
+
+        let response = await this.requestParsedOpenApiSpec(specFileFormat)
+        let spec = response.value
+
+        let scheme = spec.components.securitySchemes["bearerAuth"] as SecuritySchemeObject
+
+        Expect(scheme.type).toEqual("http")
+        Expect(scheme.scheme).toEqual("bearer")
+        Expect(scheme.bearerFormat).toEqual("JWT")
     }
 
     @TestCase("json")
