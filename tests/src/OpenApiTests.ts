@@ -63,6 +63,44 @@ export class OpenApiTests extends TestBase {
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_operation_name(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
+
+        Expect(endpoint.summary).toBe("get stuff")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_operation_description(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
+
+        Expect(endpoint.description).toBe("go get some stuff")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_api_name(specFormat: string) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
+        let tag = response.value.tags.find(t => t.name === "Open API Test")
+
+        Expect(tag).toBeDefined()
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_api_description(specFormat: string) {
+        let response = await this.requestParsedOpenApiSpec(specFormat)
+        let tag = response.value.tags.find(t => t.name === "Open API Test")
+
+        Expect(tag.description).toBe("Endpoints with OpenAPI decorators")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
     public async when_openapi_enabled_then_openapi_spec_contains_parameters(specFormat: string) {
         let pathEndpoint = await this.getOpenApiEndpoint(specFormat, "/test/path-test/:name/:age", "get")
 
@@ -133,8 +171,122 @@ export class OpenApiTests extends TestBase {
         let requestBody = endpoint.requestBody as RequestBodyObject
 
         Expect(requestBody.content).toBeDefined()
-        Expect(Object.keys(requestBody.content)).toContain(params.contentType)
+        Expect(requestBody.content[params.contentType]).toBeDefined()
         Expect(requestBody.description).toEqual("")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_request_content(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+
+        Expect(request.content["application/json"]).toBeDefined()
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_request_example(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+        let requestContent: MediaTypeObject = request.content["application/json"]
+
+        Expect(requestContent.example).toBe(`{
+  "name": "name",
+  "age": 18,
+  "location": {
+    "city": "city",
+    "country": "country",
+    "localeCodes": [
+      10,
+      20,
+      30
+    ]
+  },
+  "roles": [
+    "role1",
+    "role2",
+    "roleN"
+  ]
+}`)
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_request_schema(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+        let requestContent: MediaTypeObject = request.content["application/json"]
+        let schema: SchemaObject = requestContent.schema
+
+        Expect(schema.type).toEqual("object")
+        Expect(schema.properties).toEqual({
+            "name": {
+                "type": "string",
+                "example": "name"
+            },
+            "age": {
+                "type": "number",
+                "example": 18
+            },
+            "location": {
+                "type": "object",
+                "example": "{\n  \"city\": \"city\",\n  \"country\": \"country\",\n  \"localeCodes\": [\n    10,\n    20,\n    30\n  ]\n}",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "example": "city"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "country"
+                    },
+                    "localeCodes": {
+                        "type": "array",
+                        "example": "[\n  10,\n  20,\n  30\n]",
+                        "items": {
+                            "type": "number",
+                            "example": 10
+                        }
+                    }
+                }
+            },
+            "roles": {
+                "type": "array",
+                "example": "[\n  \"role1\",\n  \"role2\",\n  \"roleN\"\n]",
+                "items": {
+                    "type": "string",
+                    "example": "role1"
+                }
+            }
+        })
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_request_example_for_primitive_types(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/plain", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+        let requestContent: MediaTypeObject = request.content["text/plain"]
+
+        Expect(requestContent.example).toBe(`"a string"`)
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_request_schema_for_primitive_types(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/plain", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+        let requestContent: MediaTypeObject = request.content["text/plain"]
+        let schema: SchemaObject = requestContent.schema
+
+        Expect(schema.type).toEqual("string")
+        Expect(schema.example).toEqual(`"a string"`)
     }
 
     @TestCase("json", {path: "/test", contentType: "text/plain"})
@@ -151,11 +303,9 @@ export class OpenApiTests extends TestBase {
         let defaultResponse = endpoint.responses.default as ResponseObject
 
         Expect(defaultResponse.content).toBeDefined()
-        Expect(Object.keys(defaultResponse.content)).toContain(params.contentType)
+        Expect(defaultResponse.content[params.contentType]).toBeDefined()
         Expect(defaultResponse.description).toEqual("")
     }
-
-    // TODO: do content schema and example tests for requests
 
     @TestCase("json")
     @TestCase("yml")
@@ -283,7 +433,6 @@ export class OpenApiTests extends TestBase {
         })
     }
 
-
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
@@ -306,44 +455,6 @@ export class OpenApiTests extends TestBase {
 
         Expect(schema.type).toEqual("string")
         Expect(schema.example).toEqual(`"a string"`)
-    }
-
-    @TestCase("json")
-    @TestCase("yml")
-    @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_operation_name(specFormat: string) {
-        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
-
-        Expect(endpoint.summary).toBe("get stuff")
-    }
-
-    @TestCase("json")
-    @TestCase("yml")
-    @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_operation_description(specFormat: string) {
-        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
-
-        Expect(endpoint.description).toBe("go get some stuff")
-    }
-
-    @TestCase("json")
-    @TestCase("yml")
-    @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_api_name(specFormat: string) {
-        let response = await this.requestParsedOpenApiSpec(specFormat)
-        let tag = response.value.tags.find(t => t.name === "Open API Test")
-
-        Expect(tag).toBeDefined()
-    }
-
-    @TestCase("json")
-    @TestCase("yml")
-    @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_api_description(specFormat: string) {
-        let response = await this.requestParsedOpenApiSpec(specFormat)
-        let tag = response.value.tags.find(t => t.name === "Open API Test")
-
-        Expect(tag.description).toBe("Endpoints with OpenAPI decorators")
     }
 
     @TestCase("json")
