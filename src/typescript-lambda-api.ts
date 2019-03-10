@@ -34,6 +34,7 @@ export { api } from "./api/decorator/open-api/api"
 export { apiOperation } from "./api/decorator/open-api/apiOperation"
 export { apiRequest } from "./api/decorator/open-api/apiRequest"
 export { apiResponse } from "./api/decorator/open-api/apiResponse"
+export { apiSecurity } from "./api/decorator/open-api/apiSecurity"
 
 export { JsonPatch } from "./model/JsonPatch"
 export { Principal } from "./model/security/Principal"

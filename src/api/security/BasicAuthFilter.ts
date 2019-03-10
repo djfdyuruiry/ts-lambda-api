@@ -3,10 +3,15 @@ import { Request } from "lambda-api"
 import { IAuthFilter } from "./IAuthFilter"
 import { BasicAuth } from "../../model/security/BasicAuth"
 import { Principal } from "../../model/security/Principal"
+import { apiSecurity } from "../decorator/open-api/apiSecurity";
 
 /**
  * IAuthFilter implementation that supports the HTTP Basic authentication scheme.
  */
+@apiSecurity("basic", {
+    scheme: "Basic",
+    type: "http"
+})
 export abstract class BasicAuthFilter<T extends Principal> implements IAuthFilter<BasicAuth, T> {
     /**
      * If the authentication scheme is 'Basic', returns a BasicAuth instance containing

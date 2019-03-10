@@ -11,7 +11,9 @@ import {
     SchemaObject
 } from "openapi3-ts/dist/model"
 
+import { MiddlewareRegistry } from "../MiddlewareRegistry"
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
+import { BasicAuthFilter } from "../security/BasicAuthFilter"
 import { ApiBodyInfo } from "../../model/open-api/ApiBodyInfo"
 import { ControllerInfo } from "../../model/reflection/ControllerInfo"
 import { EndpointInfo } from "../../model/reflection/EndpointInfo"
@@ -23,22 +25,41 @@ export type OpenApiFormat = "json" | "yml"
 
 export class OpenApiGenerator {
     private static readonly ENDPOINTS = DecoratorRegistry.Endpoints
+    private static readonly AUTH_FILTERS = DecoratorRegistry.AuthFilters
     private static readonly OPEN_API_TYPES = [
-        "number",
-        "int",
-        "double",
-        "string",
-        "boolean",
-        "object",
         "array",
-        "string-array",
-        "number-array",
-        "int-array",
-        "double-array",
-        "boolean-array",
         "array-array",
-        "object-array"
+        "boolean",
+        "boolean-array",
+        "double",
+        "double-array",
+        "file",
+        "int",
+        "int-array",
+        "number",
+        "number-array",
+        "object",
+        "object-array",
+        "string",
+        "string-array"
     ]
+    private static readonly OPEN_API_SCHEMA_TYPE_MAP: IDictionary<string> = {
+        "array": "array",
+        "array-array": "array",
+        "boolean": "boolean",
+        "boolean-array": "array",
+        "double": "number",
+        "double-array": "array",
+        "file": "string",
+        "int": "number",
+        "int-array": "array",
+        "number": "number",
+        "number-array": "array",
+        "object": "object",
+        "object-array": "array",
+        "string": "string",
+        "string-array": "array"
+    }
     private static readonly OPEN_API_TYPE_EXAMPLES: IDictionary<any> = {
         "array": [],
         "array-array": [[], [], []],
@@ -46,6 +67,7 @@ export class OpenApiGenerator {
         "boolean-array": [true, false, true],
         "double": 1.1,
         "double-array": [1.1, 2.2, 3.3],
+        "file": "upload a file",
         "int": 1,
         "int-array": [1, 2, 3],
         "number": 1.1,
@@ -56,16 +78,13 @@ export class OpenApiGenerator {
     }
 
     @timed
-    public static buildOpenApiSpec(basicAuthEnabled?: boolean) {
-        return OpenApiGenerator.generateApiOpenApiSpecBuilder(basicAuthEnabled).getSpec()
+    public static buildOpenApiSpec(middlewareRegistry: MiddlewareRegistry) {
+        return OpenApiGenerator.generateApiOpenApiSpecBuilder(middlewareRegistry).getSpec()
     }
 
     @timed
-    public static async exportOpenApiSpec(
-        format: OpenApiFormat = "json",
-        basicAuthEnabled?: boolean
-    ) {
-        let openApiBuilder = OpenApiGenerator.generateApiOpenApiSpecBuilder(basicAuthEnabled)
+    public static async exportOpenApiSpec(format: OpenApiFormat = "json", middlewareRegistry: MiddlewareRegistry) {
+        let openApiBuilder = OpenApiGenerator.generateApiOpenApiSpecBuilder(middlewareRegistry)
 
         if (format === "json") {
             return openApiBuilder.getSpecAsJson()
@@ -81,17 +100,12 @@ export class OpenApiGenerator {
         }
     }
 
-    private static generateApiOpenApiSpecBuilder(basicAuthEnabled: boolean) {
+    private static generateApiOpenApiSpecBuilder(middlewareRegistry: MiddlewareRegistry) {
         let openApiBuilder = OpenApiBuilder.create()
         let paths: IDictionary<PathItemObject> = {}
         let tags: IDictionary<TagObject> = {}
 
-        if (basicAuthEnabled) {
-            openApiBuilder = openApiBuilder.addSecurityScheme("basic", {
-                scheme: "Basic",
-                type: "http"
-            })
-        }
+        OpenApiGenerator.discoverSecuritySchemes(openApiBuilder, middlewareRegistry)
 
         OpenApiGenerator.discoverTagsAndPaths(paths, tags)
 
@@ -101,7 +115,7 @@ export class OpenApiGenerator {
                 continue
             }
 
-            openApiBuilder = openApiBuilder.addTag(tags[tag])
+            openApiBuilder.addTag(tags[tag])
         }
 
         // add all discovered paths
@@ -110,10 +124,28 @@ export class OpenApiGenerator {
                 continue
             }
 
-            openApiBuilder = openApiBuilder.addPath(path, paths[path])
+            openApiBuilder.addPath(path, paths[path])
         }
 
         return openApiBuilder
+    }
+
+    private static discoverSecuritySchemes(openApiBuilder: OpenApiBuilder, middlewareRegistry: MiddlewareRegistry) {
+        for (let authFilter of middlewareRegistry.authFilters) {
+            let constructor = authFilter.constructor
+            let authFilterInfo = OpenApiGenerator.AUTH_FILTERS[constructor.name]
+
+            if (!authFilterInfo && (authFilter instanceof BasicAuthFilter)) {
+                authFilterInfo = OpenApiGenerator.AUTH_FILTERS[BasicAuthFilter.name]
+            }
+
+            if (authFilterInfo) {
+                openApiBuilder = openApiBuilder.addSecurityScheme(
+                    authFilterInfo.name,
+                    authFilterInfo.securitySchemeInfo
+                )
+            }
+        }
     }
 
     private static discoverTagsAndPaths(paths: IDictionary<PathItemObject>, tags: IDictionary<TagObject>) {
@@ -347,15 +379,17 @@ export class OpenApiGenerator {
             return
         }
 
+        let schemaType = OpenApiGenerator.OPEN_API_SCHEMA_TYPE_MAP[apiBodyInfo.type]
+
         if (type !== "file") {
             mediaTypeObject.schema = {
                 example: OpenApiGenerator.getPrimitiveTypeExample(apiBodyInfo.type),
-                type: apiBodyInfo.type
+                type: schemaType
             }
         } else {
             mediaTypeObject.schema = {
                 format: "binary",
-                type: "string"
+                type: schemaType
             }
         }
     }
