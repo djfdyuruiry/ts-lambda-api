@@ -26,6 +26,30 @@ export class OpenApiTestControllerController extends Controller {
         return person
     }
 
+    @POST("/custom-info")
+    @apiOperation({
+        name: "add custom stuff",
+        description: "go add some custom stuff"
+    })
+    @apiRequest({
+        class: Person,
+        example: `{"name": "some name", "age": 22}`,
+        description: "Details for a person"
+    })
+    @apiResponse(201, {
+        class: Person,
+        example: `{"name": "another name", "age": 30}`,
+        description: "Uploaded person information"
+    })
+    @apiResponse(400, {
+        class: ApiError,
+        example: `{"statusCode": 400, "error": "you screwed up"}`,
+        description: "A bad request error message"
+    })
+    public postCustomInfo(@fromBody person: Person) {
+        return person
+    }
+
     @POST("/plain")
     @apiOperation({ name: "add some plain stuff", description: "go get some plain stuff"})
     @apiRequest({contentType: "text/plain", type: "string"})

@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 39
+    private static readonly ROUTE_COUNT = 40
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup
@@ -473,8 +473,8 @@ export class OpenApiTests extends TestBase {
     /**
      * TODO these tests:
      *
-     *   - custom request & response examples
-     *   - request & response descriptions
+     *   + custom request & response examples
+     *   + request & response descriptions
      *   - file body
      *   - building schema object from constructor
      *   - unsupported array item type in schema (should not add array)
@@ -482,6 +482,57 @@ export class OpenApiTests extends TestBase {
      *   - an array of arrays in schema
      *
      */
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_custom_request_examples(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+        let content: MediaTypeObject = request.content["application/json"]
+
+        Expect(content.example).toEqual(`{"name": "some name", "age": 22}`)
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_custom_request_descriptions(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+
+        Expect(request.description).toEqual(`Details for a person`)
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_custom_response_examples(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
+        let response_201: ResponseObject = endpoint.responses["201"]
+        let content_201: MediaTypeObject = response_201.content["application/json"]
+
+        Expect(content_201.example).toEqual(`{"name": "another name", "age": 30}`)
+
+        let response_400: ResponseObject = endpoint.responses["400"]
+        let content_400: MediaTypeObject = response_400.content["application/json"]
+
+        Expect(content_400.example).toEqual(`{"statusCode": 400, "error": "you screwed up"}`)
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_custom_response_descriptions(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
+        let response_201: ResponseObject = endpoint.responses["201"]
+
+        Expect(response_201.description).toEqual("Uploaded person information")
+
+        let response_400: ResponseObject = endpoint.responses["400"]
+
+        Expect(response_400.description).toEqual("A bad request error message")
+    }
 
     @TestCase("json")
     @TestCase("yml")
