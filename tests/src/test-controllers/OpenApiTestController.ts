@@ -58,6 +58,14 @@ export class OpenApiTestControllerController extends Controller {
         return stuff
     }
 
+    @POST("/files")
+    @apiOperation({ name: "add file", description: "upload a file"})
+    @apiRequest({contentType: "application/octet-stream", type: "file"})
+    @apiResponse(201, {contentType: "application/octet-stream", type: "file"})
+    public postFile(@fromBody fileContents: string) {
+        return fileContents
+    }
+
     @PUT()
     @apiOperation({name: "put stuff", description: "go put some stuff"})
     @apiRequest({class: Person})

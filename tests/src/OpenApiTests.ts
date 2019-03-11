@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 40
+    private static readonly ROUTE_COUNT = 41
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup
@@ -475,7 +475,7 @@ export class OpenApiTests extends TestBase {
      *
      *   + custom request & response examples
      *   + request & response descriptions
-     *   - file body
+     *   + file body
      *   - building schema object from constructor
      *   - unsupported array item type in schema (should not add array)
      *   - an array of objects in schema
@@ -532,6 +532,32 @@ export class OpenApiTests extends TestBase {
         let response_400: ResponseObject = endpoint.responses["400"]
 
         Expect(response_400.description).toEqual("A bad request error message")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_request_schema_for_files(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/files", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+        let content = request.content["application/octet-stream"]
+        let schema = content.schema as SchemaObject
+
+        Expect(schema.type).toEqual("string")
+        Expect(schema.format).toEqual("binary")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_response_schema_for_files(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/files", "post")
+        let response = endpoint.responses["201"] as ResponseObject
+        let content = response.content["application/octet-stream"]
+        let schema = content.schema as SchemaObject
+
+        Expect(schema.type).toEqual("string")
+        Expect(schema.format).toEqual("binary")
     }
 
     @TestCase("json")
