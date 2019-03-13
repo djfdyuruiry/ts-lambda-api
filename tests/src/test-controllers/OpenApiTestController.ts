@@ -3,7 +3,9 @@ import { injectable } from "inversify"
 import { api, apiController, apiOperation, apiRequest, apiResponse, fromBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/typescript-lambda-api"
 
 import { ApiError } from "../test-components/model/ApiError"
+import { ConstructorOnlyModel } from "../test-components/model/ConstructorOnlyModel"
 import { Person } from "../test-components/model/Person"
+import { EdgeCaseModel } from "../test-components/model/EdgeCaseModel";
 
 @apiController("/test/open-api")
 @api("Open API Test", "Endpoints with OpenAPI decorators")
@@ -14,6 +16,20 @@ export class OpenApiTestControllerController extends Controller {
     @apiResponse(200, {type: "string"})
     public get() {
         return "OK"
+    }
+
+    @GET("/constructor")
+    @apiOperation({ name: "get constructor stuff", description: "go construct some stuff"})
+    @apiResponse(200, {class: ConstructorOnlyModel})
+    public getConstructorOnly() {
+        return new ConstructorOnlyModel()
+    }
+
+    @GET("/edge-case")
+    @apiOperation({ name: "get edge case stuff", description: "go get some edge case stuff"})
+    @apiResponse(200, {class: EdgeCaseModel})
+    public getEdgeCase() {
+        return new EdgeCaseModel()
     }
 
     @POST()

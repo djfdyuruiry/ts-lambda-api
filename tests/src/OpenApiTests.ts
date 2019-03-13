@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 41
+    private static readonly ROUTE_COUNT = 43
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup
@@ -302,6 +302,40 @@ export class OpenApiTests extends TestBase {
         Expect(schema.example).toEqual(`"a string"`)
     }
 
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_custom_request_examples(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+        let content: MediaTypeObject = request.content["application/json"]
+
+        Expect(content.example).toEqual(`{"name": "some name", "age": 22}`)
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_custom_request_descriptions(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+
+        Expect(request.description).toEqual(`Details for a person`)
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_request_schema_for_files(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/files", "post")
+        let request = endpoint.requestBody as RequestBodyObject
+        let content = request.content["application/octet-stream"]
+        let schema = content.schema as SchemaObject
+
+        Expect(schema.type).toEqual("string")
+        Expect(schema.format).toEqual("binary")
+    }
+
     @TestCase("json", {path: "/test", contentType: "text/plain"})
     @TestCase("json", {path: "/test/ei-decorator", contentType: "application/json"})
     @TestCase("json", {path: "/test/open-api", contentType: "application/json"})
@@ -470,40 +504,6 @@ export class OpenApiTests extends TestBase {
         Expect(schema.example).toEqual(`"a string"`)
     }
 
-    /**
-     * TODO these tests:
-     *
-     *   + custom request & response examples
-     *   + request & response descriptions
-     *   + file body
-     *   - building schema object from constructor
-     *   - unsupported array item type in schema (should not add array)
-     *   - an array of objects in schema
-     *   - an array of arrays in schema
-     *
-     */
-
-    @TestCase("json")
-    @TestCase("yml")
-    @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_custom_request_examples(specFormat: string) {
-        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
-        let request = endpoint.requestBody as RequestBodyObject
-        let content: MediaTypeObject = request.content["application/json"]
-
-        Expect(content.example).toEqual(`{"name": "some name", "age": 22}`)
-    }
-
-    @TestCase("json")
-    @TestCase("yml")
-    @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_custom_request_descriptions(specFormat: string) {
-        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
-        let request = endpoint.requestBody as RequestBodyObject
-
-        Expect(request.description).toEqual(`Details for a person`)
-    }
-
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
@@ -537,10 +537,10 @@ export class OpenApiTests extends TestBase {
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_request_schema_for_files(specFormat: string) {
+    public async when_openapi_enabled_then_openapi_spec_contains_schemas_for_files(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/files", "post")
-        let request = endpoint.requestBody as RequestBodyObject
-        let content = request.content["application/octet-stream"]
+        let response = endpoint.responses["201"] as ResponseObject
+        let content = response.content["application/octet-stream"]
         let schema = content.schema as SchemaObject
 
         Expect(schema.type).toEqual("string")
@@ -550,14 +550,96 @@ export class OpenApiTests extends TestBase {
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
-    public async when_openapi_enabled_then_openapi_spec_contains_response_schema_for_files(specFormat: string) {
-        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/files", "post")
-        let response = endpoint.responses["201"] as ResponseObject
-        let content = response.content["application/octet-stream"]
+    public async when_openapi_enabled_then_openapi_spec_contains_schemas_for_constructor_only_types(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/constructor", "get")
+        let response = endpoint.responses["200"] as ResponseObject
+        let content = response.content["application/json"]
         let schema = content.schema as SchemaObject
 
-        Expect(schema.type).toEqual("string")
-        Expect(schema.format).toEqual("binary")
+        Expect(schema.type).toEqual("object")
+        Expect(schema.properties).toEqual({
+            "field": {
+                "type": "string",
+                "example": ""
+            }
+        })
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_schemas_without_unsupported_array_types(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/edge-case", "get")
+        let response = endpoint.responses["200"] as ResponseObject
+        let content = response.content["application/json"]
+        let schema = content.schema as SchemaObject
+
+        Expect(schema.type).toEqual("object")
+        Expect(Object.keys(schema.properties)).not.toContain("invalidArray")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_schemas_with_object_array_types(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/edge-case", "get")
+        let response = endpoint.responses["200"] as ResponseObject
+        let content = response.content["application/json"]
+        let schema = content.schema as SchemaObject
+
+        Expect(schema.type).toEqual("object")
+        Expect(Object.keys(schema.properties)).toContain("arrayOfObjects")
+
+        let arrayOfObjectsSchema = schema.properties["arrayOfObjects"] as SchemaObject
+
+        Expect(arrayOfObjectsSchema.type).toEqual("array")
+
+        let arrayOfObjectsItemsSchema = arrayOfObjectsSchema.items as SchemaObject
+
+        Expect(arrayOfObjectsItemsSchema.type).toEqual("object")
+        Expect(arrayOfObjectsItemsSchema.properties).toEqual({
+            "field1": {
+                "type": "string",
+                "example": "field1"
+            },
+            "field2": {
+                "type": "number",
+                "example": 2
+            },
+            "field3": {
+                "type": "array",
+                "example": "[\n  1,\n  2,\n  3\n]",
+                "items": {
+                    "type": "number",
+                    "example": 1
+                }
+            }
+        })
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_schemas_with_array_array_types(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/edge-case", "get")
+        let response = endpoint.responses["200"] as ResponseObject
+        let content = response.content["application/json"]
+        let schema = content.schema as SchemaObject
+
+        Expect(schema.type).toEqual("object")
+        Expect(Object.keys(schema.properties)).toContain("arrayOfArrays")
+
+        let arrayOfObjectsSchema = schema.properties["arrayOfArrays"] as SchemaObject
+
+        Expect(arrayOfObjectsSchema.type).toEqual("array")
+        Expect(arrayOfObjectsSchema.items).toEqual({
+            "type": "array",
+            "example": "[\n  \"a\",\n  \"b\",\n  \"c\"\n]",
+            "items": {
+                "type": "string",
+                "example": "a"
+            }
+        })
     }
 
     @TestCase("json")
