@@ -159,14 +159,14 @@ export class Endpoint {
      * build a dynamic controller which simulates a controller instance.
      */
     private buildDynamicControllerInstance(request: Request, response: Response) {
-        let dynamiController = {
+        let dynamicController = {
             request,
             response
         }
 
-        dynamiController[this.endpointInfo.methodName] = this.endpointInfo.method
+        dynamicController[this.endpointInfo.methodName] = this.endpointInfo.method
 
-        return dynamiController
+        return dynamicController
     }
 
     private setResponseContentType(response: Response) {
