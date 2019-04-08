@@ -195,7 +195,7 @@ export class OpenApiGenerator {
     ) {
         let path = endpointInfo.fullPath
 
-        if (path.endsWith("/")) {
+        if (path.length > 1 && path.endsWith("/")) {
             // trim trailing forward slash from path
             path = path.substring(0, path.length - 1)
         }
@@ -232,6 +232,10 @@ export class OpenApiGenerator {
         if (endpointInfo.getControllerPropOrDefault(c => c.apiName)) {
             // associate endpoint with controller tag name
             endpointOperation.tags = [endpointInfo.controller.apiName]
+        } else if (endpointInfo.controller) {
+            endpointOperation.tags = [endpointInfo.controller.name.replace(/Controller$/, "")]
+        } else {
+            endpointOperation.tags = [endpointInfo.name]
         }
 
         if (endpointInfo.noAuth) {
