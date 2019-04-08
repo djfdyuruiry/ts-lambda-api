@@ -52,7 +52,8 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 - [Configuration](#config)
     - [lambda-api](#lambda-api)
     - [Logging](#logging)
-- [Swagger (OpenAPI)](#open-api)
+- [OpenAPI (Swagger)](#open-api)
+    - [Decorators](#open-api-decorators)
     - [YAML Support](#open-api-yaml)
     - [Authentication](#open-api-auth)
 - [Testing](#testing)
@@ -1071,7 +1072,7 @@ Logging is currently provided by the [lambda-api](https://github.com/jeremydaly/
 
 ----
 
-The OpenAPI Specification, also known as Swagger, is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
+The OpenAPI Specification, fka Swagger, is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
 
 **This framework only supports OpenAPI v3**
 
@@ -1103,6 +1104,156 @@ You can then request your specification using the paths:
 - `/api/v1/open-api.json` - JSON format
 - `/api/v1/open-api.yml` - YAML format
 
+### <a id="open-api-decorators"></a>Decorators
+
+To further document your API endpoints you can use OpenAPI decorators.
+
+- Customize the names of APIs and endpoints using `api`:
+
+    ```typescript
+    import { injectable } from "inversify"
+    import { api, apiController } from "typescript-lambda-api"
+
+    @apiController("/some")
+    @api("Awesome API", "descripton of API for doing amazing things") // the second parameter is optional
+    @injectable()
+    export class SomeController {
+        // ... endpoints ...
+    }
+    ```
+
+- Add descriptions to APIs and endpoints using `apiOperation`:
+
+    ```typescript
+    @GET()
+    @apiOperation({ name: "get stuff", description: "go get some stuff"}) // description is optional
+    public get() {
+        return "OK"
+    }
+    ```
+
+- Describe endpoint request and response content using `apiRequest` and `apiResponse`:
+
+    ```typescript
+    // using model classes
+    @POST()
+    @apiOperation({name: "add stuff", description: "go add some stuff"})
+    @apiRequest({class: Person})
+    @apiResponse(201, {class: Person}) // each response is associated with a HTTP status code
+    @apiResponse(400, {class: ApiError})
+    @apiResponse(500, {class: ApiError})
+    public post(@fromBody person: Person) {
+        return person
+    }
+
+    // using primitive types ("boolean", "double", "int", "number" or "string")
+    @POST("/plain")
+    @apiOperation({ name: "add some plain stuff", description: "go get some plain stuff"})
+    @apiRequest({type: "string"})
+    @apiResponse(200, {type: "string"})
+    public postString(@fromBody stuff: string) {
+        return stuff
+    }
+
+    // upload/download files
+    @POST("/files")
+    @apiOperation({ name: "add file", description: "upload a file"})
+    @apiRequest({contentType: "application/octet-stream", type: "file"}) // contentType can be used in any request or response definition, inherits controller or endpoint type by default
+    @apiResponse(201, {contentType: "application/octet-stream", type: "file"})
+    public postFile(@fromBody fileContents: string) {
+        return fileContents
+    }
+
+    // providing custom request/response body example
+    @POST("/custom-info")
+    @apiOperation({
+        name: "add custom stuff",
+        description: "go add some custom stuff"
+    })
+    @apiRequest({
+        class: Person,
+        example: `{"name": "some name", "age": 22}`,
+        description: "Details for a person"
+    })
+    @apiResponse(201, {
+        class: Person,
+        example: `{"name": "another name", "age": 30}`,
+        description: "Uploaded person information"
+    })
+    public postCustomInfo(@fromBody person: Person) {
+        return person
+    }
+
+    // no response content, only a status code
+    @DELETE()
+    @apiOperation({name: "delete stuff", description: "go delete some stuff"})
+    @apiResponse(204)
+    public delete() {
+        this.response.status(204).send("")
+    }
+    ```
+
+    The class `Person` is set as the request and response in several of the examples above. To help the framework provide meaningful request and response examples automatically, you must either:
+
+    1. Provide a public static `example` method in your class, which will be called if found when generating an API spec. (recommended)
+
+    ```typescript
+    export class Person {
+        public name: string
+        public age: number
+        public roles?: string[]
+
+        public static example() {
+            let person = new Person()
+
+            person.name = "name"
+            person.age = 18
+            person.roles = ["role1", "role2", "roleN"]
+
+            return person
+        }
+    }
+    ```
+
+    -OR-
+
+    2. Populate your instance in it's constructor with some non null/undefined values.
+
+    ```typescript
+    export class Person {
+        public name: string
+        public age: number
+        public roles?: string[]
+
+        public constructor() {
+            this.name = ""
+            this.age = 0
+            this.roles = []
+        }
+    }
+    ```
+
+    *This is required because object properties are not set until a value is assigned, which makes any sort of reflection impossible.*
+
+- Add security schemes to your specification (other than Basic auth) using `apiSecurity` on your authentication filter:
+
+    ```typescript
+    import { apiSecurity, IAuthFilter } from "typescript-lambda-api"
+
+    import { User } from "./User"
+
+    @apiSecurity("bearerAuth", {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT"
+    })
+    export class CustomAuthFilter implements IAuthFilter<string, User> {
+        // ... implementation ...
+    }
+    ```
+
+    This decorator uses the `SecuritySchemeObject` class from the `openapi3-ts` library to describe the security scheme in place. See the source for more information on using this class: [SecuritySchemeObject source](https://github.com/metadevpro/openapi3-ts/blob/ab997f12a63fa215e3b0c08cc293429b97ce0a44/src/model/OpenApi.ts#L314)
+
 ### <a id="open-api-yaml"></a>YAML Support
 
 For `YAML` specification support, you need to install the following packages in your project:
@@ -1115,7 +1266,6 @@ npm install -D @types/js-yaml
 ### <a id="open-api-auth"></a>Authentication
 
 By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a specification, use the `useAuthentication` key in the `openApi` config:
-
 
 ```typescript
 // build controllers path...
