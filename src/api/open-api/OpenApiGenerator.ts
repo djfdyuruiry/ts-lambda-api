@@ -534,7 +534,7 @@ export class OpenApiGenerator {
         let type = ((typeof instance)).toLowerCase()
 
         if (type === "object" && Array.isArray(instance)) {
-            // detect if the property is actually an array
+            // the property is actually an array
             type = "array"
         }
 
