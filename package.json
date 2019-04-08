@@ -1,20 +1,19 @@
 {
   "name": "typescript-lambda-api",
   "description": "Build REST API's using Typescript & AWS Lambda. Support for decorator based routing and dependecy injection using InversifyJS. This project is built on top of the wonderful lambda-api package.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/djfdyuruiry/typescript-lambda-api.git"
   },
   "scripts": {
-    "tsc": "tsc",
-    "alsatian": "alsatian",
-    "install-with-audit": "yarn install && yarn audit",
-    "build": "rm -rf dist && tsc",
-    "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
+    "build": "yarn run lint && rm -rf dist && tsc",
     "build-all": "yarn run install-with-audit && yarn run build && yarn run build-tests",
-    "tests": "cat ./tests/banner.txt && nyc --reporter=lcov --reporter=html alsatian --tap ./tests/js/**/*Tests.js 2>&1 | tee tests/results.tap",
-    "test": "rm -rf .nyc_output && rm -rf coverage && yarn run build-all && yarn run tests"
+    "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
+    "clean-install": "rm -rf node_modules && yarn install",
+    "install-with-audit": "yarn install && yarn audit",
+    "lint": "tslint 'src/**/*.ts'",
+    "test": "yarn run build-all && scripts/runTests.sh"
   },
   "files": [
     "README.md",
@@ -23,7 +22,12 @@
     "dist/**/*.d.ts"
   ],
   "nyc": {
+    "check-coverage": true,
+    "per-file": true,
     "lines": 70,
+    "statements": 70,
+    "functions": 70,
+    "branches": 70,
     "exclude": [
       "tests/**/*"
     ]
@@ -38,14 +42,20 @@
     "inversify": "^5.0.1",
     "lambda-api": "^0.10.1",
     "marky": "^1.2.1",
+    "openapi3-ts": "^1.2.0",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@types/js-yaml": "^3.12.0",
     "@types/node": "^10.12.24",
     "alsatian": "^2.3.0",
     "aws-sdk": "^2.404.0",
+    "js-yaml": "^3.12.2",
     "nyc": "^13.3.0",
+    "tap-junit": "^3.0.2",
+    "tslint": "^5.13.0",
     "typedoc": "^0.14.2",
-    "typescript": "^3.3.3"
+    "typescript": "^3.3.3",
+    "xunit-viewer": "^5.1.8"
   }
 }

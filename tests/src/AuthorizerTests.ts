@@ -7,7 +7,7 @@ import { TestAuthFilter } from "./test-components/TestAuthFilter"
 import { TestAuthorizer } from "./test-components/TestAuthorizer"
 
 @TestFixture()
-export class ApiLambdaAppTests extends TestBase {
+export class AuthorizerTests extends TestBase {
     @AsyncTest()
     @TestCase(null)
     @TestCase(undefined)
@@ -116,5 +116,24 @@ export class ApiLambdaAppTests extends TestBase {
 
         Expect(authorizer.principalPassed.name).toEqual("stoat")
         Expect(authorizer.rolePassed).toEqual("SPECIAL_USER")
+    }
+
+    @TestCase("/test-no-auth")
+    @TestCase("/test/no-auth")
+    @AsyncTest()
+    public async when_api_authorizer_configured_then_valid_no_auth_endpoint_request_does_not_invoke_authorizer_and_responds_with_200_ok(path: string) {
+        let authorizer = new TestAuthorizer()
+
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("stoat", "ihavenoideawhatiam")
+        )
+        this.app.middlewareRegistry.addAuthorizer(authorizer)
+
+        let response = await this.sendRequest(
+            RequestBuilder.get(path).build()
+        )
+
+        Expect(authorizer.wasInvoked).toBe(false)
+        Expect(response.statusCode).toEqual(200)
     }
 }

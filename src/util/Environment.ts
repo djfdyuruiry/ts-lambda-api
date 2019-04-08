@@ -1,1 +1,1 @@
-export const ProfilingEnabled: boolean = (process.env["PROFILE_API"] === "1")
+export const ProfilingEnabled: boolean = (process.env.PROFILE_API === "1")

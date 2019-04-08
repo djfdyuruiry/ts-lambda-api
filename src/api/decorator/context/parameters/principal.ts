@@ -1,4 +1,4 @@
-import { UserParameterExtractor } from '../../../parameters/UserParameterExtractor';
+import { UserParameterExtractor } from "../../../parameters/UserParameterExtractor"
 import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 
 /**

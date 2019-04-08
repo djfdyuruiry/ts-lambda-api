@@ -53,8 +53,7 @@ LICENSE
 *.markdown
 *.txt
 
-# nyc node_modules are broken by the above rules, exclude it's dependencies from cleaning
-!nyc/node_modules/**/*
-
-# typedoc has lots of non-code files, exclude it
+# below modules are broken by the above rules, exclude them from cleaning
+!nyc/**/*
 !typedoc-default-themes/**/*
+!xunit-viewer/**/*

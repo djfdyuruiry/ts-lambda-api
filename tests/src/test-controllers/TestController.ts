@@ -1,7 +1,7 @@
 import { injectable } from "inversify"
 import { Response, Request } from "lambda-api"
 
-import { apiController, controllerProduces, header, pathParam, queryParam, response, request, rolesAllowed, produces, principal, Controller, GET } from "../../../dist/typescript-lambda-api"
+import { apiController, controllerProduces, noAuth, header, pathParam, queryParam, response, request, rolesAllowed, produces, principal, Controller, GET } from "../../../dist/typescript-lambda-api"
 
 import { TestUser } from '../test-components/model/TestUser';
 
@@ -91,5 +91,11 @@ export class TestController extends Controller {
     @rolesAllowed("SPECIAL_USER")
     public restricted() {
         return "allowed in"
+    }
+
+    @GET("/no-auth")
+    @noAuth
+    public get_no_auth() {
+        return "who needs auth"
     }
 }

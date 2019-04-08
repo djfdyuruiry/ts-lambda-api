@@ -1,0 +1,26 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+        "array-type": ["array"],
+        "arrow-parens": ["ban-single-arg-parens"],
+        "ban-types": ["Function", false],
+        "member-ordering": ["instance-sandwich"],
+        "no-console": false,
+        "ordered-imports": [{
+            "import-sources-order": "lowercase-last",
+            "named-imports-order": "lowercase-first"
+        }],
+        "prefer-const": false,
+        "semicolon": ["never"],
+        "trailing-comma": [{"multiline": "never"}],
+        "variable-name": ["check-format", "allow-leading-underscore"]
+    },
+    "rulesDirectory": [],
+    "linterOptions": {
+        "exclude": ["tests/**/*.ts"]
+    }
+}

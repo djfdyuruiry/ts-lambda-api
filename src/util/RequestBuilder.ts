@@ -1,6 +1,7 @@
 import { METHODS } from "lambda-api"
 
 import { ApiRequest } from "../model/ApiRequest"
+import { IDictionary } from "./IDictionary"
 
 /**
  * Builds `ApiRequest` instances using the builder
@@ -9,17 +10,9 @@ import { ApiRequest } from "../model/ApiRequest"
 export class RequestBuilder {
     private readonly method: METHODS
     private readonly path: string
-    private readonly httpHeaders: { [key: string] : string}
-    private readonly httpQueryParams: { [key: string] : string}
+    private readonly httpHeaders: IDictionary<String>
+    private readonly httpQueryParams: IDictionary<String>
     private httpBody: string
-
-    private constructor(method: METHODS, path: string) {
-        this.method = method
-        this.path = path
-
-        this.httpHeaders = {}
-        this.httpQueryParams = {}
-    }
 
     /**
      * Start building a HTTP GET request.
@@ -76,6 +69,14 @@ export class RequestBuilder {
         return new RequestBuilder(method, path)
     }
 
+    private constructor(method: METHODS, path: string) {
+        this.method = method
+        this.path = path
+
+        this.httpHeaders = {}
+        this.httpQueryParams = {}
+    }
+
     /**
      * Add a HTTP header to the request.
      *
@@ -94,8 +95,12 @@ export class RequestBuilder {
      * @param httpHeaders Map of HTTP headers to add.
      * @returns This builder instance.
      */
-    public headers(httpHeaders: { [key: string] : string}) {
+    public headers(httpHeaders: IDictionary<String>) {
         for (let key in httpHeaders) {
+            if (!httpHeaders.hasOwnProperty(key)) {
+                continue
+            }
+
             this.httpHeaders[key] = httpHeaders[key]
         }
 
@@ -120,8 +125,12 @@ export class RequestBuilder {
      * @param params Map of HTTP query params to add.
      * @returns This builder instance.
      */
-    public queryParams(params: { [key: string] : string}) {
+    public queryParams(params: IDictionary<String>) {
         for (let key in params) {
+            if (!params.hasOwnProperty(key)) {
+                continue
+            }
+
             this.httpQueryParams[key] = params[key]
         }
 
@@ -149,14 +158,18 @@ export class RequestBuilder {
     public basicAuth(username: string, password: string) {
         let credentials = Buffer.from(`${username}:${password}`).toString("base64")
 
-        this.httpHeaders["Authorization"] = `Basic ${credentials}`
+        this.httpHeaders.Authorization = `Basic ${credentials}`
         return this
     }
 
-    private mapToObject(map: { [key: string] : string}) {
+    private mapToObject(map: IDictionary<String>) {
         let obj = {}
 
         for (let key in map) {
+            if (!map.hasOwnProperty(key)) {
+                continue
+            }
+
             obj[key] = map[key]
         }
 

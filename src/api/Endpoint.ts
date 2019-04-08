@@ -1,28 +1,31 @@
 import { interfaces } from "inversify"
-import { Request, Response, API } from "lambda-api"
+import { API, Request, Response } from "lambda-api"
 
-import { Controller } from "./Controller"
-import { MiddlewareRegistry } from './MiddlewareRegistry';
-import { ErrorInterceptor } from "./error/ErrorInterceptor"
 import { EndpointInfo } from "../model/reflection/EndpointInfo"
 import { AuthResult } from "../model/security/AuthResult"
 import { Principal } from "../model/security/Principal"
+import { Controller } from "./Controller"
+import { ErrorInterceptor } from "./error/ErrorInterceptor"
+import { MiddlewareRegistry } from "./MiddlewareRegistry"
+
+export type ControllerFactory = (constructor: Function) => Controller
+export type ErrorInterceptorFactory = (type: interfaces.ServiceIdentifier<ErrorInterceptor>) => ErrorInterceptor
 
 export class Endpoint {
-    public constructor(private readonly endpointInfo: EndpointInfo,
-        private readonly controllerFactory: (constructor: Function) => Controller,
-        private readonly errorInteceptorFactory: (type: interfaces.ServiceIdentifier<ErrorInterceptor>) => ErrorInterceptor,
-        private readonly middlewareRegistry: MiddlewareRegistry) {
-    }
+    public constructor(
+        private readonly endpointInfo: EndpointInfo,
+        private readonly controllerFactory: ControllerFactory,
+        private readonly errorInteceptorFactory: ErrorInterceptorFactory,
+        private readonly middlewareRegistry: MiddlewareRegistry
+    ) {}
 
     public register(api: API) {
         let registerMethod = this.mapHttpMethodToCall(api, this.endpointInfo.httpMethod)
 
-        let rootPath = this.endpointInfo.controller.path || ""
-        let endpointPath = this.endpointInfo.path || ""
-        let path = `${rootPath}${endpointPath}`
-
-        registerMethod(path, async (req, res) => await this.invoke(req, res))
+        registerMethod(
+            this.endpointInfo.fullPath,
+            async (req, res) => await this.invoke(req, res)
+        )
     }
 
     // entry point for lambda-api request engine
@@ -49,13 +52,17 @@ export class Endpoint {
     }
 
     private async authenticateAndAuthorizeRequest(request: Request, response: Response) {
+        if (this.endpointInfo.authenticationDisabled) {
+            return
+        }
+
         let authResult = await this.authenticateRequest(request)
 
-        if(!authResult.authenticated) {
+        if (!authResult.authenticated) {
             this.sendStatusCodeResponse(401, response)
         }
 
-        if(!await this.authorizeRequest(authResult.principal)) {
+        if (!await this.authorizeRequest(authResult.principal)) {
             this.sendStatusCodeResponse(403, response)
         }
 
@@ -98,32 +105,23 @@ export class Endpoint {
     }
 
     private async authorizeRequest(principal: Principal) {
-        let controllerRoles = this.endpointInfo.controller.rolesAllowed
-        let endpointRoles = this.endpointInfo.rolesAllowed
-        let roleRequired = controllerRoles || endpointRoles
+        let roles = this.endpointInfo.roles
 
-        if (!roleRequired) {
+        if (!roles || roles.length < 1) {
             return true
         }
 
-        if (this.middlewareRegistry.authAuthorizers.length < 1) {
-            throw new Error("Role restrictions were declared but no authorizer was registered in the middleware registry, " +
+        if (this.middlewareRegistry.authorizers.length < 1) {
+            throw new Error(
+                "Role restrictions were declared but no authorizer was registered in the middleware registry, " +
                 `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
         }
 
-        for (let authorizer of this.middlewareRegistry.authAuthorizers) {
-            if (endpointRoles) {
-                // endpoint roles, if defined, override controller roles
-                for (let role of endpointRoles) {
-                    if (await authorizer.authorize(principal, role)) {
-                        return true
-                    }
-                }
-            } else if (controllerRoles) {
-                for (let role of controllerRoles) {
-                    if (await authorizer.authorize(principal, role)) {
-                        return true
-                    }
+        for (let authorizer of this.middlewareRegistry.authorizers) {
+            // endpoint roles, if defined, override controller roles
+            for (let role of roles) {
+                if (await authorizer.authorize(principal, role)) {
+                    return true
                 }
             }
         }
@@ -138,6 +136,10 @@ export class Endpoint {
     }
 
     private buildControllerInstance(request: Request, response: Response): any {
+        if (!this.endpointInfo.controller) {
+            return this.buildDynamicControllerInstance(request, response)
+        }
+
         let controller: Controller =
             this.controllerFactory(this.endpointInfo.controller.classConstructor)
 
@@ -152,14 +154,23 @@ export class Endpoint {
         return controller
     }
 
-    private setResponseContentType(response: Response) {
-        let produces: string
-
-        if (this.endpointInfo.produces) {
-            produces = this.endpointInfo.produces
-        } else if (this.endpointInfo.controller.produces) {
-            produces = this.endpointInfo.controller.produces
+    /**
+     * If an endpoint is function only (has no controller bound to it), we
+     * build a dynamic controller which simulates a controller instance.
+     */
+    private buildDynamicControllerInstance(request: Request, response: Response) {
+        let dynamicController = {
+            request,
+            response
         }
+
+        dynamicController[this.endpointInfo.methodName] = this.endpointInfo.method
+
+        return dynamicController
+    }
+
+    private setResponseContentType(response: Response) {
+        let produces = this.endpointInfo.responseContentType
 
         if (produces) {
             response.removeHeader("Content-Type")
@@ -168,41 +179,43 @@ export class Endpoint {
     }
 
     private mapHttpMethodToCall(api: API, method: string) {
-        if (method == "GET") {
+        if (method === "GET") {
             return api.get
-        } else if (method == "POST") {
+        } else if (method === "POST") {
             return api.post
-        } else if (method == "PUT") {
+        } else if (method === "PUT") {
             return api.put
-        } else if (method == "PATCH") {
+        } else if (method === "PATCH") {
             return api.patch
-        } else if (method == "DELETE") {
+        } else if (method === "DELETE") {
             return api.delete
         }
 
         throw new Error(`Unrecognised HTTP method ${method}`)
     }
 
-    private async invokeControllerMethod(controller: Controller, request: Request, response: Response, principal: Principal) {
-        var method: Function = controller[this.endpointInfo.methodName]
-        var parameters = this.buildEndpointParameters(request, response, principal)
+    private async invokeControllerMethod(
+        controller: Controller, request: Request, response: Response, principal: Principal
+    ) {
+        let method: Function = controller[this.endpointInfo.methodName]
+        let parameters = this.buildEndpointParameters(request, response, principal)
 
         try {
             return await method.apply(controller, parameters)
-        } catch(ex) {
+        } catch (ex) {
             let errorInterceptor = this.getMatchingErrorInterceptor()
 
             if (errorInterceptor) {
                 let interceptorResponse = await errorInterceptor.intercept({
-                    error: ex,
-                    endpointMethodParameters: parameters,
-                    endpointMethod: method,
                     endpointController: controller,
-                    request: request,
-                    response: response
+                    endpointMethod: method,
+                    endpointMethodParameters: parameters,
+                    error: ex,
+                    request,
+                    response
                 })
 
-                if(this.responseSent(response, interceptorResponse)) {
+                if (this.responseSent(response, interceptorResponse)) {
                     return interceptorResponse
                 }
             }
@@ -220,20 +233,23 @@ export class Endpoint {
     private getMatchingErrorInterceptor() {
         let decoratorInterceptor: ErrorInterceptor
 
-        if (this.endpointInfo.errorInterceptor) {
-            decoratorInterceptor = this.errorInteceptorFactory(this.endpointInfo.errorInterceptor)
-        } else if (this.endpointInfo.controller.errorInterceptor) {
-            decoratorInterceptor = this.errorInteceptorFactory(this.endpointInfo.controller.errorInterceptor)
+        if (this.endpointInfo.endpointErrorInterceptor) {
+            decoratorInterceptor = this.errorInteceptorFactory(this.endpointInfo.endpointErrorInterceptor)
         }
 
         if (decoratorInterceptor) {
-            decoratorInterceptor.controllerTarget = this.endpointInfo.controller.name
+            decoratorInterceptor.controllerTarget = this.endpointInfo.getControllerPropOrDefault(c => c.name)
             decoratorInterceptor.endpointTarget = this.endpointInfo.name
 
             return decoratorInterceptor
         }
 
         return this.middlewareRegistry.errorInterceptors
-            .find(i => i.shouldIntercept(this.endpointInfo.controller.name, this.endpointInfo.name))
+            .find(i =>
+                i.shouldIntercept(
+                    this.endpointInfo.getControllerPropOrDefault(c => c.name),
+                    this.endpointInfo.name
+                )
+            )
     }
 }

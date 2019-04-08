@@ -13,19 +13,16 @@ import { timed } from "./util/timed"
  * The `run` method is the function handler entrypoint.
  */
 export class ApiLambdaApp extends ApiApp {
-    private readonly controllersPath: string
-
     /**
      * Create a new lambda app.
      *
      * @param controllersPath Path to the directory containing controller `js` files.
      * @param appConfig (Optional) Application config to pass to `lambda-api`.
-     * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can build controllers and error interceptors.
+     * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can build
+     *                     controllers and error interceptors.
      */
     public constructor(controllersPath: string, appConfig?: AppConfig, appContainer?: Container) {
-        super(appConfig, appContainer)
-
-        this.controllersPath = controllersPath
+        super(controllersPath, appConfig, appContainer)
     }
 
     /**
@@ -37,7 +34,7 @@ export class ApiLambdaApp extends ApiApp {
      */
     @timed
     public async run(event: ApiRequest, context: any) {
-        await super.initialiseControllers(this.controllersPath)
+        await super.initialiseControllers()
 
         return await this.apiServer.processEvent(event, context)
     }

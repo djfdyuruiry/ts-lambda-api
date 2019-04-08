@@ -1,6 +1,8 @@
 import { injectable } from "inversify"
 import { LoggerOptions, Options, SerializerFunction } from "lambda-api"
 
+import { OpenApiConfig } from "./OpenApiConfig"
+
 /**
  * Base class for app configuration. Extend this
  * to supply your own configuration properties.
@@ -13,6 +15,16 @@ import { LoggerOptions, Options, SerializerFunction } from "lambda-api"
  */
 @injectable()
 export class AppConfig implements Options {
+    /**
+     * API human readable name.
+     */
+    public name?: string
+
+    /**
+     * Version number accessible via `Request` context instances.
+     */
+    public version?: string
+
     /**
      * Base path for all routes, e.g. base: 'v1' would
      * prefix all routes with /v1.
@@ -48,7 +60,7 @@ export class AppConfig implements Options {
     public serializer?: SerializerFunction
 
     /**
-     * Version number accessible via `Request` context instances.
+     * OpenAPI configuration.
      */
-    public version?: string
+    public openApi?: OpenApiConfig = new OpenApiConfig()
 }
