@@ -56,7 +56,7 @@ export class Endpoint {
             return
         }
 
-        let authResult = await this.authenticateRequest(request)
+        let authResult = await this.authenticateRequest(request, response)
 
         if (!authResult.authenticated) {
             this.sendStatusCodeResponse(401, response)
@@ -69,8 +69,9 @@ export class Endpoint {
         return authResult.principal
     }
 
-    private async authenticateRequest(request: Request) {
+    private async authenticateRequest(request: Request, response: Response) {
         let authResult = new AuthResult()
+        let authScheme = ""
 
         if (this.middlewareRegistry.authFilters.length < 1) {
             authResult.authenticated = true
@@ -78,6 +79,8 @@ export class Endpoint {
         }
 
         for (let filter of this.middlewareRegistry.authFilters) {
+            authScheme = filter.authenticationSchemeName
+
             let authData = await filter.extractAuthData(request)
 
             if (authData) {
@@ -92,6 +95,10 @@ export class Endpoint {
                 // return after finding a filter that authenticates the user
                 return authResult
             }
+        }
+
+        if (!authResult.authenticated && authScheme) {
+            response.header("WWW-Authenticate", authScheme)
         }
 
         return authResult

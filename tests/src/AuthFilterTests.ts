@@ -77,6 +77,34 @@ export class AuthFilterTests extends TestBase {
         Expect(response.statusCode).toEqual(401)
     }
 
+    @AsyncTest()
+    public async when_api_auth_filter_configured_then_401_unauthorized_response_contains_www_authenticate_header() {
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("luke", "vaderismydad")
+        )
+
+        let response = await this.sendRequest(
+            RequestBuilder.get("/test")
+                .build()
+        )
+
+        Expect(response.headers["www-authenticate"]).toBeDefined()
+    }
+
+    @AsyncTest()
+    public async when_api_auth_filter_configured_then_401_unauthorized_response_contains_basic_www_authenticate_header() {
+        this.app.middlewareRegistry.addAuthFilter(
+            new TestAuthFilter("luke", "vaderismydad")
+        )
+
+        let response = await this.sendRequest(
+            RequestBuilder.get("/test")
+                .build()
+        )
+
+        Expect(response.headers["www-authenticate"]).toEqual("Basic")
+    }
+
     @TestCase("/test-no-auth")
     @TestCase("/test/no-auth")
     @AsyncTest()

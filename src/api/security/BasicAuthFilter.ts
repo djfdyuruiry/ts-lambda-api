@@ -13,6 +13,8 @@ import { apiSecurity } from "../decorator/open-api/apiSecurity";
     type: "http"
 })
 export abstract class BasicAuthFilter<T extends Principal> implements IAuthFilter<BasicAuth, T> {
+    public readonly authenticationSchemeName: string = "Basic"
+
     /**
      * If the authentication scheme is 'Basic', returns a BasicAuth instance containing
      * the username and password, otherwise returns undefined.

@@ -11,6 +11,13 @@ import { Principal } from "../../model/security/Principal"
  */
 export interface IAuthFilter<T, U extends Principal> {
     /**
+     * String to use in `WWW-Authenticate` header when returing
+     * a HTTP 401 response, see:
+     *   https://www.iana.org/assignments/http-authschemes/http-authschemes.xhtml
+     */
+    readonly authenticationSchemeName: string
+
+    /**
      * Extract an instance of the authentication data type `T`
      * from a HTTP request. If extraction is not possible due to
      * missing request headers/data, `undefined` should be returned.
