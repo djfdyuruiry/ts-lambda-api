@@ -604,6 +604,10 @@ import { StoreUser } from "./StoreUser"
 import { TokenAuth } from "./TokenAuth"
 
 export class TokenAuthFilter<T extends Principal> implements IAuthFilter<TokenAuth, StoreUser> {
+    // required to be defined for implementations, see:
+    //   https://www.iana.org/assignments/http-authschemes/http-authschemes.xhtml
+    public readonly authenticationSchemeName: string = "Bearer"
+
     public async extractAuthData(request: Request): Promise<TokenAuth | undefined> {
         // extract the data if the auth header is present
         if (request.headers["Authorization"]) {

@@ -10,6 +10,8 @@ import { TestUser } from "./model/TestUser"
     bearerFormat: "JWT"
 })
 export class TestCustomAuthFilter implements IAuthFilter<string, TestUser> {
+    public readonly authenticationSchemeName: string = "Bearer"
+
     public wasInvoked: boolean
     public passedCredentials: string
 
