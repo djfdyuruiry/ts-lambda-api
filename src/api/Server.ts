@@ -40,6 +40,10 @@ export class Server {
 
         this.logger = this.logFactory.getLogger(Server)
 
+        // ensure decorator registry has the right log level
+        //   (now that we know the app config)
+        DecoratorRegistry.setLogger(this.logFactory)
+
         this.api = createAPI(appConfig)
         this._middlewareRegistry = new MiddlewareRegistry(this.logFactory)
     }
@@ -76,7 +80,7 @@ export class Server {
      */
     @timed
     public async discoverAndBuildRoutes(controllersPath: string) {
-        await ControllerLoader.loadControllers(controllersPath)
+        await ControllerLoader.loadControllers(controllersPath, this.logFactory)
 
         if (this.appConfig.openApi && this.appConfig.openApi.enabled) {
             this.registerOpenApiEndpoints()
@@ -99,7 +103,11 @@ export class Server {
     private registerOpenApiEndpoint(format: OpenApiFormat) {
         let specEndpoint = new EndpointInfo(
             `internal__openapi::${format}`,
-            async () => await OpenApiGenerator.exportOpenApiSpec(format, this.appConfig, this._middlewareRegistry)
+            async () => {
+                let openApiGenerator = new OpenApiGenerator(this.appConfig, this._middlewareRegistry, this.logFactory)
+
+                return await openApiGenerator.exportOpenApiSpec(format)
+            }
         )
 
         specEndpoint.path = `/open-api.${format}`

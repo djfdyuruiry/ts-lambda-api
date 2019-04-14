@@ -31,7 +31,14 @@ export class Endpoint {
 
         registerMethod(
             this.endpointInfo.fullPath,
-            async (req, res) => await this.invoke(req, res)
+            async (req, res) => {
+                try {
+                    return await this.invoke(req, res)
+                } catch (ex) {
+                    this.logger.error("Error processing endpoint request:\n%j", ex)
+                    throw ex
+                }
+            }
         )
     }
 
@@ -247,7 +254,10 @@ export class Endpoint {
     private buildEndpointParameters(request: Request, response: Response, principal: Principal): any[] {
         return this.endpointInfo
             .parameterExtractors
-            .map(pe => pe.extract(request, response, principal))
+            .map(pe => {
+                pe.setLogger(this.logFactory)
+                return pe.extract(request, response, principal)
+            })
     }
 
     private getMatchingErrorInterceptor() {

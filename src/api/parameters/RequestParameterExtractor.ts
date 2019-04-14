@@ -1,10 +1,14 @@
 import { Request } from "lambda-api"
 
-import { IParameterExtractor } from "./IParameterExtractor"
+import { BaseParameterExtractor } from "./BaseParameterExtractor"
 
-export class RequestParameterExtractor implements IParameterExtractor {
+export class RequestParameterExtractor extends BaseParameterExtractor {
     public readonly source = "virtual"
     public readonly name = "request"
+
+    public constructor() {
+        super(RequestParameterExtractor)
+    }
 
     public extract(request: Request) {
         return request

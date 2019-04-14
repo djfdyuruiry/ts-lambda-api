@@ -21,6 +21,8 @@ import { EndpointInfo } from "../../model/reflection/EndpointInfo"
 import { IDictionary } from "../../util/IDictionary"
 import { toJson } from "../../util/jsonUtils"
 import { timed } from "../../util/timed"
+import { ILogger } from "../../util/logging/ILogger"
+import { LogFactory } from "../../util/logging/LogFactory"
 
 export type OpenApiFormat = "json" | "yml"
 
@@ -78,18 +80,26 @@ export class OpenApiGenerator {
         "string-array": ["1st string", "2nd string", "3rd string"]
     }
 
-    @timed
-    public static buildOpenApiSpec(appConfig: AppConfig, middlewareRegistry: MiddlewareRegistry) {
-        return OpenApiGenerator.generateApiOpenApiSpecBuilder(appConfig, middlewareRegistry).getSpec()
+    private readonly logger: ILogger
+
+    public constructor(
+        private readonly appConfig: AppConfig,
+        private readonly middlewareRegistry: MiddlewareRegistry,
+        logFactory: LogFactory
+    ) {
+        this.logger = logFactory.getLogger(OpenApiGenerator)
     }
 
     @timed
-    public static async exportOpenApiSpec(
-        format: OpenApiFormat = "json",
-        appConfig: AppConfig,
-        middlewareRegistry: MiddlewareRegistry
+    public buildOpenApiSpec() {
+        return this.generateApiOpenApiSpecBuilder(this.appConfig, this.middlewareRegistry).getSpec()
+    }
+
+    @timed
+    public async exportOpenApiSpec(
+        format: OpenApiFormat = "json"
     ) {
-        let openApiBuilder = OpenApiGenerator.generateApiOpenApiSpecBuilder(appConfig, middlewareRegistry)
+        let openApiBuilder = this.generateApiOpenApiSpecBuilder(this.appConfig, this.middlewareRegistry)
 
         if (format === "json") {
             return openApiBuilder.getSpecAsJson()
@@ -105,7 +115,7 @@ export class OpenApiGenerator {
         }
     }
 
-    private static generateApiOpenApiSpecBuilder(appConfig: AppConfig, middlewareRegistry: MiddlewareRegistry) {
+    private generateApiOpenApiSpecBuilder(appConfig: AppConfig, middlewareRegistry: MiddlewareRegistry) {
         let openApiBuilder = OpenApiBuilder.create()
         let paths: IDictionary<PathItemObject> = {}
         let tags: IDictionary<TagObject> = {}
@@ -124,9 +134,9 @@ export class OpenApiGenerator {
             })
         }
 
-        OpenApiGenerator.discoverSecuritySchemes(openApiBuilder, middlewareRegistry)
+        this.discoverSecuritySchemes(openApiBuilder, middlewareRegistry)
 
-        OpenApiGenerator.discoverTagsAndPaths(paths, tags)
+        this.discoverTagsAndPaths(paths, tags)
 
         // add all discovered tags
         for (let tag in tags) {
@@ -149,7 +159,7 @@ export class OpenApiGenerator {
         return openApiBuilder
     }
 
-    private static discoverSecuritySchemes(openApiBuilder: OpenApiBuilder, middlewareRegistry: MiddlewareRegistry) {
+    private discoverSecuritySchemes(openApiBuilder: OpenApiBuilder, middlewareRegistry: MiddlewareRegistry) {
         for (let authFilter of middlewareRegistry.authFilters) {
             let constructor = authFilter.constructor
             let authFilterInfo = OpenApiGenerator.AUTH_FILTERS[constructor.name]
@@ -167,7 +177,7 @@ export class OpenApiGenerator {
         }
     }
 
-    private static discoverTagsAndPaths(paths: IDictionary<PathItemObject>, tags: IDictionary<TagObject>) {
+    private discoverTagsAndPaths(paths: IDictionary<PathItemObject>, tags: IDictionary<TagObject>) {
         for (let endpoint in OpenApiGenerator.ENDPOINTS) {
             if (!OpenApiGenerator.ENDPOINTS.hasOwnProperty(endpoint)) {
                 continue
@@ -176,14 +186,14 @@ export class OpenApiGenerator {
             let endpointInfo = OpenApiGenerator.ENDPOINTS[endpoint]
 
             if (endpointInfo.controller) {
-                OpenApiGenerator.addTagIfPresent(tags, endpointInfo.controller)
+                this.addTagIfPresent(tags, endpointInfo.controller)
             }
 
-            OpenApiGenerator.addEndpoint(paths, endpointInfo)
+            this.addEndpoint(paths, endpointInfo)
         }
     }
 
-    private static addTagIfPresent(tags: IDictionary<TagObject>, controller: ControllerInfo) {
+    private addTagIfPresent(tags: IDictionary<TagObject>, controller: ControllerInfo) {
         if (!controller.apiName || tags[controller.apiName]) {
             // tag name not defined or already recorded
             return
@@ -195,7 +205,7 @@ export class OpenApiGenerator {
         }
     }
 
-    private static addEndpoint(
+    private addEndpoint(
         paths: IDictionary<PathItemObject>,
         endpointInfo: EndpointInfo
     ) {
@@ -213,27 +223,27 @@ export class OpenApiGenerator {
         }
 
         if (endpointMethod !== "get" && endpointMethod !== "delete") {
-            OpenApiGenerator.setRequestInfo(endpointOperation, endpointInfo)
+            this.setRequestInfo(endpointOperation, endpointInfo)
         }
 
         if (endpointInfo.responseContentType) {
             // user declared response content type
-            OpenApiGenerator.setEndpointResponseContentType(
+            this.setEndpointResponseContentType(
                 endpointOperation, endpointInfo.responseContentType
             )
         } else {
             // default response content type
-            OpenApiGenerator.setEndpointResponseContentType(
+            this.setEndpointResponseContentType(
                 endpointOperation, "application/json" // use lambda-api content-type default
             )
         }
 
         if (endpointInfo.apiOperationInfo) {
             // user declared endpoint info
-            OpenApiGenerator.addEndpointOperationInfo(endpointInfo, endpointOperation)
+            this.addEndpointOperationInfo(endpointInfo, endpointOperation)
         }
 
-        OpenApiGenerator.addParametersToEndpoint(endpointOperation, endpointInfo)
+        this.addParametersToEndpoint(endpointOperation, endpointInfo)
 
         if (endpointInfo.getControllerPropOrDefault(c => c.apiName)) {
             // associate endpoint with controller tag name
@@ -253,7 +263,7 @@ export class OpenApiGenerator {
         paths[path] = pathInfo
     }
 
-    private static setRequestInfo(endpointOperation: OperationObject, endpointInfo: EndpointInfo) {
+    private setRequestInfo(endpointOperation: OperationObject, endpointInfo: EndpointInfo) {
         let requestInfo = endpointInfo.apiRequestInfo
         let operationRequestType: string
 
@@ -273,7 +283,7 @@ export class OpenApiGenerator {
         operationRequestType = operationRequestType.toLowerCase()
 
         // user declared request content type
-        let mediaTypeObject = OpenApiGenerator.setEndpointRequestContentType(
+        let mediaTypeObject = this.setEndpointRequestContentType(
             endpointOperation,
             operationRequestType,
             requestInfo
@@ -287,9 +297,9 @@ export class OpenApiGenerator {
         mediaTypeObject.schema = {}
 
         if (requestInfo.type) {
-            OpenApiGenerator.addPrimitiveToMediaTypeObject(mediaTypeObject, requestInfo)
+            this.addPrimitiveToMediaTypeObject(mediaTypeObject, requestInfo)
         } else if (requestInfo.class) {
-            OpenApiGenerator.addClassToMediaTypeObject(
+            this.addClassToMediaTypeObject(
                 mediaTypeObject, requestInfo, operationRequestType
             )
         }
@@ -305,7 +315,7 @@ export class OpenApiGenerator {
         }
     }
 
-    private static setEndpointRequestContentType(
+    private setEndpointRequestContentType(
         endpointOperation: OperationObject,
         requestContentType: string,
         requestInfo: ApiBodyInfo
@@ -323,7 +333,7 @@ export class OpenApiGenerator {
         return mediaTypeObject
     }
 
-    private static addEndpointOperationInfo(endpointInfo: EndpointInfo, endpointOperation: OperationObject) {
+    private addEndpointOperationInfo(endpointInfo: EndpointInfo, endpointOperation: OperationObject) {
         let operationInfo = endpointInfo.apiOperationInfo
         let responseContentType = endpointInfo.responseContentType || "application/json"
 
@@ -331,7 +341,7 @@ export class OpenApiGenerator {
         endpointOperation.description = operationInfo.description
 
         if (operationInfo.request) {
-            OpenApiGenerator.setRequestInfo(endpointOperation, endpointInfo)
+            this.setRequestInfo(endpointOperation, endpointInfo)
         }
 
         for (let statusCode in operationInfo.responses) {
@@ -339,14 +349,14 @@ export class OpenApiGenerator {
                 continue
             }
 
-            OpenApiGenerator.setEndpointResponseContentType(
+            this.setEndpointResponseContentType(
                 endpointOperation, responseContentType,
                 statusCode, operationInfo.responses[statusCode]
             )
         }
     }
 
-    private static setEndpointResponseContentType(
+    private setEndpointResponseContentType(
         endpointOperation: OperationObject, responseContentType: string,
         statusCode?: string, apiBodyInfo?: ApiBodyInfo
     ) {
@@ -366,9 +376,9 @@ export class OpenApiGenerator {
             }
 
             if (apiBodyInfo.type) {
-                OpenApiGenerator.addPrimitiveToMediaTypeObject(mediaTypeObject, apiBodyInfo)
+                this.addPrimitiveToMediaTypeObject(mediaTypeObject, apiBodyInfo)
             } else if (apiBodyInfo.class) {
-                OpenApiGenerator.addClassToMediaTypeObject(
+                this.addClassToMediaTypeObject(
                     mediaTypeObject, apiBodyInfo, responseType
                 )
             }
@@ -400,7 +410,7 @@ export class OpenApiGenerator {
         }
     }
 
-    private static addPrimitiveToMediaTypeObject(mediaTypeObject: MediaTypeObject, apiBodyInfo: ApiBodyInfo) {
+    private addPrimitiveToMediaTypeObject(mediaTypeObject: MediaTypeObject, apiBodyInfo: ApiBodyInfo) {
         let type = apiBodyInfo.type.toLowerCase()
 
         if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
@@ -411,7 +421,7 @@ export class OpenApiGenerator {
 
         if (type !== "file") {
             mediaTypeObject.schema = {
-                example: OpenApiGenerator.getPrimitiveTypeExample(apiBodyInfo.type),
+                example: this.getPrimitiveTypeExample(apiBodyInfo.type),
                 type: schemaType
             }
         } else {
@@ -422,13 +432,13 @@ export class OpenApiGenerator {
         }
     }
 
-    private static getPrimitiveTypeExample(type: string) {
+    private getPrimitiveTypeExample(type: string) {
         let example = OpenApiGenerator.OPEN_API_TYPE_EXAMPLES[type]
 
         return toJson(example)
     }
 
-    private static addClassToMediaTypeObject(
+    private addClassToMediaTypeObject(
         mediaTypeObject: MediaTypeObject,
         apiBodyInfo: ApiBodyInfo,
         responseContentType: string
@@ -456,14 +466,14 @@ export class OpenApiGenerator {
             schema.example = exampleJson
         }
 
-        OpenApiGenerator.addObjectPropertiesToSchema(mediaTypeObject.schema, instance)
+        this.addObjectPropertiesToSchema(mediaTypeObject.schema, instance)
     }
 
-    private static addObjectPropertiesToSchema(schema: SchemaObject, instance: any) {
+    private addObjectPropertiesToSchema(schema: SchemaObject, instance: any) {
         let objectProperties = Object.getOwnPropertyNames(instance)
 
         for (let property of objectProperties) {
-            let type = OpenApiGenerator.getTypeOfInstanceProperty(instance, property)
+            let type = this.getTypeOfInstanceProperty(instance, property)
 
             if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
                 // not a supported type or null/undefined, ommit this property
@@ -478,10 +488,10 @@ export class OpenApiGenerator {
                 // get schema for property object
                 propertySchema.example = toJson(instance[property])
 
-                OpenApiGenerator.addObjectPropertiesToSchema(propertySchema, instance[property])
+                this.addObjectPropertiesToSchema(propertySchema, instance[property])
             } else if (type === "array") {
                 if (instance[property].length > 0) {
-                    if (!OpenApiGenerator.addArrayToSchema(propertySchema, instance[property])) {
+                    if (!this.addArrayToSchema(propertySchema, instance[property])) {
                         // unsupported array item type or null/undefined, ommit this property
                         continue
                     }
@@ -501,8 +511,8 @@ export class OpenApiGenerator {
         }
     }
 
-    private static addArrayToSchema(propertySchema: SchemaObject, instance: any) {
-        let itemType = OpenApiGenerator.getInstanceType(instance[0])
+    private addArrayToSchema(propertySchema: SchemaObject, instance: any) {
+        let itemType = this.getInstanceType(instance[0])
 
         if (!OpenApiGenerator.OPEN_API_TYPES.includes(itemType)) {
             return false
@@ -517,13 +527,13 @@ export class OpenApiGenerator {
             propertySchema.items.example = toJson(instance[0])
 
             // get schema for array item type
-            OpenApiGenerator.addObjectPropertiesToSchema(
+            this.addObjectPropertiesToSchema(
                 propertySchema.items,
                 instance[0]
             )
         } else if (itemType === "array") {
             if (instance.length > 0) {
-                OpenApiGenerator.addArrayToSchema(propertySchema.items, instance[0])
+                this.addArrayToSchema(propertySchema.items, instance[0])
             }
         } else {
             propertySchema.items.example = instance[0]
@@ -532,11 +542,11 @@ export class OpenApiGenerator {
         return true
     }
 
-    private static getTypeOfInstanceProperty(instance: any, property: string | number) {
-        return OpenApiGenerator.getInstanceType(instance[property])
+    private getTypeOfInstanceProperty(instance: any, property: string | number) {
+        return this.getInstanceType(instance[property])
     }
 
-    private static getInstanceType(instance: any) {
+    private getInstanceType(instance: any) {
         let type = ((typeof instance)).toLowerCase()
 
         if (type === "object" && Array.isArray(instance)) {
@@ -547,7 +557,7 @@ export class OpenApiGenerator {
         return type
     }
 
-    private static addParametersToEndpoint(endpointOperation: OperationObject, endpointInfo: EndpointInfo) {
+    private addParametersToEndpoint(endpointOperation: OperationObject, endpointInfo: EndpointInfo) {
         endpointOperation.parameters = []
 
         endpointInfo.parameterExtractors.forEach(p => {

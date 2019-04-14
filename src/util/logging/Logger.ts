@@ -19,6 +19,7 @@ export class Logger implements ILogger {
             return
         }
 
+        let uppercaseLevel = LogLevel[level].toUpperCase()
         let now = new Date()
         let formattedMessage = message
 
@@ -30,14 +31,14 @@ export class Logger implements ILogger {
             console.log(
                 "%s %s %s - %s",
                 now.toISOString(),
-                LogLevel[level],
+                uppercaseLevel,
                 this.clazz,
                 formattedMessage
             )
         } else {
             console.log(
                 JSON.stringify({
-                    level: LogLevel[level],
+                    level: uppercaseLevel,
                     msg: formattedMessage,
                     time: now.getTime()
                 })
