@@ -7,10 +7,12 @@ import { AppConfig, ApiLambdaApp, ApiRequest, ApiResponse } from "../../dist/typ
 export class TestBase {
     protected static readonly CONTROLLERS_PATH: string = path.join(__dirname, "test-controllers")
 
+    protected appConfig: AppConfig
     protected app: ApiLambdaApp
 
     @Setup
     public setup(appConfig?: AppConfig) {
+        this.appConfig = appConfig
         this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, appConfig)
     }
 
