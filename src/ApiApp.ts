@@ -7,6 +7,8 @@ import { Server } from "./api/Server"
 import { AppConfig } from "./model/AppConfig"
 import { ApiRequest } from "./model/ApiRequest"
 import { ApiResponse } from "./model/ApiResponse"
+import { ILogger } from "./util/logging/ILogger"
+import { LogFactory } from "./util/logging/LogFactory"
 
 /**
  * Application base class which combines the `Server`, `Container`(`InversifyJS`)
@@ -22,6 +24,9 @@ import { ApiResponse } from "./model/ApiResponse"
  */
 export abstract class ApiApp {
     protected readonly apiServer: Server
+
+    protected readonly logFactory: LogFactory
+    protected logger: ILogger
 
     public get middlewareRegistry() {
         return this.apiServer.middlewareRegistry
@@ -40,6 +45,9 @@ export abstract class ApiApp {
         protected appConfig: AppConfig = new AppConfig(),
         protected appContainer: Container = new Container({ autoBindInjectable: true })
     ) {
+        this.logFactory = new LogFactory(appConfig)
+        this.logger = this.logFactory.getLogger(ApiApp)
+
         this.apiServer = new Server(appContainer, appConfig)
     }
 

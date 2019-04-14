@@ -4,14 +4,15 @@ import { Container } from "inversify"
 import { ApiRequest } from "../model/ApiRequest"
 import { ApiResponse } from "../model/ApiResponse"
 import { AppConfig } from "../model/AppConfig"
-import { EndpointInfo } from "../model/reflection/EndpointInfo";
+import { EndpointInfo } from "../model/reflection/EndpointInfo"
+import { ILogger } from "../util/logging/ILogger"
+import { LogFactory } from "../util/logging/LogFactory"
 import { timed } from "../util/timed"
 import { Endpoint } from "./Endpoint"
 import { MiddlewareRegistry } from "./MiddlewareRegistry"
 import { OpenApiGenerator, OpenApiFormat } from "./open-api/OpenApiGenerator"
 import { ControllerLoader } from "./reflection/ControllerLoader"
 import { DecoratorRegistry } from "./reflection/DecoratorRegistry"
-import { BasicAuthFilter } from "./security/BasicAuthFilter"
 
 /**
  * Server that discovers routes using decorators on controller
@@ -19,6 +20,8 @@ import { BasicAuthFilter } from "./security/BasicAuthFilter"
  * `lambda-api` package.
  */
 export class Server {
+    private readonly logFactory: LogFactory
+    private readonly logger: ILogger
     private readonly api: API
     private readonly _middlewareRegistry: MiddlewareRegistry
 
@@ -32,9 +35,13 @@ export class Server {
      * @param appContainer Application container to use to build containers.
      * @param appConfig Application config to pass to `lambda-api`.
      */
-    public constructor(private appContainer: Container, private appConfig?: AppConfig) {
+    public constructor(private appContainer: Container, private appConfig: AppConfig) {
+        this.logFactory = new LogFactory(appConfig)
+
+        this.logger = this.logFactory.getLogger(Server)
+
         this.api = createAPI(appConfig)
-        this._middlewareRegistry = new MiddlewareRegistry()
+        this._middlewareRegistry = new MiddlewareRegistry(this.logFactory)
     }
 
     /**
@@ -108,7 +115,8 @@ export class Server {
             endpointInfo,
             c => this.appContainer.get(c),
             ei => this.appContainer.get(ei),
-            this._middlewareRegistry
+            this._middlewareRegistry,
+            this.logFactory
         )
 
         apiEndpoint.register(this.api)

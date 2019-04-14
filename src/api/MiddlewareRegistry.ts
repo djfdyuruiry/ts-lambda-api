@@ -1,4 +1,6 @@
 import { Principal } from "../model/security/Principal"
+import { ILogger } from "../util/logging/ILogger"
+import { LogFactory } from "../util/logging/LogFactory"
 import { ErrorInterceptor } from "./error/ErrorInterceptor"
 import { IAuthFilter } from "./security/IAuthFilter"
 import { IAuthorizer } from "./security/IAuthorizer"
@@ -11,6 +13,7 @@ export class MiddlewareRegistry {
     private _authFilters: IAuthFilter<any, Principal>[]
     private _authorizers: IAuthorizer<Principal>[]
     private _errorInterceptors: ErrorInterceptor[]
+    private readonly logger: ILogger
 
     /**
      * Authentication filters to apply. These are chained, meaning only
@@ -39,10 +42,12 @@ export class MiddlewareRegistry {
         return this._errorInterceptors
     }
 
-    public constructor() {
+    public constructor(logFactory: LogFactory) {
         this._authFilters = []
         this._authorizers = []
         this._errorInterceptors = []
+
+        this.logger = logFactory.getLogger(MiddlewareRegistry)
     }
 
     /**

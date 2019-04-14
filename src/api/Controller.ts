@@ -3,6 +3,7 @@ import { injectable } from "inversify"
 import { Request, Response } from "lambda-api"
 
 import { JsonPatch } from "../model/JsonPatch"
+import { ILogger } from "../util/logging/ILogger"
 
 /**
  * Base class for API controllers. Provides access to the
@@ -12,6 +13,11 @@ import { JsonPatch } from "../model/JsonPatch"
 @injectable()
 export abstract class Controller {
     /**
+     *
+     */
+    protected _logger: ILogger
+
+    /**
      * The current HTTP request context.
      */
     protected request: Request
@@ -20,6 +26,10 @@ export abstract class Controller {
      * The current HTTP response context.
      */
     protected response: Response
+
+    public setLogger(logger: ILogger) {
+        this._logger = logger
+    }
 
     public setRequest(request: Request) {
         this.request = request

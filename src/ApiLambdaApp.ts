@@ -23,6 +23,8 @@ export class ApiLambdaApp extends ApiApp {
      */
     public constructor(controllersPath: string, appConfig?: AppConfig, appContainer?: Container) {
         super(controllersPath, appConfig, appContainer)
+
+        this.logger = this.logFactory.getLogger(ApiLambdaApp)
     }
 
     /**

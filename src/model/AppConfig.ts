@@ -2,6 +2,7 @@ import { injectable } from "inversify"
 import { LoggerOptions, Options, SerializerFunction } from "lambda-api"
 
 import { OpenApiConfig } from "./OpenApiConfig"
+import { ServerLoggerConfig } from "./logging/ServerLoggerConfig"
 
 /**
  * Base class for app configuration. Extend this
@@ -43,6 +44,8 @@ export class AppConfig implements Options {
      */
     public logger?: boolean | LoggerOptions
 
+    public serverLogger?: ServerLoggerConfig
+
     /**
      * Name/value pairs of additional MIME types to be supported
      * by the type(). The key should be the file extension
@@ -62,5 +65,12 @@ export class AppConfig implements Options {
     /**
      * OpenAPI configuration.
      */
-    public openApi?: OpenApiConfig = new OpenApiConfig()
+    public openApi?: OpenApiConfig
+
+    public constructor() {
+        this.openApi = new OpenApiConfig()
+        this.logger = {
+            level: "info"
+        }
+    }
 }

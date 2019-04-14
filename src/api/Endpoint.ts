@@ -4,6 +4,8 @@ import { API, Request, Response } from "lambda-api"
 import { EndpointInfo } from "../model/reflection/EndpointInfo"
 import { AuthResult } from "../model/security/AuthResult"
 import { Principal } from "../model/security/Principal"
+import { ILogger } from "../util/logging/ILogger"
+import { LogFactory } from "../util/logging/LogFactory"
 import { Controller } from "./Controller"
 import { ErrorInterceptor } from "./error/ErrorInterceptor"
 import { MiddlewareRegistry } from "./MiddlewareRegistry"
@@ -12,12 +14,17 @@ export type ControllerFactory = (constructor: Function) => Controller
 export type ErrorInterceptorFactory = (type: interfaces.ServiceIdentifier<ErrorInterceptor>) => ErrorInterceptor
 
 export class Endpoint {
+    private readonly logger: ILogger
+
     public constructor(
         private readonly endpointInfo: EndpointInfo,
         private readonly controllerFactory: ControllerFactory,
         private readonly errorInteceptorFactory: ErrorInterceptorFactory,
-        private readonly middlewareRegistry: MiddlewareRegistry
-    ) {}
+        private readonly middlewareRegistry: MiddlewareRegistry,
+        private readonly logFactory: LogFactory
+    ) {
+        this.logger = logFactory.getLogger(Endpoint)
+    }
 
     public register(api: API) {
         let registerMethod = this.mapHttpMethodToCall(api, this.endpointInfo.httpMethod)
@@ -156,6 +163,12 @@ export class Endpoint {
 
         if (typeof(controller.setResponse) === "function") {
             controller.setResponse(response)
+        }
+
+        if (typeof(controller.setLogger) === "function") {
+            controller.setLogger(
+                this.logFactory.getLogger(this.endpointInfo.controller.classConstructor)
+            )
         }
 
         return controller
