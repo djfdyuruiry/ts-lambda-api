@@ -118,6 +118,12 @@ export class OpenApiGenerator {
             openApiBuilder.addVersion(appConfig.version)
         }
 
+        if (appConfig.base) {
+            openApiBuilder.addServer({
+                url: appConfig.base
+            })
+        }
+
         OpenApiGenerator.discoverSecuritySchemes(openApiBuilder, middlewareRegistry)
 
         OpenApiGenerator.discoverTagsAndPaths(paths, tags)

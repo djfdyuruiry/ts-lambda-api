@@ -49,6 +49,27 @@ export class OpenApiTests extends TestBase {
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
+    public async when_openapi_enabled_and_base_url_defined_then_openapi_spec_contains_server_with_base_url(specFormat: string) {
+        super.setup({
+            name: "Test API",
+            version: "v1",
+            base: "/api/v1",
+            openApi: {
+                enabled: true
+            }
+        })
+
+        await this.app.initialiseControllers()
+
+        let response = await this.requestParsedOpenApiSpec(specFormat)
+
+        Expect(response.value.servers).not.toBeEmpty()
+        Expect(response.value.servers[0].url).toEqual("/api/v1")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
     public async when_openapi_enabled_then_openapi_spec_contains_all_declared_endpoints(specFormat: string) {
         let response = await this.requestParsedOpenApiSpec(specFormat)
         let paths = response.value.paths
@@ -770,7 +791,7 @@ export class OpenApiTests extends TestBase {
 
     private async requestOpenApiSpec(specFileFormat: string = "json", derserialize: boolean = false) {
         let response: ResponseWithValue<OpenAPIObject> = await this.sendRequest(
-            RequestBuilder.get(`/open-api.${specFileFormat}`).build()
+            RequestBuilder.get(`${this.appConfig.base || ""}/open-api.${specFileFormat}`).build()
         )
 
         if (derserialize) {
