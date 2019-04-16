@@ -18,6 +18,11 @@ export interface IAuthFilter<T, U extends Principal> {
     readonly authenticationSchemeName: string
 
     /**
+     * A human readable name for this authentication filter.
+     */
+    readonly name: string
+
+    /**
      * Extract an instance of the authentication data type `T`
      * from a HTTP request. If extraction is not possible due to
      * missing request headers/data, `undefined` should be returned.

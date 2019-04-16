@@ -80,6 +80,8 @@ export class Server {
      */
     @timed
     public async discoverAndBuildRoutes(controllersPath: string) {
+        this.logger.debug("Loading controllers from path: %s", controllersPath)
+
         await ControllerLoader.loadControllers(controllersPath, this.logFactory)
 
         if (this.appConfig.openApi && this.appConfig.openApi.enabled) {
@@ -96,6 +98,8 @@ export class Server {
     }
 
     private registerOpenApiEndpoints() {
+        this.logger.info("Registering OpenAPI endpoints")
+
         this.registerOpenApiEndpoint("json")
         this.registerOpenApiEndpoint("yml")
     }
@@ -141,6 +145,11 @@ export class Server {
     @timed
     public async processEvent(request: ApiRequest, context: any): Promise<ApiResponse> {
         let event: any = request
+
+        this.logger.info("Processing API request event for path: %s", request.path)
+
+        this.logger.debug("Event data: %j", event)
+        this.logger.debug("Event context: %j", context)
 
         return await this.api.run(event, context)
     }

@@ -7,6 +7,11 @@ import { Principal } from "../../model/security/Principal"
  */
 export interface IAuthorizer<T extends Principal> {
     /**
+     * A human readable name for this authorizer.
+     */
+    readonly name: string
+
+    /**
      * Check that a principal has a named role.
      *
      * @param principal The current principal context.

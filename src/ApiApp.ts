@@ -83,6 +83,8 @@ export abstract class ApiApp {
      * Initialise all controllers and endpoints declared using decorators.
      */
     public async initialiseControllers() {
+        this.logger.debug("Initialising app controllers")
+
         await this.apiServer.discoverAndBuildRoutes(this.controllersPath)
     }
 }

@@ -53,15 +53,17 @@ export class MiddlewareRegistry {
     /**
      * Add an authentication filter.
      *
-     * @param authFiler The filter to add.
+     * @param authFilter The filter to add.
      * @throws If the `authFilter` parameter is null or undefined.
      */
-    public addAuthFilter(authFiler: IAuthFilter<any, Principal>) {
-        if (!authFiler) {
+    public addAuthFilter(authFilter: IAuthFilter<any, Principal>) {
+        if (!authFilter) {
             throw new Error("Null or undefined authFiler passed to MiddlewareRegistry::authFiler")
         }
 
-        this._authFilters.push(authFiler)
+        this.logger.info("Registering authentication filter: %s", authFilter.name)
+
+        this._authFilters.push(authFilter)
     }
 
     /**
@@ -74,6 +76,8 @@ export class MiddlewareRegistry {
         if (!authorizer) {
             throw new Error("Null or undefined authorizer passed to MiddlewareRegistry::addAuthorizer")
         }
+
+        this.logger.info("Registering authorizer: %s", authorizer.name)
 
         this._authorizers.push(authorizer)
     }
@@ -88,6 +92,9 @@ export class MiddlewareRegistry {
         if (!errorInterceptor) {
             throw new Error("Null or undefined errorInterceptor passed to MiddlewareRegistry::addErrorInterceptor")
         }
+
+        this.logger.info("Registering error interceptor for endpoint '%s' and controller '%s'",
+            errorInterceptor.endpointTarget, errorInterceptor.controllerTarget)
 
         this._errorInterceptors.push(errorInterceptor)
     }

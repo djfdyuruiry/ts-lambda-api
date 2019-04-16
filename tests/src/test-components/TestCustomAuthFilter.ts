@@ -11,6 +11,7 @@ import { TestUser } from "./model/TestUser"
 })
 export class TestCustomAuthFilter implements IAuthFilter<string, TestUser> {
     public readonly authenticationSchemeName: string = "Bearer"
+    public readonly name: string = TestCustomAuthFilter.name
 
     public wasInvoked: boolean
     public passedCredentials: string

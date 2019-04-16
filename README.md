@@ -470,6 +470,8 @@ import { BasicAuthFilter } from "typescript-lambda-api"
 import { StoreUser } from "./StoreUser"
 
 export class StoreAuthFilter extends BasicAuthFilter<StoreUser> {
+    public readonly name: string = StoreAuthFilter.name
+
     public async authenticate(basicAuth: BasicAuth): Promise<StoreUser | undefined> {
         let user = this.getUserFromDb(basicAuth.username)
 
@@ -607,6 +609,7 @@ export class TokenAuthFilter<T extends Principal> implements IAuthFilter<TokenAu
     // required to be defined for implementations, see:
     //   https://www.iana.org/assignments/http-authschemes/http-authschemes.xhtml
     public readonly authenticationSchemeName: string = "Bearer"
+    public readonly name: string = TokenAuthFilter.name
 
     public async extractAuthData(request: Request): Promise<TokenAuth | undefined> {
         // extract the data if the auth header is present
@@ -645,6 +648,8 @@ import { IAuthorizer } from "typescript-lambda-api"
 import { StoreUser } from "./StoreUser"
 
 export class StoreAuthorizer implements IAuthorizer<StoreUser> {
+    public readonly name: string = StoreAuthorizer.name
+
     public async authorize(user: StoreUser, role: string): Promise<boolean> {
         return user.roles.includes(role)
     }

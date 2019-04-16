@@ -15,6 +15,7 @@ export type ErrorInterceptorFactory = (type: interfaces.ServiceIdentifier<ErrorI
 
 export class Endpoint {
     private readonly logger: ILogger
+    private readonly endpointSummary: string
 
     public constructor(
         private readonly endpointInfo: EndpointInfo,
@@ -24,10 +25,13 @@ export class Endpoint {
         private readonly logFactory: LogFactory
     ) {
         this.logger = logFactory.getLogger(Endpoint)
+        this.endpointSummary = `[${endpointInfo.httpMethod}] ${endpointInfo.fullPath}`
     }
 
     public register(api: API) {
         let registerMethod = this.mapHttpMethodToCall(api, this.endpointInfo.httpMethod)
+
+        this.logger.info("Registering endpoint: %s", this.endpointSummary)
 
         registerMethod(
             this.endpointInfo.fullPath,
@@ -51,6 +55,8 @@ export class Endpoint {
             return
         }
 
+        this.logger.info("Invoking endpoint: %s", this.endpointSummary)
+
         let controller = this.buildControllerInstance(request, response)
 
         this.setResponseContentType(response)
@@ -58,8 +64,12 @@ export class Endpoint {
         let endpointResponse = await this.invokeControllerMethod(controller, request, response, principal)
 
         if (!this.responseSent(response, endpointResponse)) {
-            throw new Error("no response was sent by or value returned from endpoint method, " +
-                `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
+            let errorMessage = "no response was sent by or value returned from endpoint method, " +
+                `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`
+
+            this.logger.error(errorMessage)
+
+            throw new Error(errorMessage)
         }
 
         return endpointResponse
@@ -67,6 +77,8 @@ export class Endpoint {
 
     private async authenticateAndAuthorizeRequest(request: Request, response: Response) {
         if (this.endpointInfo.authenticationDisabled) {
+            this.logger.debug("Authentication disabled for endpoint: %s", this.endpointSummary)
+
             return
         }
 
@@ -88,9 +100,13 @@ export class Endpoint {
         let authScheme = ""
 
         if (this.middlewareRegistry.authFilters.length < 1) {
+            this.logger.debug("No authentication filters registered")
+
             authResult.authenticated = true
             return authResult
         }
+
+        this.logger.info("Authenticating request")
 
         for (let filter of this.middlewareRegistry.authFilters) {
             authScheme = filter.authenticationSchemeName
@@ -98,20 +114,31 @@ export class Endpoint {
             let authData = await filter.extractAuthData(request)
 
             if (authData) {
-                // authData extraction was either aborted or failed
+                this.logger.debug("Authenticating request using authentication filter: %s", filter.name)
+
                 authResult.principal = await filter.authenticate(authData)
+            } else {
+                // authData extraction was either aborted or failed
+                this.logger.warn("No auth data returned by authentication filter: %s", filter.name)
             }
 
             authResult.authenticated =
                 (authResult.principal !== null && authResult.principal !== undefined)
 
             if (authResult.authenticated) {
+                this.logger.info("Authenticated request using authentication filter: %s", filter.name)
+
                 // return after finding a filter that authenticates the user
                 return authResult
             }
+
+            this.logger.debug("Request not authenticated using authentication filter: %s", filter.name)
         }
 
         if (!authResult.authenticated && authScheme) {
+            this.logger.debug("Request not authenticated, returning 'WWW-Authenticate' header in" +
+                " response with scheme: %s", authScheme)
+
             response.header("WWW-Authenticate", authScheme)
         }
 
@@ -119,6 +146,8 @@ export class Endpoint {
     }
 
     private sendStatusCodeResponse(statusCode: number, response: Response) {
+        this.logger.debug("Returning status code (HTTP %d) only response for endpoint: %s", statusCode, response)
+
         response.status(statusCode)
                 .removeHeader("content-type")
                 .header("content-type", "text/plain")
@@ -129,23 +158,42 @@ export class Endpoint {
         let roles = this.endpointInfo.roles
 
         if (!roles || roles.length < 1) {
+            this.logger.debug("Authorization not required as no roles were defined for endpoint: %s",
+                this.endpointSummary)
+
             return true
         }
 
         if (this.middlewareRegistry.authorizers.length < 1) {
-            throw new Error(
-                "Role restrictions were declared but no authorizer was registered in the middleware registry, " +
-                `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
+            let errorMessage = "Role restrictions were declared but no authorizer was registered in the" +
+                ` middleware registry, path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`
+
+            this.logger.error(errorMessage)
+
+            throw new Error(errorMessage)
         }
+
+        this.logger.info("Authorizing request by principal '%s' for endpoint: %s",
+            principal.name, this.endpointSummary)
+        this.logger.debug("'%j' role(s) defined for endpoint: %s", roles, this.endpointSummary)
 
         for (let authorizer of this.middlewareRegistry.authorizers) {
             // endpoint roles, if defined, override controller roles
             for (let role of roles) {
                 if (await authorizer.authorize(principal, role)) {
+                    this.logger.info("Authorized request by principal '%s' using authorizer '%s' and role '%s'," +
+                        " for endpoint: %s", principal.name, authorizer.name, role, this.endpointSummary)
+
                     return true
                 }
+
+                this.logger.debug("Request by principal '%s' not authorized using authorizer '%s' and role '%s'," +
+                    " for endpoint: %s", principal.name, authorizer.name, role, this.endpointSummary)
             }
         }
+
+        this.logger.debug("Request by principal '%s' was not authorized for endpoint: %s",
+            principal.name, this.endpointSummary)
 
         return false
     }
