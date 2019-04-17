@@ -37,11 +37,15 @@ export class Endpoint {
             this.endpointInfo.fullPath,
             async (req, res) => {
                 try {
+                    this.logger.trace("Endpoint '%s' request:\n%j", this.endpointSummary, req)
+
                     let returnValue = await this.invoke(req, res)
 
                     this.logger.info("Endpoint invoked successfully, returning response. Endpoint: %s",
                         this.endpointSummary)
+
                     this.logger.trace("Endpoint' return value: %j", returnValue)
+                    this.logger.trace("Endpoint '%s' response:\n%j", this.endpointSummary, res)
 
                     return returnValue
                 } catch (ex) {
@@ -129,7 +133,8 @@ export class Endpoint {
                 (authResult.principal !== null && authResult.principal !== undefined)
 
             if (authResult.authenticated) {
-                this.logger.info("Authenticated request using authentication filter: %s", filter.name)
+                this.logger.info("Authenticated request principal '%s' using authentication filter: %s",
+                    authResult.principal.name, filter.name)
 
                 // return after finding a filter that authenticates the user
                 return authResult
@@ -139,7 +144,7 @@ export class Endpoint {
         }
 
         if (!authResult.authenticated && authScheme) {
-            this.logger.debug("Request not authenticated, returning 'WWW-Authenticate' header in" +
+            this.logger.info("Request not authenticated, returning 'WWW-Authenticate' header in" +
                 " response with scheme: %s", authScheme)
 
             response.header("WWW-Authenticate", authScheme)

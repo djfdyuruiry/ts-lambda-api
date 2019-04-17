@@ -48,6 +48,10 @@ export abstract class Controller {
      * @param obj The object instance to apply operations to.
      */
     protected applyJsonPatch<T>(patch: JsonPatch, obj: T) {
+        if (this._logger) {
+            this._logger.trace("Applying JSON patch\nObject: %j\nPatch: %j", obj, patch)
+        }
+
         let result = applyPatch(obj, patch)
 
         return result.newDocument
