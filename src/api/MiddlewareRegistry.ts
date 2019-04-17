@@ -61,7 +61,7 @@ export class MiddlewareRegistry {
             throw new Error("Null or undefined authFiler passed to MiddlewareRegistry::authFiler")
         }
 
-        this.logger.info("Registering authentication filter: %s", authFilter.name)
+        this.logger.debug("Registering authentication filter: %s", authFilter.name)
 
         this._authFilters.push(authFilter)
     }
@@ -77,7 +77,7 @@ export class MiddlewareRegistry {
             throw new Error("Null or undefined authorizer passed to MiddlewareRegistry::addAuthorizer")
         }
 
-        this.logger.info("Registering authorizer: %s", authorizer.name)
+        this.logger.debug("Registering authorizer: %s", authorizer.name)
 
         this._authorizers.push(authorizer)
     }
@@ -93,7 +93,7 @@ export class MiddlewareRegistry {
             throw new Error("Null or undefined errorInterceptor passed to MiddlewareRegistry::addErrorInterceptor")
         }
 
-        this.logger.info("Registering error interceptor for endpoint '%s' and controller '%s'",
+        this.logger.debug("Registering error interceptor for endpoint '%s' and controller '%s'",
             errorInterceptor.endpointTarget, errorInterceptor.controllerTarget)
 
         this._errorInterceptors.push(errorInterceptor)

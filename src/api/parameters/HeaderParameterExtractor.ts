@@ -10,6 +10,12 @@ export class HeaderParameterExtractor extends BaseParameterExtractor {
     }
 
     public extract(request: Request) {
-        return request.headers[this.name]
+        this.logger.debug("Extracting header '%s' from request", this.name)
+
+        let headerValue = request.headers[this.name]
+
+        this.logger.trace("Header '%s' value: %s", this.name, headerValue)
+
+        return headerValue
     }
 }

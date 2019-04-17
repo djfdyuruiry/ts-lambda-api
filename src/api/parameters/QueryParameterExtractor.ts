@@ -10,6 +10,12 @@ export class QueryParameterExtractor extends BaseParameterExtractor {
     }
 
     public extract(request: Request) {
-        return request.query[this.name]
+        this.logger.debug("Extracting query parameter '%s' from request", this.name)
+
+        let queryParamValue = request.query[this.name]
+
+        this.logger.trace("Query parameter '%s' value: %s", this.name, queryParamValue)
+
+        return queryParamValue
     }
 }

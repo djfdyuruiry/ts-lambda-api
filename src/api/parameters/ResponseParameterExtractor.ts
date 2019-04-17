@@ -11,6 +11,8 @@ export class ResponseParameterExtractor extends BaseParameterExtractor {
     }
 
     public extract(_: Request, response: Response) {
+        this.logger.debug("Injecting response for request")
+
         return response
     }
 }

@@ -12,6 +12,9 @@ export class UserParameterExtractor extends BaseParameterExtractor {
     }
 
     public extract(request: Request, response: Response, user: Principal) {
+        this.logger.debug("Extracting user from request")
+        this.logger.trace("User: %j", user)
+
         return user
     }
 }

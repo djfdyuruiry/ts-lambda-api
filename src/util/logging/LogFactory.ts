@@ -1,7 +1,7 @@
 import { AppConfig } from "../../model/AppConfig"
+import { LogLevel } from "../../model/logging/LogLevel"
 import { ILogger, LogFormat } from "./ILogger"
 import { Logger } from "./Logger"
-import { LogLevel } from "../../model/logging/LogLevel"
 
 export class LogFactory {
     public constructor(
@@ -9,8 +9,10 @@ export class LogFactory {
         private readonly logLevel: LogLevel = LogLevel.info,
         private readonly logFormat: LogFormat = "string"
     ) {
-        if (appConfig.serverLogger) {
-            this.logLevel = appConfig.serverLogger.level
+        if (appConfig && appConfig.serverLogger) {
+            if (appConfig.serverLogger.level) {
+                this.logLevel = appConfig.serverLogger.level
+            }
 
             if (appConfig.serverLogger.format) {
                 this.logFormat = appConfig.serverLogger.format
@@ -19,7 +21,7 @@ export class LogFactory {
     }
 
     public getLogger(clazz: Function): ILogger {
-        return new Logger(clazz.name, this.logLevel, this.logFormat)
+        return new Logger(clazz ? clazz.name : "?", this.logLevel, this.logFormat)
     }
 
     public static getDefaultLogger(clazz: Function) {
