@@ -31,15 +31,22 @@ export class Endpoint {
     public register(api: API) {
         let registerMethod = this.mapHttpMethodToCall(api, this.endpointInfo.httpMethod)
 
-        this.logger.info("Registering endpoint: %s", this.endpointSummary)
+        this.logger.debug("Registering endpoint: %s", this.endpointSummary)
 
         registerMethod(
             this.endpointInfo.fullPath,
             async (req, res) => {
                 try {
-                    return await this.invoke(req, res)
+                    let returnValue = await this.invoke(req, res)
+
+                    this.logger.info("Endpoint invoked successfully, returning response. Endpoint: %s",
+                        this.endpointSummary)
+                    this.logger.trace("Endpoint' return value: %j", returnValue)
+
+                    return returnValue
                 } catch (ex) {
-                    this.logger.error("Error processing endpoint request:\n%j", ex)
+                    this.logger.errorWithStack("Error processing endpoint request", ex)
+
                     throw ex
                 }
             }
@@ -64,12 +71,8 @@ export class Endpoint {
         let endpointResponse = await this.invokeControllerMethod(controller, request, response, principal)
 
         if (!this.responseSent(response, endpointResponse)) {
-            let errorMessage = "no response was sent by or value returned from endpoint method, " +
-                `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`
-
-            this.logger.error(errorMessage)
-
-            throw new Error(errorMessage)
+            throw new Error("no response was sent by or value returned from endpoint method, " +
+                `path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
         }
 
         return endpointResponse
@@ -119,7 +122,7 @@ export class Endpoint {
                 authResult.principal = await filter.authenticate(authData)
             } else {
                 // authData extraction was either aborted or failed
-                this.logger.warn("No auth data returned by authentication filter: %s", filter.name)
+                this.logger.info("No auth data returned by authentication filter: %s", filter.name)
             }
 
             authResult.authenticated =
@@ -165,12 +168,8 @@ export class Endpoint {
         }
 
         if (this.middlewareRegistry.authorizers.length < 1) {
-            let errorMessage = "Role restrictions were declared but no authorizer was registered in the" +
-                ` middleware registry, path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`
-
-            this.logger.error(errorMessage)
-
-            throw new Error(errorMessage)
+            throw new Error("Role restrictions were declared but no authorizer was registered in the" +
+                ` middleware registry, path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
         }
 
         this.logger.info("Authorizing request by principal '%s' for endpoint: %s",
@@ -209,18 +208,28 @@ export class Endpoint {
             return this.buildDynamicControllerInstance(request, response)
         }
 
+        let controllerName = this.endpointInfo.controller.name
+
+        this.logger.debug("Building instance of controller: %s", controllerName)
+
         let controller: Controller =
             this.controllerFactory(this.endpointInfo.controller.classConstructor)
 
         if (typeof(controller.setRequest) === "function") {
+            this.logger.debug("Injecting request into controller: %s", controllerName)
+
             controller.setRequest(request)
         }
 
         if (typeof(controller.setResponse) === "function") {
+            this.logger.debug("Injecting response into controller: %s", controllerName)
+
             controller.setResponse(response)
         }
 
         if (typeof(controller.setLogger) === "function") {
+            this.logger.debug("Injecting logger into controller: %s", controllerName)
+
             controller.setLogger(
                 this.logFactory.getLogger(this.endpointInfo.controller.classConstructor)
             )
@@ -234,6 +243,8 @@ export class Endpoint {
      * build a dynamic controller which simulates a controller instance.
      */
     private buildDynamicControllerInstance(request: Request, response: Response) {
+        this.logger.debug("Building dynamic controller instance for endpoint: %s", this.endpointSummary)
+
         let dynamicController = {
             request,
             response
@@ -248,6 +259,8 @@ export class Endpoint {
         let produces = this.endpointInfo.responseContentType
 
         if (produces) {
+            this.logger.debug("Setting response 'Content-Type' header: %s", produces)
+
             response.removeHeader("Content-Type")
                 .header("Content-Type", produces)
         }
@@ -275,12 +288,30 @@ export class Endpoint {
         let method: Function = controller[this.endpointInfo.methodName]
         let parameters = this.buildEndpointParameters(request, response, principal)
 
+        let controllerName = this.endpointInfo.controller ?
+            this.endpointInfo.controller.name :
+            "<dynamic>";
+
         try {
+            this.logger.debug("Invoking controller '%s' method: %s",
+                controllerName, this.endpointInfo.methodName)
+            this.logger.trace("Passing %d arguments to method '%s' in controller '%s': %j",
+                parameters.length,
+                controllerName,
+                this.endpointInfo.methodName,
+                parameters)
+
             return await method.apply(controller, parameters)
         } catch (ex) {
+            this.logger.error("Error occurred in method '%s' in controller '%s'",
+                this.endpointInfo.methodName, controllerName)
+
             let errorInterceptor = this.getMatchingErrorInterceptor()
 
             if (errorInterceptor) {
+                this.logger.debug("Invoking error interceptor for method '%s' in controller '%s'",
+                    this.endpointInfo.methodName, controllerName)
+
                 let interceptorResponse = await errorInterceptor.intercept({
                     endpointController: controller,
                     endpointMethod: method,
@@ -291,8 +322,12 @@ export class Endpoint {
                 })
 
                 if (this.responseSent(response, interceptorResponse)) {
+                    this.logger.debug("Response sent by error interceptor")
+
                     return interceptorResponse
                 }
+
+                this.logger.debug("Error interceptor did not send a response")
             }
 
             throw ex
@@ -300,6 +335,8 @@ export class Endpoint {
     }
 
     private buildEndpointParameters(request: Request, response: Response, principal: Principal): any[] {
+        this.logger.debug("Building parameters for endpoint: %s", this.endpointSummary)
+
         return this.endpointInfo
             .parameterExtractors
             .map(pe => {
@@ -312,15 +349,24 @@ export class Endpoint {
         let decoratorInterceptor: ErrorInterceptor
 
         if (this.endpointInfo.endpointErrorInterceptor) {
+            this.logger.debug("Building decorator declared error interceptor for endpoint: %s",
+                this.endpointSummary)
+
             decoratorInterceptor = this.errorInteceptorFactory(this.endpointInfo.endpointErrorInterceptor)
         }
 
         if (decoratorInterceptor) {
+            this.logger.debug("Using decorator declared error interceptor for endpoint: %s",
+                this.endpointSummary)
+
             decoratorInterceptor.controllerTarget = this.endpointInfo.getControllerPropOrDefault(c => c.name)
             decoratorInterceptor.endpointTarget = this.endpointInfo.name
 
             return decoratorInterceptor
         }
+
+        this.logger.debug("Searching for matching error interceptor in middleware registry for endpoint: %s",
+            this.endpointSummary)
 
         return this.middlewareRegistry.errorInterceptors
             .find(i =>

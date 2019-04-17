@@ -11,6 +11,7 @@ generateTestReport() {
 runTestsWithCoverage() {
     nyc --reporter=lcov --reporter=html alsatian --tap "./tests/js/**/*Tests.js" 2>&1 | \
         tee /dev/tty | \
+        tee ./tests/results.log | \
         tap-junit -o "${resultsDir}" -n "${resultsFileName}"
 }
 

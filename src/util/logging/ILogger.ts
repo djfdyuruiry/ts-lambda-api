@@ -9,5 +9,6 @@ export interface ILogger {
     info(message: string, ...formatArgs: any[])
     warn(message: string, ...formatArgs: any[])
     error(message: string, ...formatArgs: any[])
+    errorWithStack(message: string, ex: Error, ...formatArgs: any[])
     fatal(message: string, ...formatArgs: any[])
 }

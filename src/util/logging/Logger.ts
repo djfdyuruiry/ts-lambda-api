@@ -24,7 +24,7 @@ export class Logger implements ILogger {
         let formattedMessage = message
 
         if (formatArgs && formatArgs.length > 0) {
-            formattedMessage = sprintf(message, formatArgs)
+            formattedMessage = sprintf(message, ...formatArgs)
         }
 
         if (this.useStringLogFormat) {
@@ -47,26 +47,30 @@ export class Logger implements ILogger {
     }
 
     public trace(message: string, ...formatArgs: any[]) {
-        this.log(LogLevel.trace, message, formatArgs)
+        this.log(LogLevel.trace, message, ...formatArgs)
     }
 
     public debug(message: string, ...formatArgs: any[]) {
-        this.log(LogLevel.debug, message, formatArgs)
+        this.log(LogLevel.debug, message, ...formatArgs)
     }
 
     public info(message: string, ...formatArgs: any[]) {
-        this.log(LogLevel.info, message, formatArgs)
+        this.log(LogLevel.info, message, ...formatArgs)
     }
 
     public warn(message: string, ...formatArgs: any[]) {
-        this.log(LogLevel.warn, message, formatArgs)
+        this.log(LogLevel.warn, message, ...formatArgs)
     }
 
     public error(message: string, ...formatArgs: any[]) {
-        this.log(LogLevel.error, message, formatArgs)
+        this.log(LogLevel.error, message, ...formatArgs)
+    }
+
+    public errorWithStack(message: string, ex: Error, ...formatArgs: any[]) {
+        this.log(LogLevel.error, `${message}\n${ex ? ex.stack : ""}`, ...formatArgs)
     }
 
     public fatal(message: string, ...formatArgs: any[]) {
-        this.log(LogLevel.fatal, message, formatArgs)
+        this.log(LogLevel.fatal, message, ...formatArgs)
     }
 }
