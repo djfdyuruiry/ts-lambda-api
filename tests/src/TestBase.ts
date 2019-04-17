@@ -2,7 +2,7 @@ import path from "path"
 
 import { Setup } from "alsatian"
 
-import { AppConfig, ApiLambdaApp, ApiRequest, ApiResponse } from "../../dist/typescript-lambda-api"
+import { AppConfig, ApiLambdaApp, ApiRequest, ApiResponse, LogLevel } from "../../dist/typescript-lambda-api"
 
 export class TestBase {
     protected static readonly CONTROLLERS_PATH: string = path.join(__dirname, "test-controllers")
@@ -12,7 +12,15 @@ export class TestBase {
 
     @Setup
     public setup(appConfig?: AppConfig) {
-        this.appConfig = appConfig
+        this.appConfig = appConfig || new AppConfig()
+        this.appConfig.serverLogger = {
+            level: LogLevel.trace
+        }
+
+        this.appConfig.logger = {
+            level: "trace"
+        }
+
         this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, appConfig)
     }
 

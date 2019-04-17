@@ -1,6 +1,9 @@
+import { inspect } from "util"
+
 import { interfaces } from "inversify"
 import { API, Request, Response } from "lambda-api"
 
+import { LogLevel } from "../model/logging/LogLevel"
 import { EndpointInfo } from "../model/reflection/EndpointInfo"
 import { AuthResult } from "../model/security/AuthResult"
 import { Principal } from "../model/security/Principal"
@@ -37,15 +40,20 @@ export class Endpoint {
             this.endpointInfo.fullPath,
             async (req, res) => {
                 try {
-                    this.logger.trace("Endpoint '%s' request:\n%j", this.endpointSummary, req)
+                    if (this.logger.level === LogLevel.trace) {
+                        this.logger.trace("Endpoint '%s' request:\n%s", this.endpointSummary, inspect(req))
+                    }
 
                     let returnValue = await this.invoke(req, res)
 
                     this.logger.info("Endpoint invoked successfully, returning response. Endpoint: %s",
                         this.endpointSummary)
 
-                    this.logger.trace("Endpoint' return value: %j", returnValue)
-                    this.logger.trace("Endpoint '%s' response:\n%j", this.endpointSummary, res)
+                    this.logger.trace("Endpoint '%s' return value: %j", this.endpointSummary, returnValue)
+
+                    if (this.logger.level === LogLevel.trace) {
+                        this.logger.trace("Endpoint '%s' response:\n%s", this.endpointSummary, inspect(res))
+                    }
 
                     return returnValue
                 } catch (ex) {
@@ -300,11 +308,14 @@ export class Endpoint {
         try {
             this.logger.debug("Invoking controller '%s' method: %s",
                 controllerName, this.endpointInfo.methodName)
-            this.logger.trace("Passing %d arguments to method '%s' in controller '%s': %j",
-                parameters.length,
-                controllerName,
-                this.endpointInfo.methodName,
-                parameters)
+
+            if (this.logger.level === LogLevel.trace) {
+                this.logger.trace("Passing %d arguments to method '%s' in controller '%s': %s",
+                    parameters.length,
+                    this.endpointInfo.methodName,
+                    controllerName,
+                    inspect(parameters))
+            }
 
             return await method.apply(controller, parameters)
         } catch (ex) {

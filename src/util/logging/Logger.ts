@@ -1,3 +1,5 @@
+import { inspect } from "util"
+
 import { sprintf } from "sprintf-js"
 
 import { ILogger, LogFormat } from "./ILogger"
@@ -8,14 +10,14 @@ export class Logger implements ILogger {
 
     public constructor(
         private readonly clazz: string,
-        private readonly minLogLevel: LogLevel,
-        private readonly logFormat: LogFormat
+        public readonly level: LogLevel,
+        public readonly format: LogFormat
     ) {
-        this.useStringLogFormat = this.logFormat === "string"
+        this.useStringLogFormat = this.format === "string"
     }
 
     public log(level: LogLevel, message: string, ...formatArgs: any[]) {
-        if (level < this.minLogLevel) {
+        if (level < this.level) {
             return
         }
 
@@ -24,7 +26,16 @@ export class Logger implements ILogger {
         let formattedMessage = message
 
         if (formatArgs && formatArgs.length > 0) {
-            formattedMessage = sprintf(message, ...formatArgs)
+            try {
+                formattedMessage = sprintf(message, ...formatArgs)
+            } catch (ex) {
+                this.errorWithStack(
+                    "Failed to format log message, raw log message and parameters will be output",
+                    ex
+                )
+
+                formattedMessage = `${message}\n${inspect(formatArgs)}`
+            }
         }
 
         if (this.useStringLogFormat) {

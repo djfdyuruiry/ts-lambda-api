@@ -45,6 +45,10 @@ export abstract class ApiApp {
         protected appConfig: AppConfig = new AppConfig(),
         protected appContainer: Container = new Container({ autoBindInjectable: true })
     ) {
+        if (!controllersPath || controllersPath.trim() === "") {
+            throw new Error("Null, empty or whitespace controllersPath passed to ApiApp")
+        }
+
         this.logFactory = new LogFactory(appConfig)
         this.logger = this.logFactory.getLogger(ApiApp)
 
@@ -85,6 +89,13 @@ export abstract class ApiApp {
     public async initialiseControllers() {
         this.logger.debug("Initialising app controllers")
 
-        await this.apiServer.discoverAndBuildRoutes(this.controllersPath)
+        try {
+            await this.apiServer.discoverAndBuildRoutes(this.controllersPath)
+        } catch (ex) {
+            this.logger.fatal("Error initialising API app:\n%s",
+                ex instanceof Error ? ex.stack : ex)
+
+            throw ex
+        }
     }
 }

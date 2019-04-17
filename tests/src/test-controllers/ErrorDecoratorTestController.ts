@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { apiController, errorInterceptor, Controller, GET } from "../../../dist/typescript-lambda-api"
+import { apiController, errorInterceptor, Controller, GET, response } from "../../../dist/typescript-lambda-api"
 
 import { TestDecoratorErrorInterceptor } from "../test-components/TestDecoratorErrorInterceptor"
 

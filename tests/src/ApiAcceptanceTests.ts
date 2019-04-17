@@ -1,8 +1,8 @@
-import { AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
+import { AsyncTest, Expect, Test, TestCase, TestFixture } from "alsatian"
 import { ReplaceOperation } from "fast-json-patch/lib/core"
 import { METHODS } from "lambda-api"
 
-import { JsonPatch, RequestBuilder } from "../../dist/typescript-lambda-api"
+import { ApiLambdaApp, JsonPatch, RequestBuilder } from "../../dist/typescript-lambda-api"
 
 import { TestBase } from "./TestBase"
 import { Person } from "./test-components/model/Person"
@@ -157,5 +157,21 @@ export class ApiAcceptanceTests extends TestBase {
         Expect(JSON.parse(response.body)).toEqual({
             some: "value"
         })
+    }
+
+    @TestCase("")
+    @TestCase("   ")
+    @TestCase(null)
+    @TestCase(undefined)
+    @Test()
+    public when_app_built_with_invalid_controller_path_then_error_is_thrown(controllerPath: string) {
+        Expect(() => new ApiLambdaApp(controllerPath) ).toThrow()
+    }
+
+    @AsyncTest()
+    public async when_app_built_with_missing_controller_path_then_error_is_thrown() {
+        await Expect(async () =>
+            await (new ApiLambdaApp("/some/fake/path")).initialiseControllers()
+        ).toThrowAsync()
     }
 }
