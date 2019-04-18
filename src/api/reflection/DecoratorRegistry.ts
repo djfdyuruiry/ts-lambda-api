@@ -21,6 +21,8 @@ export class DecoratorRegistry {
         let name = constructor.name
 
         if (!DecoratorRegistry.Controllers[name]) {
+            DecoratorRegistry.logger.debug("Controller registered: %s", name)
+
             DecoratorRegistry.Controllers[name] = new ControllerInfo(name, constructor)
         }
 
@@ -31,6 +33,8 @@ export class DecoratorRegistry {
         let endpointKey = `${controller.name}::${methodName}`
 
         if (!DecoratorRegistry.Endpoints[endpointKey]) {
+            DecoratorRegistry.logger.debug("Endpoint registered: %s", endpointKey)
+
             DecoratorRegistry.Endpoints[endpointKey] = new EndpointInfo(endpointKey, controller, methodName)
         }
 
@@ -43,6 +47,8 @@ export class DecoratorRegistry {
         let name = constructor.name
 
         if (!DecoratorRegistry.AuthFilters[name]) {
+            DecoratorRegistry.logger.debug("Authenticaion filter registered: %s", name)
+
             DecoratorRegistry.AuthFilters[name] = new AuthFilterInfo()
         }
 

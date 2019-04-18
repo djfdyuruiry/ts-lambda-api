@@ -92,6 +92,8 @@ export class OpenApiGenerator {
 
     @timed
     public buildOpenApiSpec() {
+        this.logger.debug("Building raw OpenAPI spec")
+
         return this.generateApiOpenApiSpecBuilder(this.appConfig, this.middlewareRegistry).getSpec()
     }
 
@@ -102,15 +104,21 @@ export class OpenApiGenerator {
         let openApiBuilder = this.generateApiOpenApiSpecBuilder(this.appConfig, this.middlewareRegistry)
 
         if (format === "json") {
+            this.logger.debug("Exporting OpenAPI spec as JSON")
+
             return openApiBuilder.getSpecAsJson()
         }
 
         try {
+            this.logger.debug("Exporting OpenAPI spec as YAML")
+
             const jsyaml = await import("js-yaml")
 
             return jsyaml.safeDump(openApiBuilder.getSpec())
         } catch (ex) {
-            // TODO: log warning to check that `js-yaml` needs to be installed for yml specs
+            this.logger.errorWithStack("Error exporting OpenAPI spec as YAML, " +
+                "ensure that the 'js-yaml' module is installed", ex)
+
             throw ex
         }
     }
@@ -120,15 +128,23 @@ export class OpenApiGenerator {
         let paths: IDictionary<PathItemObject> = {}
         let tags: IDictionary<TagObject> = {}
 
+        this.logger.debug("Generating OpenAPI spec")
+
         if (appConfig.name) {
+            this.logger.trace("title: %s", appConfig.name)
+
             openApiBuilder.addTitle(appConfig.name)
         }
 
         if (appConfig.version) {
+            this.logger.trace("version: %s", appConfig.version)
+
             openApiBuilder.addVersion(appConfig.version)
         }
 
         if (appConfig.base) {
+            this.logger.trace("base URL: %s", appConfig.base)
+
             openApiBuilder.addServer({
                 url: appConfig.base
             })
@@ -144,6 +160,8 @@ export class OpenApiGenerator {
                 continue
             }
 
+            this.logger.debug("Adding OpenAPI spec tag: %s", tag)
+
             openApiBuilder.addTag(tags[tag])
         }
 
@@ -152,6 +170,8 @@ export class OpenApiGenerator {
             if (!paths.hasOwnProperty(path)) {
                 continue
             }
+
+            this.logger.debug("Adding OpenAPI spec path: %s", path)
 
             openApiBuilder.addPath(path, paths[path])
         }
@@ -169,6 +189,8 @@ export class OpenApiGenerator {
             }
 
             if (authFilterInfo) {
+                this.logger.trace("Adding OpenAPI spec security scheme: %s", authFilterInfo.name)
+
                 openApiBuilder = openApiBuilder.addSecurityScheme(
                     authFilterInfo.name,
                     authFilterInfo.securitySchemeInfo
@@ -199,6 +221,8 @@ export class OpenApiGenerator {
             return
         }
 
+        this.logger.trace("Adding OpenAPI spec tag for controller: %s", controller.name)
+
         tags[controller.apiName] = {
             description: controller.apiDescription,
             name: controller.apiName
@@ -222,16 +246,23 @@ export class OpenApiGenerator {
             responses: {}
         }
 
+        this.logger.trace("Adding path for endpoint: %s", endpointInfo.name)
+
         if (endpointMethod !== "get" && endpointMethod !== "delete") {
             this.setRequestInfo(endpointOperation, endpointInfo)
         }
 
         if (endpointInfo.responseContentType) {
+            this.logger.trace("Setting path response content type: %s",
+                endpointInfo.responseContentType)
+
             // user declared response content type
             this.setEndpointResponseContentType(
                 endpointOperation, endpointInfo.responseContentType
             )
         } else {
+            this.logger.trace("Setting path response content type to default: application/json")
+
             // default response content type
             this.setEndpointResponseContentType(
                 endpointOperation, "application/json" // use lambda-api content-type default
@@ -239,6 +270,8 @@ export class OpenApiGenerator {
         }
 
         if (endpointInfo.apiOperationInfo) {
+            this.logger.trace("Setting user defined endpoint info for endpoint: %s", endpointInfo.name)
+
             // user declared endpoint info
             this.addEndpointOperationInfo(endpointInfo, endpointOperation)
         }
@@ -255,6 +288,8 @@ export class OpenApiGenerator {
         }
 
         if (endpointInfo.noAuth) {
+            this.logger.trace("Excluding endpoint from security because of noAuth flag: %s", endpointInfo.name)
+
             // no authentication required, exclude from global security constraints
             endpointOperation.security = []
         }
@@ -266,6 +301,8 @@ export class OpenApiGenerator {
     private setRequestInfo(endpointOperation: OperationObject, endpointInfo: EndpointInfo) {
         let requestInfo = endpointInfo.apiRequestInfo
         let operationRequestType: string
+
+        this.logger.trace("Setting request info for endpoint: %s", endpointInfo.name)
 
         if (requestInfo) {
             operationRequestType = requestInfo.contentType ||
@@ -290,9 +327,13 @@ export class OpenApiGenerator {
         )
 
         if (!requestInfo || (!requestInfo.type && !requestInfo.class)) {
+            this.logger.trace("No request type info found for endpoint: %s", endpointInfo.name)
+
             // no type info for request body
             return
         }
+
+        this.logger.trace("Adding request schema for endpoint: %s", endpointInfo.name)
 
         mediaTypeObject.schema = {}
 
@@ -305,6 +346,8 @@ export class OpenApiGenerator {
         }
 
         if (requestInfo.example) {
+            this.logger.trace("Using user defined request example for endpoint: %s", endpointInfo.name)
+
             mediaTypeObject.example = requestInfo.example
         } else if (mediaTypeObject.schema) {
             let schema = mediaTypeObject.schema as SchemaObject
@@ -329,6 +372,8 @@ export class OpenApiGenerator {
         requestBody.content[requestContentType] = mediaTypeObject
 
         endpointOperation.requestBody = requestBody
+
+        this.logger.trace("Endpoint request content type: %s", requestContentType)
 
         return mediaTypeObject
     }
@@ -363,6 +408,8 @@ export class OpenApiGenerator {
         let response: ResponseObject
 
         if (apiBodyInfo) {
+            this.logger.trace("Adding user defined response info")
+
             // user defined response body info
             let responseContent: ContentObject = {}
             let mediaTypeObject: MediaTypeObject = {}
@@ -376,23 +423,35 @@ export class OpenApiGenerator {
             }
 
             if (apiBodyInfo.type) {
+                this.logger.trace("Building response schema from primitive type")
+
                 this.addPrimitiveToMediaTypeObject(mediaTypeObject, apiBodyInfo)
             } else if (apiBodyInfo.class) {
+                this.logger.trace("Building response schema from class type")
+
                 this.addClassToMediaTypeObject(
                     mediaTypeObject, apiBodyInfo, responseType
                 )
             }
 
             if (apiBodyInfo.example) {
+                this.logger.trace("Using user defined response example: %s", apiBodyInfo.example)
+
                 mediaTypeObject.example = apiBodyInfo.example
             } else if (mediaTypeObject.schema) {
                 let schema = mediaTypeObject.schema as SchemaObject
 
                 if (schema && schema.example) {
+                    this.logger.trace("Using schema provided response example: %s", schema.example)
+
                     mediaTypeObject.example = schema.example
                 }
+            } else {
+                this.logger.trace("No example defined for OpenAPI response request")
             }
         } else {
+            this.logger.trace("Setting response content type: %s", responseContentType)
+
             // response content type only
             let responseContent: ContentObject = {}
             responseContent[responseContentType] = {}
@@ -404,8 +463,13 @@ export class OpenApiGenerator {
         }
 
         if (statusCode) {
+            this.logger.trace("Setting response for HTTP %s: %j",
+                statusCode, response)
+
             endpointOperation.responses[statusCode] = response
         } else {
+            this.logger.trace("Setting path default response: %j", response)
+
             endpointOperation.responses.default = response
         }
     }
@@ -414,6 +478,8 @@ export class OpenApiGenerator {
         let type = apiBodyInfo.type.toLowerCase()
 
         if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
+            this.logger.trace("Skipping adding unknown body type to OpenAPI spec: %s", type)
+
             return
         }
 
@@ -425,6 +491,8 @@ export class OpenApiGenerator {
                 type: schemaType
             }
         } else {
+            this.logger.trace("Setting body to file")
+
             mediaTypeObject.schema = {
                 format: "binary",
                 type: schemaType
@@ -434,6 +502,8 @@ export class OpenApiGenerator {
 
     private getPrimitiveTypeExample(type: string) {
         let example = OpenApiGenerator.OPEN_API_TYPE_EXAMPLES[type]
+
+        this.logger.trace("Adding body example: %s", example)
 
         return toJson(example)
     }
@@ -447,8 +517,14 @@ export class OpenApiGenerator {
         let instance: any
 
         if ((typeof clazz.example) === "function") {
+            this.logger.trace("Getting body info from 'example' method of class: %s",
+                apiBodyInfo.class.name)
+
             instance = clazz.example()
         } else {
+            this.logger.trace("Getting body info from default contructor of class: %s",
+                apiBodyInfo.class.name)
+
             instance = new clazz()
         }
 
@@ -461,6 +537,8 @@ export class OpenApiGenerator {
 
         if (responseContentType === "application/json") {
             let exampleJson = toJson(instance)
+
+            this.logger.trace("Adding JSON body example: %s", exampleJson)
 
             mediaTypeObject.example  = exampleJson
             schema.example = exampleJson
@@ -578,5 +656,7 @@ export class OpenApiGenerator {
 
             endpointOperation.parameters.push(paramInfo)
         })
+
+        this.logger.trace("Setting path parameters: %j", endpointOperation.parameters)
     }
 }

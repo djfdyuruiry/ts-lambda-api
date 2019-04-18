@@ -21,7 +21,7 @@ export class TestBase {
             level: "trace"
         }
 
-        this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, appConfig)
+        this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, this.appConfig)
     }
 
     protected async sendRequest(request: ApiRequest): Promise<ApiResponse> {

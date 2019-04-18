@@ -13,9 +13,9 @@ export class ControllerLoader {
                 logger.debug("Importing javascript file: %s", file)
 
                 await import(`${controllersDirectory}/${file}`)
+            } else {
+                logger.trace("Ignoring non javascript file in controllers directory: %s", file)
             }
-
-            logger.trace("Ignoring non javascript file in controllers directory: %s", file)
         }
     }
 }
