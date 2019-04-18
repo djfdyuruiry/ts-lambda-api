@@ -69,6 +69,11 @@ function registerApiEndpoint(classDefinition: Object, methodName: string, path: 
     let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
     let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
+    DecoratorRegistry.getLogger().debug("@%s(%s) decorator executed for endpoint: %s",
+        httpMethod,
+        path.trim() === "" ? "" : `'${path}'`,
+        endpoint.name)
+
     endpoint.httpMethod = httpMethod
     endpoint.path = path
 }

@@ -224,7 +224,7 @@ export class OpenApiGenerator {
         this.logger.trace("Adding OpenAPI spec tag for controller: %s", controller.name)
 
         tags[controller.apiName] = {
-            description: controller.apiDescription,
+            description: controller.apiDescription || "",
             name: controller.apiName
         }
     }
@@ -382,8 +382,8 @@ export class OpenApiGenerator {
         let operationInfo = endpointInfo.apiOperationInfo
         let responseContentType = endpointInfo.responseContentType || "application/json"
 
-        endpointOperation.summary = operationInfo.name
-        endpointOperation.description = operationInfo.description
+        endpointOperation.summary = operationInfo.name || ""
+        endpointOperation.description = operationInfo.description || ""
 
         if (operationInfo.request) {
             this.setRequestInfo(endpointOperation, endpointInfo)

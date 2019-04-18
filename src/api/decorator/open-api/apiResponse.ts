@@ -1,6 +1,9 @@
-import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
-import { ApiBody } from "../../../model/open-api/ApiBody";
+import { inspect } from "util"
+
+import { LogLevel } from "../../../model/logging/LogLevel"
+import { ApiBody } from "../../../model/open-api/ApiBody"
 import { IDictionary } from "../../../util/IDictionary"
+import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 
 /**
  * Decorator that can be placed on an endpoint to describe a possible response
@@ -14,6 +17,13 @@ export function apiResponse(statusCode: number, apiBodyInfo?: ApiBody) {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
         let responses: IDictionary<ApiBody> = {}
+
+        if (DecoratorRegistry.getLogger().level < LogLevel.info) {
+            DecoratorRegistry.getLogger().debug("@apiResponse(%d%s) decorator executed for endpoint: %s",
+                statusCode,
+                apiBodyInfo ? `, ${inspect(apiBodyInfo)}` : "",
+                endpoint.name)
+        }
 
         responses[`${statusCode}`] = apiBodyInfo
 

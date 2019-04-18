@@ -13,6 +13,10 @@ export class DecoratorRegistry {
     public static readonly Controllers: IDictionary<ControllerInfo> = {}
     public static readonly AuthFilters: IDictionary<AuthFilterInfo> = {}
 
+    public static getLogger() {
+        return DecoratorRegistry.logger
+    }
+
     public static setLogger(logFactory: LogFactory) {
         DecoratorRegistry.logger = logFactory.getLogger(DecoratorRegistry)
     }

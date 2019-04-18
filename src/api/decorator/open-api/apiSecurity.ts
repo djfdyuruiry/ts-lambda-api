@@ -13,6 +13,11 @@ export function apiSecurity(name: string, securitySchemeInfo: SecuritySchemeObje
     return (classDefinition: Function) => {
         let authFilterInfo = DecoratorRegistry.getOrCreateAuthFilter(classDefinition)
 
+        DecoratorRegistry.getLogger().debug("@apiSecurity('%s', %j) decorator executed for auth filter: %s",
+            name,
+            securitySchemeInfo,
+            authFilterInfo.name)
+
         authFilterInfo.name = name
         authFilterInfo.securitySchemeInfo = securitySchemeInfo
     }
