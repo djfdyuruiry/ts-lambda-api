@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 resultsDir="tests"
 resultsFileName="results.xml"
 resultsFile="${resultsDir}/${resultsFileName}"
@@ -12,7 +12,6 @@ runTestsWithCoverage() {
     # TODO: change shebang to bash and use the PIPESTATUS variable and `printf '%s,' "${PIPESTATUS[@]}"` to 
     #       return an exit code from this script to signal test or code coverage failure
     nyc --reporter=lcov --reporter=html alsatian --tap "./tests/js/**/*Tests.js" 2>&1 | \
-        tee /dev/tty | \
         tee ./tests/results.log | \
         tap-junit -o "${resultsDir}" -n "${resultsFileName}"
 }
@@ -33,9 +32,9 @@ main() {
     generateTestReport
 
     echo
-    echo "JUnit XML File: $(realpath ${resultsFile})"
-    echo "HTML Test Report: $(realpath ${reportFile})"
-    echo "Code Coverage Report: $(realpath coverage/index.html)"
+    echo "JUnit XML File: $(readlink -f ${resultsFile})"
+    echo "HTML Test Report: $(readlink -f ${reportFile})"
+    echo "Code Coverage Report: $(readlink -f coverage/index.html)"
     echo
 }
 
