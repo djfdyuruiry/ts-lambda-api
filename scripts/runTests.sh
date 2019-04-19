@@ -9,8 +9,8 @@ generateTestReport() {
 }
 
 runTestsWithCoverage() {
-    # TODO: use the PIPESTATUS variable and `printf '%s,' "${PIPESTATUS[@]}"` to return an exit code from 
-    #       this script to signal test or code coverage failure
+    # TODO: change shebang to bash and use the PIPESTATUS variable and `printf '%s,' "${PIPESTATUS[@]}"` to 
+    #       return an exit code from this script to signal test or code coverage failure
     nyc --reporter=lcov --reporter=html alsatian --tap "./tests/js/**/*Tests.js" 2>&1 | \
         tee /dev/tty | \
         tee ./tests/results.log | \
