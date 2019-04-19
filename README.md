@@ -439,7 +439,7 @@ Implementation is heavily inspired by the Dropwizard framework for Java.
 
 ### <a id="auth-princ"></a>Authentication and Principals
 
-Authentication is preformed by filter classes that are executed before invoking an endpoint; all filter class implement the `IAuthFilter` interface.
+Authentication is preformed by filter classes that are executed before invoking an endpoint; all filter classes implement the `IAuthFilter` interface.
 
 Filters use information from the HTTP request to authenticate the request. If authentication is successful, a filter will return a principal. A principal is a simple class that contains information about the current user/entity that has been granted access to the endpoint.
 
@@ -537,7 +537,7 @@ For an endpoint:
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, fromBody, principal, GET, POST } from "typescript-lambda-api"
+import { apiController, fromBody, noAuth, principal, GET, POST } from "typescript-lambda-api"
 
 import { LoginRequest } from "./LoginRequest"
 import { StoreUser } from "./StoreUser"
