@@ -11,7 +11,14 @@ codeCoverageReportFile="coverage/index.html"
 exitCode=0
 
 generateTestReport() {
-    xunit-viewer --results="${resultsFile}" --output="${reportFile}"
+    if ! [ -x "$(command -v pipenv)" ]; then
+        echo "pipenv not found, skipping HTML test report generation"
+
+        return
+    fi
+
+    pipenv install
+    pipenv run junit2html "${resultsFile}" "${reportFile}"
 }
 
 runTestsWithCoverage() {
@@ -57,7 +64,11 @@ main() {
 
     echo
     echo "TAP File: $(readlink -f ${tapFile})"
-    echo "HTML Test Report: $(readlink -f ${reportFile})"
+
+    if [ -f "${reportFile}" ]; then
+        echo "HTML Test Report: $(readlink -f ${reportFile})"
+    fi
+
     echo "Code Coverage Report: $(readlink -f ${codeCoverageReportFile})"
     echo
 

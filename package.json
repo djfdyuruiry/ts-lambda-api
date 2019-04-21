@@ -54,7 +54,7 @@
     "alsatian": "^2.3.0",
     "aws-sdk": "^2.404.0",
     "js-yaml": "^3.12.2",
-    "junit-bark": "^1.0.2",
+    "junit-bark": "^1.1.1",
     "nyc": "^13.3.0",
     "tap-spec": "^5.0.0",
     "tslint": "^5.13.0",
