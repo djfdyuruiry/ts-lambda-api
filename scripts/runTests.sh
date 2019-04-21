@@ -1,14 +1,24 @@
 #!/usr/bin/env bash
 resultsDir=".test_results"
-resultsFileName="results.xml"
 
 tapFile="${resultsDir}/results.tap"
-jsonFile="${resultsDir}/results.json"
-resultsFile="${resultsDir}/${resultsFileName}"
+junitFile="${resultsDir}/results.xml"
 reportFile="${resultsDir}/results.html"
 codeCoverageReportFile="coverage/index.html"
 
 exitCode=0
+
+printReportSummary() {
+    echo
+    echo "TAP File: $(readlink -f ${tapFile})"
+
+    if [ -f "${reportFile}" ]; then
+        echo "HTML Test Report: $(readlink -f ${reportFile})"
+    fi
+
+    echo "Code Coverage Report: $(readlink -f ${codeCoverageReportFile})"
+    echo
+}
 
 generateTestReport() {
     if ! [ -x "$(command -v pipenv)" ]; then
@@ -18,15 +28,11 @@ generateTestReport() {
     fi
 
     pipenv install
-    pipenv run junit2html "${resultsFile}" "${reportFile}"
+    pipenv run junit2html "${junitFile}" "${reportFile}"
 }
 
-runTestsWithCoverage() {
-    nyc --reporter=lcov --reporter=html alsatian --tap "./tests/js/**/*Tests.js" 2>&1 | \
-        tee "${tapFile}" |
-        tap-spec
-
-    exitCodes="$(printf "%s" "${PIPESTATUS[@]}")"
+determineExitCode() {
+    exitCodes="$1"
     nonZeroExitCodes=${exitCodes//0/}
 
     if ! [ -z "${nonZeroExitCodes}" ]; then
@@ -34,17 +40,23 @@ runTestsWithCoverage() {
     fi
 }
 
+runTestsWithCoverage() {
+    # let the framework know it is under test, see: src/util/Environment.ts
+    export UNDER_TEST=1
+
+    nyc --reporter=lcov --reporter=html alsatian --tap "./tests/js/**/*Tests.js" 2>&1 | \
+        tee "${tapFile}" |
+        tap-spec
+
+    determineExitCode "$(printf "%s" "${PIPESTATUS[@]}")"
+}
+
 runTests() {
     mkdir -p "${resultsDir}"
 
-    # let the framework know it is under test
-    #   see: src/util/Environment.ts
-    export UNDER_TEST=1
-
     runTestsWithCoverage
 
-    # export to JUnit XML
-    cat "${tapFile}" | junit-bark > "${resultsFile}"
+    cat "${tapFile}" | junit-bark > "${junitFile}"
 }
 
 cleanupOldResults() {
@@ -55,22 +67,13 @@ cleanupOldResults() {
 }
 
 main() {
-
     cat "tests/banner.txt"
 
     cleanupOldResults
     runTests
     generateTestReport
 
-    echo
-    echo "TAP File: $(readlink -f ${tapFile})"
-
-    if [ -f "${reportFile}" ]; then
-        echo "HTML Test Report: $(readlink -f ${reportFile})"
-    fi
-
-    echo "Code Coverage Report: $(readlink -f ${codeCoverageReportFile})"
-    echo
+    printReportSummary
 
     exit ${exitCode}
 }
