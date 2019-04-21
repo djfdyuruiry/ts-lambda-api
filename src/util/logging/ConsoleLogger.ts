@@ -158,5 +158,65 @@ export class ConsoleLogger implements ILogger {
         this.log(LogLevel.fatal, message, ...formatArgs)
     }
 
-    // TODO: do a isX isY for levels to make it easier for log clients to selective do expensive operations for logs
+    /**
+     * Is a given log level enabled?
+     *
+     * @param level Level to check.
+     */
+    public levelEnabled(level: LogLevel): boolean {
+        if (level === LogLevel.off) {
+            return this.level === level
+        }
+
+        return this.level <= level
+    }
+
+    /**
+     * Is trace log level enabled?
+     */
+    public traceEnabled(): boolean {
+        return this.levelEnabled(LogLevel.trace)
+    }
+
+    /**
+     * Is debug log level enabled?
+     */
+    public debugEnabled(): boolean {
+        return this.levelEnabled(LogLevel.debug)
+    }
+
+    /**
+     * Is info log level enabled?
+     */
+    public infoEnabled(): boolean {
+        return this.levelEnabled(LogLevel.info)
+    }
+
+    /**
+     * Is warn log level enabled?
+     */
+    public warnEnabled(): boolean {
+        return this.levelEnabled(LogLevel.warn)
+    }
+
+    /**
+     * Is error log level enabled?
+     */
+    public errorEnabled(): boolean {
+        return this.levelEnabled(LogLevel.error)
+    }
+
+    /**
+     * Is fatal log level enabled?
+     */
+    public fatalEnabled(): boolean {
+        return this.levelEnabled(LogLevel.fatal)
+    }
+
+    /**
+     * Is the current log level `off`?
+     */
+    public isOff(): boolean {
+        return this.levelEnabled(LogLevel.off)
+    }
 }

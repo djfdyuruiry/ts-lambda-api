@@ -24,6 +24,7 @@ export class Server {
     private readonly logger: ILogger
     private readonly api: API
     private readonly _middlewareRegistry: MiddlewareRegistry
+    private readonly openApiGenerator?: OpenApiGenerator
 
     public get middlewareRegistry() {
         return this._middlewareRegistry
@@ -37,15 +38,17 @@ export class Server {
      */
     public constructor(private appContainer: Container, private appConfig: AppConfig) {
         this.logFactory = new LogFactory(appConfig)
-
         this.logger = this.logFactory.getLogger(Server)
 
-        // ensure decorator registry has the right log level
-        //   (now that we know the app config)
+        // ensure decorator registry has the right log level (now that we know the app config)
         DecoratorRegistry.setLogger(this.logFactory)
 
         this.api = createAPI(appConfig)
         this._middlewareRegistry = new MiddlewareRegistry(this.logFactory)
+
+        if (this.appConfig.openApi && this.appConfig.openApi.enabled) {
+            this.openApiGenerator = new OpenApiGenerator(this.appConfig, this._middlewareRegistry, this.logFactory)
+        }
     }
 
     /**
@@ -84,7 +87,7 @@ export class Server {
 
         await ControllerLoader.loadControllers(controllersPath, this.logFactory)
 
-        if (this.appConfig.openApi && this.appConfig.openApi.enabled) {
+        if (this.openApiGenerator) {
             this.registerOpenApiEndpoints()
         }
 
@@ -107,11 +110,7 @@ export class Server {
     private registerOpenApiEndpoint(format: OpenApiFormat) {
         let specEndpoint = new EndpointInfo(
             `internal__openapi::${format}`,
-            async () => {
-                let openApiGenerator = new OpenApiGenerator(this.appConfig, this._middlewareRegistry, this.logFactory)
-
-                return await openApiGenerator.exportOpenApiSpec(format)
-            }
+            async () => await this.openApiGenerator.exportOpenApiSpec(format)
         )
 
         specEndpoint.path = `/open-api.${format}`

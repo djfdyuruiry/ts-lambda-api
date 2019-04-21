@@ -17,7 +17,7 @@ export function apiRequest(apiBodyInfo: ApiBody) {
         let operationInfo = endpoint.getOrCreateApiOperationInfo()
         let requestInfo = operationInfo.getOrCreateRequest()
 
-        if (DecoratorRegistry.getLogger().level < LogLevel.info) {
+        if (DecoratorRegistry.getLogger().debugEnabled()) {
             DecoratorRegistry.getLogger().debug("@apiRequest(%s) decorator executed for endpoint: %s",
                 inspect(apiBodyInfo),
                 endpoint.name)

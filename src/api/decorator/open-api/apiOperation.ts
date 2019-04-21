@@ -17,7 +17,7 @@ export function apiOperation(apiOperationInfo: ApiOperation) {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
-        if (DecoratorRegistry.getLogger().level < LogLevel.info) {
+        if (DecoratorRegistry.getLogger().debugEnabled()) {
             DecoratorRegistry.getLogger().debug("@apiOperation(%s) decorator executed for endpoint: %s",
                 inspect(apiOperationInfo),
                 endpoint.name)

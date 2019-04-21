@@ -18,7 +18,7 @@ export function consumes(contentType?: string, apiBodyInfo?: ApiBody) {
         let operationInfo = endpoint.getOrCreateApiOperationInfo()
         let requestInfo = operationInfo.getOrCreateRequest()
 
-        if (DecoratorRegistry.getLogger().level < LogLevel.info) {
+        if (DecoratorRegistry.getLogger().debugEnabled()) {
             DecoratorRegistry.getLogger().debug("@consumes('%s'%s) decorator executed for endpoint: %s",
                 contentType,
                 apiBodyInfo ? `, ${inspect(apiBodyInfo)}` : "",
@@ -45,7 +45,7 @@ export function controllerConsumes(contentType: string, apiBodyInfo?: ApiBody) {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition)
         let requestInfo = controller.getOrCreateRequestInfo()
 
-        if (DecoratorRegistry.getLogger().level < LogLevel.info) {
+        if (DecoratorRegistry.getLogger().debugEnabled()) {
             DecoratorRegistry.getLogger().debug("@controllerConsumes('%s'%s) decorator executed for controller: %s",
                 contentType,
                 apiBodyInfo ? `, ${inspect(apiBodyInfo)}` : "",

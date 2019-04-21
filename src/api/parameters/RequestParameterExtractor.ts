@@ -16,7 +16,7 @@ export class RequestParameterExtractor extends BaseParameterExtractor {
     public extract(request: Request) {
         this.logger.debug("Injecting request as parameter")
 
-        if (this.logger.level === LogLevel.trace) {
+        if (this.logger.traceEnabled()) {
             this.logger.trace("Request:\n%s", inspect(request))
         }
 

@@ -18,7 +18,7 @@ export function apiResponse(statusCode: number, apiBodyInfo?: ApiBody) {
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
         let responses: IDictionary<ApiBody> = {}
 
-        if (DecoratorRegistry.getLogger().level < LogLevel.info) {
+        if (DecoratorRegistry.getLogger().debugEnabled()) {
             DecoratorRegistry.getLogger().debug("@apiResponse(%d%s) decorator executed for endpoint: %s",
                 statusCode,
                 apiBodyInfo ? `, ${inspect(apiBodyInfo)}` : "",

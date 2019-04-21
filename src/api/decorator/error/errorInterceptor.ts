@@ -18,7 +18,7 @@ export function errorInterceptor(interceptor: interfaces.ServiceIdentifier<Error
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
-        if (DecoratorRegistry.getLogger().level < LogLevel.info) {
+        if (DecoratorRegistry.getLogger().debugEnabled()) {
             DecoratorRegistry.getLogger().debug("@errorInterceptor(%s) decorator executed for endpoint: %s",
                 inspect(interceptor),
                 endpoint.name)
@@ -37,7 +37,7 @@ export function controllerErrorInterceptor(interceptor: interfaces.ServiceIdenti
     return (classDefinition: Function) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition)
 
-        if (DecoratorRegistry.getLogger().level < LogLevel.info) {
+        if (DecoratorRegistry.getLogger().debugEnabled()) {
             DecoratorRegistry.getLogger().debug("@controllerErrorInterceptor(%s) decorator executed for controller: %s",
                 inspect(interceptor),
                 controller.name)

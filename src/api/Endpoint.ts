@@ -55,7 +55,7 @@ export class Endpoint {
             this.endpointInfo.fullPath,
             async (req, res) => {
                 try {
-                    if (this.logger.level === LogLevel.trace) {
+                    if (this.logger.traceEnabled()) {
                         this.log(LogLevel.trace, "Endpoint request:\n%s", inspect(req))
                     }
 
@@ -65,7 +65,7 @@ export class Endpoint {
 
                     this.log(LogLevel.trace, "Endpoint return value: %j", returnValue)
 
-                    if (this.logger.level === LogLevel.trace) {
+                    if (this.logger.traceEnabled()) {
                         this.log(LogLevel.trace, "Endpoint '%s' response:\n%s", inspect(res))
                     }
 
@@ -186,7 +186,7 @@ export class Endpoint {
     private sendStatusCodeResponse(statusCode: number, response: Response) {
         this.log(
             LogLevel.debug,
-            "Returning status code , HTTP %d) only response for endpoint: %s",
+            "Returning status code only (HTTP %d) response for endpoint: %s",
             statusCode,
             response
         )
@@ -211,8 +211,8 @@ export class Endpoint {
                 ` middleware registry, path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
         }
 
-        this.log(LogLevel.info, "Authorizing request by principal '%s' for endpoint", principal.name)
-        this.log(LogLevel.debug, "'%j' role, s) defined for endpoint", roles)
+        this.log(LogLevel.info, "Authorizing request by principal '%s'", principal.name)
+        this.log(LogLevel.debug, "Roles defined for endpoint: '%j'", roles)
 
         for (let authorizer of this.middlewareRegistry.authorizers) {
             // endpoint roles, if defined, override controller roles
@@ -220,7 +220,7 @@ export class Endpoint {
                 if (await authorizer.authorize(principal, role)) {
                     this.log(
                         LogLevel.info,
-                        "Authorized request by principal '%s' using authorizer '%s' and role '%s', for endpoint",
+                        "Authorized request by principal '%s' using authorizer '%s' and role '%s'",
                         principal.name,
                         authorizer.name,
                         role
@@ -231,7 +231,7 @@ export class Endpoint {
 
                 this.log(
                     LogLevel.debug,
-                    "Request by principal '%s' not authorized using authorizer '%s' and role '%s', for endpoint",
+                    "Request by principal '%s' not authorized using authorizer '%s' and role '%s'",
                     principal.name,
                     authorizer.name,
                     role
@@ -241,7 +241,7 @@ export class Endpoint {
 
         this.log(
             LogLevel.debug,
-            "Request by principal '%s' was not authorized for endpoint",
+            "Request by principal '%s' was not authorized",
             principal.name
         )
 
@@ -347,7 +347,7 @@ export class Endpoint {
             this.log(LogLevel.debug, "Invoking controller '%s' method: %s",
                 controllerName, this.endpointInfo.methodName)
 
-            if (this.logger.level === LogLevel.trace) {
+            if (this.logger.traceEnabled()) {
                 this.log(LogLevel.trace, "Passing %d arguments to method '%s' in controller '%s': %s",
                     parameters.length,
                     this.endpointInfo.methodName,

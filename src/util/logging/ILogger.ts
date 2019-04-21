@@ -81,4 +81,46 @@ export interface ILogger {
      * @param formatArgs (Optional) Arguments which are passed to `sprintf` to format the message.
      */
     fatal(message: string, ...formatArgs: any[])
+
+    /**
+     * Is a given log level enabled?
+     *
+     * @param level Level to check.
+     */
+    levelEnabled(level: LogLevel): boolean
+
+    /**
+     * Is trace log level enabled?
+     */
+    traceEnabled(): boolean
+
+    /**
+     * Is debug log level enabled?
+     */
+    debugEnabled(): boolean
+
+    /**
+     * Is info log level enabled?
+     */
+    infoEnabled(): boolean
+
+    /**
+     * Is warn log level enabled?
+     */
+    warnEnabled(): boolean
+
+    /**
+     * Is error log level enabled?
+     */
+    errorEnabled(): boolean
+
+    /**
+     * Is fatal log level enabled?
+     */
+    fatalEnabled(): boolean
+
+    /**
+     * Is the current log level `off`?
+     */
+    isOff(): boolean
 }
