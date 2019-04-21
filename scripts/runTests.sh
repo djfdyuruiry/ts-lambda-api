@@ -1,45 +1,67 @@
 #!/usr/bin/env bash
-resultsDir="tests"
+resultsDir=".test_results"
 resultsFileName="results.xml"
 
-logFile="${resultsDir}/results.log"
+tapFile="${resultsDir}/results.tap"
+jsonFile="${resultsDir}/results.json"
 resultsFile="${resultsDir}/${resultsFileName}"
 reportFile="${resultsDir}/results.html"
 codeCoverageReportFile="coverage/index.html"
+
+exitCode=0
 
 generateTestReport() {
     xunit-viewer --results="${resultsFile}" --output="${reportFile}"
 }
 
 runTestsWithCoverage() {
-    # TODO: change shebang to bash and use the PIPESTATUS variable and `printf '%s,' "${PIPESTATUS[@]}"` to 
-    #       return an exit code from this script to signal test or code coverage failure
     nyc --reporter=lcov --reporter=html alsatian --tap "./tests/js/**/*Tests.js" 2>&1 | \
-        tee "${logFile}" | \
-        tap-junit -o "${resultsDir}" -n "${resultsFileName}"
+        tee "${tapFile}" |
+        tap-spec
+
+    exitCodes="$(printf "%s" "${PIPESTATUS[@]}")"
+    nonZeroExitCodes=${exitCodes//0/}
+
+    if ! [ -z "${nonZeroExitCodes}" ]; then
+        exitCode=1
+    fi
+}
+
+runTests() {
+    mkdir -p "${resultsDir}"
+
+    # let the framework know it is under test
+    #   see: src/util/Environment.ts
+    export UNDER_TEST=1
+
+    runTestsWithCoverage
+
+    # export to JUnit XML
+    cat "${tapFile}" | junit-bark > "${resultsFile}"
 }
 
 cleanupOldResults() {
-    rm -rf .nyc_output
-    rm -rf coverage
+    rm -rf ".nyc_output"
+    rm -rf "coverage"
 
-    rm -f ${resultsDir}/*.xml
-    rm -f ${resultsDir}/*.html
+    rm -rf "${resultsDir}"
 }
 
 main() {
-    cat tests/banner.txt
+
+    cat "tests/banner.txt"
 
     cleanupOldResults
-    runTestsWithCoverage
+    runTests
     generateTestReport
 
     echo
-    echo "Test Log File: $(readlink -f ${logFile})"
-    echo "JUnit XML File: $(readlink -f ${resultsFile})"
+    echo "TAP File: $(readlink -f ${tapFile})"
     echo "HTML Test Report: $(readlink -f ${reportFile})"
     echo "Code Coverage Report: $(readlink -f ${codeCoverageReportFile})"
     echo
+
+    exit ${exitCode}
 }
 
 main

@@ -2,8 +2,9 @@ import { inspect } from "util"
 
 import { sprintf } from "sprintf-js"
 
-import { ILogger, LogFormat } from "./ILogger"
 import { LogLevel } from "../../model/logging/LogLevel"
+import { UnderTest } from "../Environment"
+import { ILogger, LogFormat } from "./ILogger"
 
 export class Logger implements ILogger {
     private readonly useStringLogFormat: boolean
@@ -38,23 +39,28 @@ export class Logger implements ILogger {
             }
         }
 
-        if (this.useStringLogFormat) {
-            console.log(
+        let logLine = this.useStringLogFormat ?
+            sprintf(
                 "%s %s %s - %s",
                 now.toISOString(),
                 uppercaseLevel,
                 this.clazz,
                 formattedMessage
-            )
-        } else {
-            console.log(
-                JSON.stringify({
-                    level: uppercaseLevel,
-                    msg: formattedMessage,
-                    time: now.getTime()
-                })
-            )
+            ) :
+            JSON.stringify({
+                level: uppercaseLevel,
+                msg: formattedMessage,
+                time: now.getTime()
+            })
+
+        if (UnderTest && level < LogLevel.info) {
+            // prevent verbose logging when running under test,
+            // build the message to test that, but only output it
+            // if it is a warning or an error
+            return
         }
+
+        console.log(logLine)
     }
 
     public trace(message: string, ...formatArgs: any[]) {
@@ -84,4 +90,6 @@ export class Logger implements ILogger {
     public fatal(message: string, ...formatArgs: any[]) {
         this.log(LogLevel.fatal, message, ...formatArgs)
     }
+
+    // TODO: do a isX isY for levels to make it easier for log clients to selective do expensive operations for logs
 }
