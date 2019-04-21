@@ -132,15 +132,15 @@ import * as path from "path"
 
 import { AppConfig, ApiLambdaApp } from "typescript-lambda-api"
 
+const appConfig = new AppConfig()
+
+appConfig.base = "/api/v1"
+appConfig.version = "v1"
+
+const controllersPath = path.join(__dirname, "controllers")
+const app = new ApiLambdaApp(controllersPath, appConfig)
+
 export async function handler(event, context) {
-    let appConfig = new AppConfig()
-
-    appConfig.base = "/api/v1"
-    appConfig.version = "v1"
-
-    let controllersPath = path.join(__dirname, "controllers")
-    let app = new ApiLambdaApp(controllersPath, appConfig)
-
     return await app.run(event, context)
 }
 ```
@@ -497,8 +497,8 @@ You register your authentication filter when setting up your application instanc
 
 ```typescript
 // build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
-let authFilter = new StoreAuthFilter()
+const app = new ApiLambdaApp(controllersPath, appConfig)
+const authFilter = new StoreAuthFilter()
 
 // this will protect your endpoints using the auth filter to authenticate requests
 app.middlewareRegistry.addAuthFilter(authFilter)
@@ -700,8 +700,8 @@ You register your authentication filter when setting up your application instanc
 
 ```typescript
 // build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
-let authorizer = new StoreAuthorizer()
+const app = new ApiLambdaApp(controllersPath, appConfig)
+const authorizer = new StoreAuthorizer()
 
 // this will protect your endpoints using the authorizer to check access roles
 app.middlewareRegistry.addAuthorizer(authorizer)
@@ -778,8 +778,8 @@ You can manually register interceptors when setting up your application instance
 
 ```typescript
 // build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
-let errorInterceptor = new StoreErrorInterceptor()
+const app = new ApiLambdaApp(controllersPath, appConfig)
+const errorInterceptor = new StoreErrorInterceptor()
 
 // this will intercept errors thrown by any endpoint
 app.middlewareRegistry.addErrorInterceptor(errorInterceptor)
@@ -949,7 +949,7 @@ Configuring the IOC container to enable dependency injection into your controlle
 
 ```typescript
 // build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
+const app = new ApiLambdaApp(controllersPath, appConfig)
 
 app.configureApp(container => {
     // bind interface to implementation class, for example
@@ -1006,8 +1006,8 @@ You can then configure the IOC container to bind to your configuration instance.
 
 ```typescript
 // build controllers path...
-let appConfig: MyCustomConfig = buildConfig()
-let app = new ApiLambdaApp(controllersPath, appConfig)
+const appConfig: MyCustomConfig = buildConfig()
+const app = new ApiLambdaApp(controllersPath, appConfig)
 
 app.configureApp(container => {
     container.bind(MyCustomConfig)
@@ -1057,7 +1057,7 @@ Configuring `lambda-api` directly can be done by calling the `configureApi` meth
 import * as xmljs from "xml-js"
 
 // build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
+const app = new ApiLambdaApp(controllersPath, appConfig)
 
 app.configureApi(api: API => {
     // add middleware handler, for example
@@ -1108,13 +1108,13 @@ To enable it, use the `openApi` property in the `AppConfig` class when building 
 
 ```typescript
 // build controllers path...
-let appConfig = new AppConfig()
+const appConfig = new AppConfig()
 
 appConfig.base = "/api/v1"
 appConfig.version = "v1"
 appConfig.openApi.enabled = true
 
-let app = new ApiLambdaApp(controllersPath, appConfig)
+const app = new ApiLambdaApp(controllersPath, appConfig)
 // export handler
 ```
 
@@ -1288,14 +1288,14 @@ By default the OpenAPI endpoints do not require authentication. If you wish to a
 
 ```typescript
 // build controllers path...
-let appConfig = new AppConfig()
+const appConfig = new AppConfig()
 
 appConfig.base = "/api/v1"
 appConfig.version = "v1"
 appConfig.openApi.enabled = true
 appConfig.openApi.useAuthentication = true
 
-let app = new ApiLambdaApp(controllersPath, appConfig)
+const app = new ApiLambdaApp(controllersPath, appConfig)
 // export handler
 ```
 
