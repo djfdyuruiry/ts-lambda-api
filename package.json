@@ -58,7 +58,6 @@
     "nyc": "^13.3.0",
     "tap-spec": "^5.0.0",
     "tslint": "^5.13.0",
-    "typescript": "^3.3.3",
-    "xunit-viewer": "^5.1.10"
+    "typescript": "^3.3.3"
   }
 }
