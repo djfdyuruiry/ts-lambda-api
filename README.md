@@ -50,8 +50,10 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
     - [Using Decorators](#use-decorators)
 - [Dependency Injection](#di)
 - [Configuration](#config)
-    - [lambda-api](#lambda-api)
-    - [Logging](#logging)
+    - [lambda-api](#lambda-api-config)
+    - [Reference](#config-reference)
+- [Logging](#logging)
+    - [lambda-api](#lambda-api-logging)
 - [OpenAPI (Swagger)](#open-api)
     - [Decorators](#open-api-decorators)
     - [YAML Support](#open-api-yaml)
@@ -1043,7 +1045,11 @@ export class MyController {
 
 **Note: The `AppConfig` class supports all the configuration fields documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package.**
 
-### <a id="lambda-api"></a>lambda-api
+### <a id="config-reference"></a>Reference
+
+TODO: Config Reference
+
+### <a id="lambda-api-config"></a>lambda-api
 
 Configuring `lambda-api` directly can be done by calling the `configureApi` method like below:
 
@@ -1071,9 +1077,13 @@ app.configureApi(api: API => {
 
 See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documentation for guidance how to use the `API` class.
 
-### <a id="logging"></a>Logging
+## <a id="logging"></a>Logging
 
-Logging is currently provided by the [lambda-api](https://github.com/jeremydaly/lambda-api) package, use the `AppConfig` instance passed to `ApiLambdaApp` to configure logging.
+TODO: Logging docs
+
+### <a id="lambda-api-logging>lambda-api
+
+Logging is also provided by the [lambda-api](https://github.com/jeremydaly/lambda-api) package, use the `AppConfig` instance passed to `ApiLambdaApp` to configure logging using the `logger` key.
 
 ----
 

@@ -29,4 +29,15 @@ export class LogFactory {
 
         return logFactory.getLogger(clazz)
     }
+
+    public getCustomLogger(clazz: Function, level: LogLevel, format: LogFormat = "string") {
+        let logFactory = new LogFactory({
+            serverLogger: {
+                format,
+                level
+            }
+        })
+
+        return logFactory.getLogger(clazz)
+    }
 }

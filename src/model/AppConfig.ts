@@ -2,6 +2,7 @@ import { injectable } from "inversify"
 import { LoggerOptions, Options, SerializerFunction } from "lambda-api"
 
 import { OpenApiConfig } from "./OpenApiConfig"
+import { LogLevel } from "./logging/LogLevel"
 import { ServerLoggerConfig } from "./logging/ServerLoggerConfig"
 
 /**
@@ -39,11 +40,20 @@ export class AppConfig implements Options {
     public callbackName?: string
 
     /**
-     * Enables default logging or allows for configuration
-     * through a Logging Configuration object.
+     * lambda-api logging configuration. Enables/disables default logging
+     * by setting to a boolean value or allows for configuration through
+     * a Logging Configuration object.
+     *
+     * Defaults to info level logging.
      */
     public logger?: boolean | LoggerOptions
 
+    /**
+     * Logging configuration for ts-lambda-api.
+     * @see{ServerLoggerConfig} for more information.
+     *
+     * Defaults to info level plain string logging.
+     */
     public serverLogger?: ServerLoggerConfig
 
     /**
@@ -71,6 +81,10 @@ export class AppConfig implements Options {
         this.openApi = new OpenApiConfig()
         this.logger = {
             level: "info"
+        }
+        this.serverLogger = {
+            format: "string",
+            level: LogLevel.info
         }
     }
 }
