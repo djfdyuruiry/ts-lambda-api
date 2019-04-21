@@ -24,9 +24,10 @@ import { LogFactory } from "./util/logging/LogFactory"
  */
 export abstract class ApiApp {
     protected readonly apiServer: Server
-
     protected readonly logFactory: LogFactory
+
     protected logger: ILogger
+    protected initialised: boolean
 
     public get middlewareRegistry() {
         return this.apiServer.middlewareRegistry
@@ -48,11 +49,11 @@ export abstract class ApiApp {
         if (!controllersPath || controllersPath.trim() === "") {
             throw new Error("Null, empty or whitespace controllersPath passed to ApiApp")
         }
-
-        this.logFactory = new LogFactory(appConfig)
-        this.logger = this.logFactory.getLogger(ApiApp)
-
         this.apiServer = new Server(appContainer, appConfig)
+        this.logFactory = new LogFactory(appConfig)
+
+        this.logger = this.logFactory.getLogger(ApiApp)
+        this.initialised = false
     }
 
     /**
@@ -87,10 +88,18 @@ export abstract class ApiApp {
      * Initialise all controllers and endpoints declared using decorators.
      */
     public async initialiseControllers() {
+        if (this.initialised) {
+            this.logger.debug("Ignoring call to initialiseControllers, app has already been initialised")
+
+            return
+        }
+
         this.logger.debug("Initialising app controllers")
 
         try {
             await this.apiServer.discoverAndBuildRoutes(this.controllersPath)
+
+            this.initialised = true
         } catch (ex) {
             this.logger.fatal("Error initialising API app:\n%s",
                 ex instanceof Error ? ex.stack : ex)
