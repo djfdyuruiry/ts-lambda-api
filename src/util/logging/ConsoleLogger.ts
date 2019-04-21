@@ -60,7 +60,7 @@ export class ConsoleLogger implements ILogger {
         let formattedMessage = message
 
         if (formatArgs && formatArgs.length > 0) {
-            this.formatMessage(message, ...formatArgs)
+            formattedMessage = this.formatMessage(message, ...formatArgs)
         }
 
         let logLine = this.useStringLogFormat ?

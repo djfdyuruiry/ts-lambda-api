@@ -13,7 +13,7 @@ import { ILogger } from "../util/logging/ILogger"
 @injectable()
 export abstract class Controller {
     /**
-     *
+     * Logger instance for this controller.
      */
     protected _logger: ILogger
 
