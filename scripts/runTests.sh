@@ -42,7 +42,7 @@ determineExitCode() {
 
 runTestsWithCoverage() {
     # let the framework know it is under test, see: src/util/Environment.ts
-    export UNDER_TEST=1
+    export TLA_UNDER_TEST=1
 
     nyc --reporter=lcov --reporter=html alsatian --tap "./tests/js/**/*Tests.js" 2>&1 | \
         tee "${tapFile}" |
