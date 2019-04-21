@@ -2,7 +2,7 @@ import { AsyncTest, Expect, Test, TestCase, TestFixture } from "alsatian"
 import { ReplaceOperation } from "fast-json-patch/lib/core"
 import { METHODS } from "lambda-api"
 
-import { ApiLambdaApp, JsonPatch, RequestBuilder } from "../../dist/typescript-lambda-api"
+import { ApiLambdaApp, LogFactory, JsonPatch, RequestBuilder } from "../../dist/typescript-lambda-api"
 
 import { TestBase } from "./TestBase"
 import { Person } from "./test-components/model/Person"
@@ -173,5 +173,12 @@ export class ApiAcceptanceTests extends TestBase {
         await Expect(async () =>
             await (new ApiLambdaApp("/some/fake/path")).initialiseControllers()
         ).toThrowAsync()
+    }
+
+    @Test()
+    public async when_log_factory_called_to_build_custom_logger_then_no_exceptions_occur() {
+        let edgeCaseLogger = LogFactory.getCustomLogger(ApiAcceptanceTests)
+
+        edgeCaseLogger.info("when_log_factory_called_to_build_custom_logger_then_no_exceptions_occur")
     }
 }
