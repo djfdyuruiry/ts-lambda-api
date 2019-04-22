@@ -1,6 +1,6 @@
 import { TestFixture, Test, TestCase, Expect } from "alsatian"
 
-import { LogFactory, LogFormat, LogLevel } from "../../dist/typescript-lambda-api"
+import { LogFactory, LogFormat, LogLevel } from "../../dist/ts-lambda-api"
 
 @TestFixture()
 export class LogFactoryTests {

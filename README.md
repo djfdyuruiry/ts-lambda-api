@@ -1,11 +1,11 @@
-# typescript-lambda-api
+# ts-lambda-api
 
 Build REST API's using Typescript & AWS Lambda.
 
-[NPM Package](https://www.npmjs.com/package/typescript-lambda-api)
-[GitHub Repo](https://github.com/djfdyuruiry/typescript-lambda-api/)
+[NPM Package](https://www.npmjs.com/package/ts-lambda-api)
+[GitHub Repo](https://github.com/djfdyuruiry/ts-lambda-api/)
 
-Read the full `typedoc` documentation: https://djfdyuruiry.github.io/typescript-lambda-api/
+Read the full `typedoc` documentation: https://djfdyuruiry.github.io/ts-lambda-api/
 
 Framework Features:
 
@@ -72,7 +72,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 
 ---
 
-This is a short guide to creating your first API using `typescript-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customised.
+This is a short guide to creating your first API using `ts-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customised.
 
 **Note: Node.js v8 & Typescript v3 or newer are required to use this package.**
 
@@ -83,7 +83,7 @@ This is a short guide to creating your first API using `typescript-lambda-api`. 
 **Ensure the `@types/node` package you install matches your version of Node.js**
 
 ```shell
-npm install typescript-lambda-api
+npm install ts-lambda-api
 npm install -D typescript @types/node aws-sdk
 ```
 
@@ -134,7 +134,7 @@ npm install -D typescript @types/node aws-sdk
 ```typescript
 import * as path from "path"
 
-import { AppConfig, ApiLambdaApp } from "typescript-lambda-api"
+import { AppConfig, ApiLambdaApp } from "ts-lambda-api"
 
 const appConfig = new AppConfig()
 
@@ -155,7 +155,7 @@ export async function handler(event, context) {
 
 ```typescript
 import { injectable } from "inversify"
-import { apiController, Controller, GET } from "typescript-lambda-api"
+import { apiController, Controller, GET } from "ts-lambda-api"
 
 @apiController("/hello-world")
 @injectable() // all controller classes must be decorated with injectable
@@ -249,7 +249,7 @@ You can declare a root path for all methods in a controller using the `apiContro
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, GET, POST } from "typescript-lambda-api"
+import { apiController, GET, POST } from "ts-lambda-api"
 
 @apiController("/hello-world")
 @injectable()
@@ -273,7 +273,7 @@ You can declare a path for any given method in a controller when using the endpo
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, GET } from "typescript-lambda-api"
+import { apiController, GET } from "ts-lambda-api"
 
 @apiController("/store")
 @injectable()
@@ -294,7 +294,7 @@ You can include parameters as part of your routes, when you need to capture part
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, pathParam, GET } from "typescript-lambda-api"
+import { apiController, pathParam, GET } from "ts-lambda-api"
 
 @apiController("/store")
 @injectable()
@@ -315,7 +315,7 @@ You can also combine controller and endpoint path parameters.
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, pathParam, GET } from "typescript-lambda-api"
+import { apiController, pathParam, GET } from "ts-lambda-api"
 
 @apiController("/store/:storeId")
 @injectable()
@@ -344,7 +344,7 @@ Different parts of the HTTP request can be bound to endpoint method parameters u
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, fromBody, header, queryParam, GET, POST } from "typescript-lambda-api"
+import { apiController, fromBody, header, queryParam, GET, POST } from "ts-lambda-api"
 
 import { Thing } from "./Thing"
 
@@ -388,7 +388,7 @@ To set the response content type for all methods, use `controllerProduces` on a 
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, controllerProduces, pathParam, produces, GET } from "typescript-lambda-api"
+import { apiController, controllerProduces, pathParam, produces, GET } from "ts-lambda-api"
 
 import { Item } from "./Item"
 
@@ -418,7 +418,7 @@ For an individual method, use `produces`. This will override `controllerProduces
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, produces, GET } from "typescript-lambda-api"
+import { apiController, produces, GET } from "ts-lambda-api"
 
 import { Item } from "./Item"
 
@@ -452,7 +452,7 @@ Filters use information from the HTTP request to authenticate the request. If au
 To use authentication you must implement your own principal by extending the `Principal` class:
 
 ```typescript
-import { Principal } from "typescript-lambda-api"
+import { Principal } from "ts-lambda-api"
 
 export class StoreUser extends Principal {
     // we will use this later, see the Authorization section
@@ -471,7 +471,7 @@ export class StoreUser extends Principal {
 HTTP Basic authentication is supported out of the box by the `BasicAuthFilter` filter abstract class. You extend this class to implement your authentication logic:
 
 ```typescript
-import { BasicAuthFilter } from "typescript-lambda-api"
+import { BasicAuthFilter } from "ts-lambda-api"
 
 import { StoreUser } from "./StoreUser"
 
@@ -516,7 +516,7 @@ Once a user has been authenticated you can pass the principal instance into the 
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, pathParam, principal, GET } from "typescript-lambda-api"
+import { apiController, pathParam, principal, GET } from "ts-lambda-api"
 
 @apiController("/store")
 @injectable()
@@ -543,7 +543,7 @@ For an endpoint:
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, fromBody, noAuth, principal, GET, POST } from "typescript-lambda-api"
+import { apiController, fromBody, noAuth, principal, GET, POST } from "ts-lambda-api"
 
 import { LoginRequest } from "./LoginRequest"
 import { StoreUser } from "./StoreUser"
@@ -569,7 +569,7 @@ For all endpoints in a controller:
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, controllerNoAuth, fromBody, POST } from "typescript-lambda-api"
+import { apiController, controllerNoAuth, fromBody, POST } from "ts-lambda-api"
 
 import { SearchRequest } from "./SearchRequest"
 
@@ -606,7 +606,7 @@ Your auth filter implementation must provide a method for extracting your authen
 ```typescript
 import { Request } from "lambda-api"
 
-import { IAuthFilter, Principal } from "typescript-lambda-api"
+import { IAuthFilter, Principal } from "ts-lambda-api"
 
 import { StoreUser } from "./StoreUser"
 import { TokenAuth } from "./TokenAuth"
@@ -649,7 +649,7 @@ Tip: You can make your class abstract and then make the `authenticate` method ab
 To implement role based authorization you implement the `IAuthorizer` interface.
 
 ```typescript
-import { IAuthorizer } from "typescript-lambda-api"
+import { IAuthorizer } from "ts-lambda-api"
 
 import { StoreUser } from "./StoreUser"
 
@@ -667,7 +667,7 @@ When a user is successfully authorized by an auth filter, this returns a princip
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, controllerRolesAllowed, GET } from "typescript-lambda-api"
+import { apiController, controllerRolesAllowed, GET } from "ts-lambda-api"
 
 @apiController("/store")
 @controllerRolesAllowed("STORE_GUEST", "STORE_MANAGER")
@@ -685,7 +685,7 @@ You can restrict a single enpoint using the `rolesAllowed` decorator:
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, rolesAllowed, GET } from "typescript-lambda-api"
+import { apiController, rolesAllowed, GET } from "ts-lambda-api"
 
 @apiController("/store")
 @injectable()
@@ -732,7 +732,7 @@ Interceptor instances are built using the InversifyJS app container, so you can 
 ```typescript
 import { injectable } from "inversify";
 
-import { ApiError, ErrorInterceptor } from "typescript-lambda-api"
+import { ApiError, ErrorInterceptor } from "ts-lambda-api"
 
 @injectable()
 export class StoreErrorInterceptor extends ErrorInterceptor {
@@ -755,7 +755,7 @@ In your controller you can then use the `controllerErrorInterceptor` decorator t
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, controllerErrorInterceptor, GET } from "typescript-lambda-api"
+import { apiController, controllerErrorInterceptor, GET } from "ts-lambda-api"
 
 import { StoreErrorInterceptor } from "./StoreErrorInterceptor"
 
@@ -813,7 +813,7 @@ You can use a try/catch block and the `Response` class to handle errors:
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, Controller, GET } from "typescript-lambda-api"
+import { apiController, Controller, GET } from "ts-lambda-api"
 
 @apiController("/store")
 @injectable()
@@ -861,7 +861,7 @@ This library supports [JSON Patch](http://jsonpatch.com/) format for updating en
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, produces, JsonPatch, PATCH } from "typescript-lambda-api"
+import { apiController, produces, JsonPatch, PATCH } from "ts-lambda-api"
 
 import { Item } from "./Item"
 
@@ -901,7 +901,7 @@ If you extend the controller class, you get access to the request and response c
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, Controller, GET } from "typescript-lambda-api"
+import { apiController, Controller, GET } from "ts-lambda-api"
 
 @apiController("/hello-world")
 @injectable()
@@ -925,7 +925,7 @@ You can use parameter decorators to inject the request and response context.
 import { injectable } from "inversify"
 import { Request, Response } from "lambda-api"
 
-import { apiController, request, response, GET } from "typescript-lambda-api"
+import { apiController, request, response, GET } from "ts-lambda-api"
 
 @apiController("/hello-world")
 @injectable()
@@ -971,7 +971,7 @@ In your controllers you can then use the registered types as constructor paramet
 ```typescript
 import { inject, injectable } from "inversify"
 
-import { apiController, GET } from "typescript-lambda-api"
+import { apiController, GET } from "ts-lambda-api"
 
 @apiController("/hello-world")
 @injectable()
@@ -997,7 +997,7 @@ See the [InversifyJS](https://github.com/inversify/InversifyJS) package document
 When building an application instance you pass a `AppConfig` instance to the constructor. If you want to provide your own application config it is recommended to extend this class .
 
 ```typescript
-import { AppConfig } from "typescript-lambda-api"
+import { AppConfig } from "ts-lambda-api"
 
 import { DatabaseConfig } from "./DatabaseConfig"
 
@@ -1026,7 +1026,7 @@ After which, you can inject your config into your controllers or services.
 ```typescript
 import { inject, injectable } from "inversify"
 
-import { apiController, GET } from "typescript-lambda-api"
+import { apiController, GET } from "ts-lambda-api"
 
 import { MyCustomConfig } from "./MyCustomConfig"
 
@@ -1051,7 +1051,7 @@ export class MyController {
 
 ### <a id="config-reference"></a>Reference
 
-For a complete reference see the [AppConfig](https://djfdyuruiry.github.io/typescript-lambda-api/classes/appconfig.html) docs.
+For a complete reference see the [AppConfig](https://djfdyuruiry.github.io/ts-lambda-api/classes/appconfig.html) docs.
 
 ### <a id="lambda-api-config"></a>lambda-api
 
@@ -1103,14 +1103,14 @@ Below is some example output, include a stack trace from an `Error` instance:
 2019-04-21T22:20:29.832Z INFO Endpoint - [GET] /test - Authenticating request
 2019-04-21T22:20:29.833Z ERROR Endpoint - [GET] /test - Error processing endpoint request
 Error: authenticate failed
-    at TestAuthFilter.authenticate (/home/matthew/src/ts/typescript-lambda-api/tests/src/test-components/TestAuthFilter.ts:25:19)
-    at Endpoint.authenticateRequest (/home/matthew/src/ts/typescript-lambda-api/dist/api/Endpoint.js:15:2640)
+    at TestAuthFilter.authenticate (/home/matthew/src/ts/ts-lambda-api/tests/src/test-components/TestAuthFilter.ts:25:19)
+    at Endpoint.authenticateRequest (/home/matthew/src/ts/ts-lambda-api/dist/api/Endpoint.js:15:2640)
     at processTicksAndRejections (internal/process/task_queues.js:86:5)
     at process.runNextTicks [as _tickCallback] (internal/process/task_queues.js:56:3)
     at Function.Module.runMain (internal/modules/cjs/loader.js:880:11)
     at runMain (/home/matthew/.node-spawn-wrap-13541-13c0098ec456/node:68:10)
     at Function.<anonymous> (/home/matthew/.node-spawn-wrap-13541-13c0098ec456/node:171:5)
-    at Object.<anonymous> (/home/matthew/src/ts/typescript-lambda-api/node_modules/nyc/bin/wrap.js:23:4)
+    at Object.<anonymous> (/home/matthew/src/ts/ts-lambda-api/node_modules/nyc/bin/wrap.js:23:4)
     at Module._compile (internal/modules/cjs/loader.js:816:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:827:10)
 ```
@@ -1137,7 +1137,7 @@ To write logs you will ned a logger instance. There are three ways to get one:
 import { injectable } from "inversify"
 import { Response, Request } from "lambda-api"
 
-import { apiController, Controller, GET } from "../../../dist/typescript-lambda-api"
+import { apiController, Controller, GET } from "../../../dist/ts-lambda-api"
 
 @apiController("/")
 @injectable()
@@ -1298,7 +1298,7 @@ To further document your API endpoints you can use OpenAPI decorators.
 
     ```typescript
     import { injectable } from "inversify"
-    import { api, apiController } from "typescript-lambda-api"
+    import { api, apiController } from "ts-lambda-api"
 
     @apiController("/some")
     @api("Awesome API", "descripton of API for doing amazing things") // the second parameter is optional
@@ -1426,7 +1426,7 @@ To further document your API endpoints you can use OpenAPI decorators.
 - Add security schemes to your specification (other than Basic auth) using `apiSecurity` on your authentication filter:
 
     ```typescript
-    import { apiSecurity, IAuthFilter } from "typescript-lambda-api"
+    import { apiSecurity, IAuthFilter } from "ts-lambda-api"
 
     import { User } from "./User"
 
@@ -1474,7 +1474,7 @@ const app = new ApiLambdaApp(controllersPath, appConfig)
 
 ---
 
-For local dev testing and integration with functional tests see the [typescript-lambda-api-local](https://www.npmjs.com/package/typescript-lambda-api-local) package which enables hosting your API using express as a local HTTP server.
+For local dev testing and integration with functional tests see the [ts-lambda-api-local](https://www.npmjs.com/package/ts-lambda-api-local) package which enables hosting your API using express as a local HTTP server.
 
 Check out this project's dev dependencies to see what is required to test API code. The `tests` directory of this repo contains some acceptance tests which will show you how to build mock requests and invoke your application.
 

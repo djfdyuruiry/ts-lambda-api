@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { ErrorInterceptor } from "../../../dist/typescript-lambda-api"
+import { ErrorInterceptor } from "../../../dist/ts-lambda-api"
 
 @injectable()
 export class TestDecoratorErrorInterceptor extends ErrorInterceptor {

@@ -1,5 +1,4 @@
 
 **********************************
-    typescript-lambda-api tests
+    ts-lambda-api tests
 **********************************
-

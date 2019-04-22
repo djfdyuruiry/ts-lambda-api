@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { apiController, controllerRolesAllowed, Controller, GET } from "../../../dist/typescript-lambda-api"
+import { apiController, controllerRolesAllowed, Controller, GET } from "../../../dist/ts-lambda-api"
 
 @apiController("/test-restricted")
 @controllerRolesAllowed("SUPER_SPECIAL_USER", "SPECIAL_USER")

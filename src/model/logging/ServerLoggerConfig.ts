@@ -2,7 +2,7 @@ import { LogLevel } from "./LogLevel"
 import { LogFormat } from "../../util/logging/ILogger"
 
 /**
- * Logging configuration for the `typescript-lambda-api` framework.
+ * Logging configuration for the `ts-lambda-api` framework.
  */
 export class ServerLoggerConfig {
     /**

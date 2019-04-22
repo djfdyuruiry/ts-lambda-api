@@ -2,7 +2,7 @@ import { AsyncSetup, AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
 import { safeLoad } from "js-yaml"
 import { OpenAPIObject, SecuritySchemeObject, PathItemObject, ParameterObject, ResponseObject, RequestBodyObject, OperationObject, MediaTypeObject, SchemaObject } from "openapi3-ts"
 
-import { RequestBuilder, ApiLambdaApp } from "../../dist/typescript-lambda-api"
+import { RequestBuilder, ApiLambdaApp } from "../../dist/ts-lambda-api"
 
 import { TestBase } from "./TestBase"
 import { TestAuthFilter } from "./test-components/TestAuthFilter";

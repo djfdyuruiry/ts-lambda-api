@@ -1,6 +1,6 @@
 import { AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
 
-import { RequestBuilder } from "../../dist/typescript-lambda-api"
+import { RequestBuilder } from "../../dist/ts-lambda-api"
 
 import { TestBase } from "./TestBase"
 import { TestAuthFilter } from "./test-components/TestAuthFilter"

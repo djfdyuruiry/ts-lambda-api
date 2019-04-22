@@ -1,4 +1,4 @@
-import { ApiError, ErrorInterceptor } from "../../../dist/typescript-lambda-api"
+import { ApiError, ErrorInterceptor } from "../../../dist/ts-lambda-api"
 
 export class TestErrorInterceptor extends ErrorInterceptor {
     public wasInvoked: boolean

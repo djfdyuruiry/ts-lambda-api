@@ -1,7 +1,7 @@
 import { AsyncTest, Expect, TestFixture } from "alsatian"
 import { Container } from "inversify"
 
-import { AppConfig, ApiLambdaApp, RequestBuilder } from "../../dist/typescript-lambda-api"
+import { AppConfig, ApiLambdaApp, RequestBuilder } from "../../dist/ts-lambda-api"
 
 import { TestBase } from "./TestBase"
 

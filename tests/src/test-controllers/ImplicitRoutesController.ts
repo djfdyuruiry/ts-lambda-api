@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { apiController, fromBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE } from "../../../dist/typescript-lambda-api"
+import { apiController, fromBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE } from "../../../dist/ts-lambda-api"
 
 import { Person } from "../test-components/model/Person"
 
