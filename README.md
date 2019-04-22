@@ -53,6 +53,8 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
     - [lambda-api](#lambda-api-config)
     - [Reference](#config-reference)
 - [Logging](#logging)
+    - [Writing Logs](#logging-writing)
+    - [API](#logging-api)
     - [lambda-api](#lambda-api-logging)
 - [OpenAPI (Swagger)](#open-api)
     - [Decorators](#open-api-decorators)
@@ -1079,11 +1081,169 @@ See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documenta
 
 ## <a id="logging"></a>Logging
 
-TODO: Logging docs
+A logger interface is provided that can write messages to standard out. You can configure this logger using the `serverLogging` key in the `AppConfig` class. See the [Config Reference](#config-reference) for details on options available.
 
-### <a id="lambda-api-logging>lambda-api
+By default, the logger is set to `info` and outputs messages as simple strings.
 
-Logging is also provided by the [lambda-api](https://github.com/jeremydaly/lambda-api) package, use the `AppConfig` instance passed to `ApiLambdaApp` to configure logging using the `logger` key.
+The format of the messages written out is:
+
+```
+        ISO 8601 Datetime    level class                   message
+    vvvvvvvvvvvvvvvvvvvvvvvv vvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    2019-04-21T16:38:09.680Z INFO Endpoint - Invoking endpoint: [GET] /open-api.yml
+```
+
+Below is some example output, include a stack trace from an `Error` instance:
+
+```
+2019-04-21T22:20:29.622Z INFO ApiLambdaApp - Received event, initialising controllers and processing event
+2019-04-21T22:20:29.647Z INFO Server - Processing API request event for path: /test/
+2019-04-21T22:20:29.832Z INFO Endpoint - [GET] /test - Authenticating request
+2019-04-21T22:20:29.833Z ERROR Endpoint - [GET] /test - Error processing endpoint request
+Error: authenticate failed
+    at TestAuthFilter.authenticate (/home/matthew/src/ts/typescript-lambda-api/tests/src/test-components/TestAuthFilter.ts:25:19)
+    at Endpoint.authenticateRequest (/home/matthew/src/ts/typescript-lambda-api/dist/api/Endpoint.js:15:2640)
+    at processTicksAndRejections (internal/process/task_queues.js:86:5)
+    at process.runNextTicks [as _tickCallback] (internal/process/task_queues.js:56:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:880:11)
+    at runMain (/home/matthew/.node-spawn-wrap-13541-13c0098ec456/node:68:10)
+    at Function.<anonymous> (/home/matthew/.node-spawn-wrap-13541-13c0098ec456/node:171:5)
+    at Object.<anonymous> (/home/matthew/src/ts/typescript-lambda-api/node_modules/nyc/bin/wrap.js:23:4)
+    at Module._compile (internal/modules/cjs/loader.js:816:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:827:10)
+```
+
+If you set the `format` to `json` the log messages will look like this:
+
+```json
+ {
+    "level": "INFO",
+    "msg": "Endpoint - Invoking endpoint: [GET] /open-api.yml",
+    "time": 1555865906882 // milliseconds since epoch
+}
+```
+
+This format matches the keys used by the `lambda-api` framework in it's output.
+
+### <a id="logging-writing"></a>Writing Logs
+
+To write logs you will ned a logger instance. There are three ways to get one:
+
+- Extend the `Controller` class in your controller:
+
+```typescript
+import { injectable } from "inversify"
+import { Response, Request } from "lambda-api"
+
+import { apiController, Controller, GET } from "../../../dist/typescript-lambda-api"
+
+@apiController("/")
+@injectable()
+export class TestController extends Controller {
+    @GET()
+    public get() {
+        this.logger.info("In GET method!")
+
+        return "OK"
+    }
+}
+```
+
+- Use a `LogFactory` instance to build it:
+
+```typescript
+import { inject, injectable } from "inversify"
+import { AppConfig, LogFactory, LogLevel } from "lambda-api"
+
+@injectable()
+export class SomeServiceYouMightMake {
+    // get your app config using dependency injection
+    public constructor(@inject(AppConfig) private readonly appConfig: AppConfig)
+
+    public doStuff() {
+        let factory = new LogFactory(appConfig)
+        let logger = factory.getLogger(SomeServiceYouMightMake)
+
+        logger.debug("Inside doStuff!")
+    }
+}
+```
+
+- Use the `LogFactory` static methods to build it:
+
+```typescript
+import { LogFactory, LogLevel } from "lambda-api"
+
+export class SomeServiceYouMightMake {
+    public doStuff() {
+        // you can specify the level and format of the log
+        let logger = LogFactory.getCustomLogger(SomeServiceYouMightMake, LogLevel.debug, "json")
+
+        logger.debug("Inside doStuff!")
+    }
+}
+```
+
+### <a id="logging-api"></a> Logger API
+
+The logging API supports formatting of messages using the `sprintf` npm module, simply pass in your arguments and put placeholders in your message string:
+
+```typescript
+logger.warn("Hello there %s, how are you?", "Roy")
+logger.debug("Task status: %s. Task data: %j", "success", {event: "run batch"})
+```
+
+Using this will help to speed up your app if you do a lot of logging, because uneccessary work to convert values to strings and JSON for debug messages will not take place if a higher error level is set.
+
+----
+
+Below is an example of the methods available on logger instances:
+
+```typescript
+import { LogFactory, LogLevel } from "lambda-api"
+
+export class SomeServiceYouMightMake {
+    public doStuff() {
+        let logger = LogFactory.getCustomLogger(SomeServiceYouMightMake)
+
+        // different levels
+        logger.trace("trace")
+        logger.fatal("fatal")
+        logger.error("error")
+
+        // log exceptions with stack traces, also supports formatting of message
+        let exception = new Error("Bad stuff happened")
+
+        logger.errorWithStack("An error occurred somewhere, error code: %d", exception, 20000)
+
+        // check if a level is enabled
+        if (logger.debugEnabled()) {
+            logger.debug("Mode #%d", 355)
+        }
+
+        if (logger.traceEnabled()) {
+            logger.trace("Sending data: %j", {some: {payload: 2345}})
+        }
+
+        // check if the logging is currenly off (i.e. level is set to `off`)
+        if (logger.isOff()) {
+            // react to the cruel reality....
+        }
+
+        // pass level in as parameter
+        logger.log(LogLevel.info, "Manual call to the %s method", "log")
+
+        // check level is enabled using aparameter
+        if (logger.levelEnabled(LogLevel.info)) {
+            logger.info("I am enabled!")
+        }
+    }
+}
+```
+
+### <a id="lambda-api-logging"></a>lambda-api
+
+Logging is also provided by the [lambda-api](https://github.com/jeremydaly/lambda-api) package, use the `AppConfig` instance passed to `ApiLambdaApp` to configure logging using the `logger` key. See the [Config Reference](#config-reference) for details on options available.
 
 ----
 
@@ -1091,7 +1251,7 @@ Logging is also provided by the [lambda-api](https://github.com/jeremydaly/lambd
 
 ----
 
-The OpenAPI Specification, fka Swagger, is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
+The OpenAPI Specification, FKA Swagger, is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
 
 **This framework only supports OpenAPI v3**
 
@@ -1101,7 +1261,10 @@ The following features are supported:
     - All endpoints with full path and HTTP method
     - Endpoint query, path and header parameters (set by parameter decorators)
     - Response content type headers (set by `produces` or `controllerProduces` decorators)
-    - HTTP Basic Security scheme (when a basic auth filter is configured)
+    - Request and Response bodies: class types, primitive values and files
+    - Response HTTP status codes
+    - HTTP Basic security scheme (when a basic auth filter is configured)
+    - Custom auth filter security schemes
 - Specification files can be generated in `JSON` or `YAML` format (see [YAML Support](#open-api-yaml))
 
 To enable it, use the `openApi` property in the `AppConfig` class when building your app:

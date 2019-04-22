@@ -16,7 +16,7 @@ export class ServerLoggerConfig {
      * Format of log messages. Either a plain string:
      *
      * ```
-     *       ISO8086 Datetime     level class                   message
+     *       ISO 8601 Datetime    level class                   message
      *   vvvvvvvvvvvvvvvvvvvvvvvv vvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
      *   2019-04-21T16:38:09.680Z INFO Endpoint - Invoking endpoint: [GET] /open-api.yml
      * ```
@@ -25,9 +25,9 @@ export class ServerLoggerConfig {
      *
      * ```json
      * {
-     *   level: "INFO",
-     *   msg: "Endpoint - Invoking endpoint: [GET] /open-api.yml",
-     *   time: 1555865906882 // millis since epoch
+     *   "level": "INFO",
+     *   "msg": "Endpoint - Invoking endpoint: [GET] /open-api.yml",
+     *   "time": 1555865906882 // millis since epoch
      * }
      * ```
      */

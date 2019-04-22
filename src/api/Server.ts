@@ -79,7 +79,6 @@ export class Server {
      * This method must be called before invoking the `processEvent` method.
      *
      * @param controllersPath Path to the directory containing controller `js` files.
-     * @param appContainer `InversifyJS` IOC `Container` instance which can build controllers and error interceptors.
      */
     @timed
     public async discoverAndBuildRoutes(controllersPath: string) {

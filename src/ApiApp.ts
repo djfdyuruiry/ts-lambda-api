@@ -49,7 +49,9 @@ export abstract class ApiApp {
         if (!controllersPath || controllersPath.trim() === "") {
             throw new Error("Null, empty or whitespace controllersPath passed to ApiApp")
         }
-        this.apiServer = new Server(appContainer, appConfig)
+        appContainer.bind(AppConfig).toConstantValue(this.appConfig)
+
+        this.apiServer = new Server(appContainer, this.appConfig)
         this.logFactory = new LogFactory(appConfig)
 
         this.logger = this.logFactory.getLogger(ApiApp)
