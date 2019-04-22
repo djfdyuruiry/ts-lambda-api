@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>typescript-lambda-api</title>
+	<title>ts-lambda-api</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">typescript-lambda-api</a>
+					<a href="index.html" class="title">ts-lambda-api</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -56,7 +56,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> typescript-lambda-api</h1>
+			<h1> ts-lambda-api</h1>
 		</div>
 	</div>
 </header>
@@ -64,11 +64,11 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<h1 id="typescript-lambda-api">typescript-lambda-api</h1>
+				<h1 id="ts-lambda-api">ts-lambda-api</h1>
 				<p>Build REST API&#39;s using Typescript &amp; AWS Lambda.</p>
-				<p><a href="https://www.npmjs.com/package/typescript-lambda-api">NPM Package</a>
-				<a href="https://github.com/djfdyuruiry/typescript-lambda-api/">GitHub Repo</a></p>
-				<p>Read the full <code>typedoc</code> documentation: <a href="https://djfdyuruiry.github.io/typescript-lambda-api/">https://djfdyuruiry.github.io/typescript-lambda-api/</a></p>
+				<p><a href="https://www.npmjs.com/package/ts-lambda-api">NPM Package</a>
+				<a href="https://github.com/djfdyuruiry/ts-lambda-api/">GitHub Repo</a></p>
+				<p>Read the full <code>typedoc</code> documentation: <a href="https://djfdyuruiry.github.io/ts-lambda-api/">https://djfdyuruiry.github.io/ts-lambda-api/</a></p>
 				<p>Framework Features:</p>
 				<ul>
 					<li>Decorator based routing for API controllers and endpoint methods</li>
@@ -156,7 +156,7 @@
 				<hr>
 				<h2 id="a-idcreate-apiacreating-a-new-api"><a id="create-api"></a>Creating a new API</h2>
 				<hr>
-				<p>This is a short guide to creating your first API using <code>typescript-lambda-api</code>. It is somewhat opinionated about project structure, but most of this can be easily customised.</p>
+				<p>This is a short guide to creating your first API using <code>ts-lambda-api</code>. It is somewhat opinionated about project structure, but most of this can be easily customised.</p>
 				<p><strong>Note: Node.js v8 &amp; Typescript v3 or newer are required to use this package.</strong></p>
 				<ul>
 					<li><p>Create a directory for your project and run <code>npm init</code> to create your <code>package.json</code></p>
@@ -165,7 +165,7 @@
 					</li>
 				</ul>
 				<p><strong>Ensure the <code>@types/node</code> package you install matches your version of Node.js</strong></p>
-				<pre><code class="language-shell">npm install typescript-lambda-api
+				<pre><code class="language-shell">npm install ts-lambda-api
 npm install -D typescript @types/node aws-sdk</code></pre>
 				<ul>
 					<li>Open <code>package.json</code> and add a script to enable access to the Typescript compiler:</li>
@@ -210,7 +210,7 @@ npm install -D typescript @types/node aws-sdk</code></pre>
 				</ul>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">"path"</span>
 
-<span class="hljs-keyword">import</span> { AppConfig, ApiLambdaApp } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { AppConfig, ApiLambdaApp } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">const</span> appConfig = <span class="hljs-keyword">new</span> AppConfig()
 
@@ -230,7 +230,7 @@ appConfig.version = <span class="hljs-string">"v1"</span>
 					</li>
 				</ul>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
-<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/hello-world"</span>)
 <span class="hljs-meta">@injectable</span>() <span class="hljs-comment">// all controller classes must be decorated with injectable</span>
@@ -299,7 +299,7 @@ zip -r lambda.zip ./</code></pre>
 				<p>You can declare a root path for all methods in a controller using the <code>apiController</code> decorator.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, GET, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, GET, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/hello-world"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -318,7 +318,7 @@ zip -r lambda.zip ./</code></pre>
 				<p>You can declare a path for any given method in a controller when using the endpoint decorators. The <code>apiController</code> decorator is not required on the class to use this form of routing.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/store"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -333,7 +333,7 @@ zip -r lambda.zip ./</code></pre>
 				<p>You can include parameters as part of your routes, when you need to capture parts of the URL.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, pathParam, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, pathParam, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/store"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -348,7 +348,7 @@ zip -r lambda.zip ./</code></pre>
 				<hr>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, pathParam, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, pathParam, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/store/:storeId"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -370,7 +370,7 @@ zip -r lambda.zip ./</code></pre>
 				</ul>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, fromBody, header, queryParam, GET, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, fromBody, header, queryParam, GET, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { Thing } <span class="hljs-keyword">from</span> <span class="hljs-string">"./Thing"</span>
 
@@ -405,7 +405,7 @@ zip -r lambda.zip ./</code></pre>
 				<p>To set the response content type for all methods, use <code>controllerProduces</code> on a class.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, controllerProduces, pathParam, produces, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, controllerProduces, pathParam, produces, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { Item } <span class="hljs-keyword">from</span> <span class="hljs-string">"./Item"</span>
 
@@ -431,7 +431,7 @@ zip -r lambda.zip ./</code></pre>
 				<p>For an individual method, use <code>produces</code>. This will override <code>controllerProduces</code> for that method, if present on the controller class.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, produces, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, produces, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { Item } <span class="hljs-keyword">from</span> <span class="hljs-string">"./Item"</span>
 
@@ -453,7 +453,7 @@ zip -r lambda.zip ./</code></pre>
 				<p>Authentication is preformed by filter classes that are executed before invoking an endpoint; all filter classes implement the <code>IAuthFilter</code> interface.</p>
 				<p>Filters use information from the HTTP request to authenticate the request. If authentication is successful, a filter will return a principal. A principal is a simple class that contains information about the current user/entity that has been granted access to the endpoint.</p>
 				<p>To use authentication you must implement your own principal by extending the <code>Principal</code> class:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Principal } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Principal } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> StoreUser <span class="hljs-keyword">extends</span> Principal {
     <span class="hljs-comment">// we will use this later, see the Authorization section</span>
@@ -467,7 +467,7 @@ zip -r lambda.zip ./</code></pre>
 }</code></pre>
 				<h3 id="a-idbasic-authabasic-authentication"><a id="basic-auth"></a>Basic Authentication</h3>
 				<p>HTTP Basic authentication is supported out of the box by the <code>BasicAuthFilter</code> filter abstract class. You extend this class to implement your authentication logic:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { BasicAuthFilter } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { BasicAuthFilter } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { StoreUser } <span class="hljs-keyword">from</span> <span class="hljs-string">"./StoreUser"</span>
 
@@ -503,7 +503,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 				<p>Once a user has been authenticated you can pass the principal instance into the target endpoint. You can do this by adding a <code>principal</code> parameter decorator to your endpoint method.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, pathParam, principal, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, pathParam, principal, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/store"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -524,7 +524,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 				<p>For an endpoint:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, fromBody, noAuth, principal, GET, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, fromBody, noAuth, principal, GET, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { LoginRequest } <span class="hljs-keyword">from</span> <span class="hljs-string">"./LoginRequest"</span>
 <span class="hljs-keyword">import</span> { StoreUser } <span class="hljs-keyword">from</span> <span class="hljs-string">"./StoreUser"</span>
@@ -546,7 +546,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 				<p>For all endpoints in a controller:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, controllerNoAuth, fromBody, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, controllerNoAuth, fromBody, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { SearchRequest } <span class="hljs-keyword">from</span> <span class="hljs-string">"./SearchRequest"</span>
 
@@ -574,7 +574,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 				<p>Your auth filter implementation must provide a method for extracting your authentication data, and a method that uses that data to authenticate the current request.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Request } <span class="hljs-keyword">from</span> <span class="hljs-string">"lambda-api"</span>
 
-<span class="hljs-keyword">import</span> { IAuthFilter, Principal } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { IAuthFilter, Principal } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { StoreUser } <span class="hljs-keyword">from</span> <span class="hljs-string">"./StoreUser"</span>
 <span class="hljs-keyword">import</span> { TokenAuth } <span class="hljs-keyword">from</span> <span class="hljs-string">"./TokenAuth"</span>
@@ -611,7 +611,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 				<p>Tip: You can make your class abstract and then make the <code>authenticate</code> method abstract to enable your custom auth filter to be re-usable. This way, you simply extend your custom fiter and implement the authentication logic for your application.</p>
 				<h3 id="a-idauthorizationaauthorization"><a id="authorization"></a>Authorization</h3>
 				<p>To implement role based authorization you implement the <code>IAuthorizer</code> interface.</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { IAuthorizer } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { IAuthorizer } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { StoreUser } <span class="hljs-keyword">from</span> <span class="hljs-string">"./StoreUser"</span>
 
@@ -625,7 +625,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 				<p>When a user is successfully authorized by an auth filter, this returns a principal which is passed to the configured authorizer if a resource is marked as restricted. To restrict all endpoints in a controller, use the <code>controllerRolesAllowed</code> decorator:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, controllerRolesAllowed, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, controllerRolesAllowed, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/store"</span>)
 <span class="hljs-meta">@controllerRolesAllowed</span>(<span class="hljs-string">"STORE_GUEST"</span>, <span class="hljs-string">"STORE_MANAGER"</span>)
@@ -639,7 +639,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 				<p>You can restrict a single enpoint using the <code>rolesAllowed</code> decorator:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, rolesAllowed, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, rolesAllowed, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/store"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -673,7 +673,7 @@ app.middlewareRegistry.addAuthorizer(authorizer)
 				<p>Interceptor instances are built using the InversifyJS app container, so you can add any dependencies as constructor parameters if you configure the container correctly.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>;
 
-<span class="hljs-keyword">import</span> { ApiError, ErrorInterceptor } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { ApiError, ErrorInterceptor } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@injectable</span>()
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> StoreErrorInterceptor <span class="hljs-keyword">extends</span> ErrorInterceptor {
@@ -691,7 +691,7 @@ app.middlewareRegistry.addAuthorizer(authorizer)
 				<p>In your controller you can then use the <code>controllerErrorInterceptor</code> decorator to specify the error interceptor to use:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, controllerErrorInterceptor, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, controllerErrorInterceptor, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { StoreErrorInterceptor } <span class="hljs-keyword">from</span> <span class="hljs-string">"./StoreErrorInterceptor"</span>
 
@@ -729,7 +729,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 				<p>You can use a try/catch block and the <code>Response</code> class to handle errors:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/store"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -764,7 +764,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 				<p>This library supports <a href="http://jsonpatch.com/">JSON Patch</a> format for updating entities without having to upload the entire entity. To use it in your endpoints, ensure your controller extends the <code>Controller</code> class, an example is below:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, produces, JsonPatch, PATCH } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, produces, JsonPatch, PATCH } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { Item } <span class="hljs-keyword">from</span> <span class="hljs-string">"./Item"</span>
 
@@ -794,7 +794,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 				<p>If you extend the controller class, you get access to the request and response context.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/hello-world"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -813,7 +813,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 <span class="hljs-keyword">import</span> { Request, Response } <span class="hljs-keyword">from</span> <span class="hljs-string">"lambda-api"</span>
 
-<span class="hljs-keyword">import</span> { apiController, request, response, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, request, response, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/hello-world"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -846,7 +846,7 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
 				<p>In your controllers you can then use the registered types as constructor parameters:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { inject, injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/hello-world"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -864,7 +864,7 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
 				<h2 id="a-idconfigaconfiguration"><a id="config"></a>Configuration</h2>
 				<hr>
 				<p>When building an application instance you pass a <code>AppConfig</code> instance to the constructor. If you want to provide your own application config it is recommended to extend this class .</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { AppConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { AppConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { DatabaseConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">"./DatabaseConfig"</span>
 
@@ -885,7 +885,7 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
 				<p>After which, you can inject your config into your controllers or services.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { inject, injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { MyCustomConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">"./MyCustomConfig"</span>
 
@@ -906,7 +906,7 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
 }</code></pre>
 				<p><strong>Note: The <code>AppConfig</code> class supports all the configuration fields documented in the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package.</strong></p>
 				<h3 id="a-idconfig-referenceareference"><a id="config-reference"></a>Reference</h3>
-				<p>For a complete reference see the <a href="https://djfdyuruiry.github.io/typescript-lambda-api/classes/appconfig.html">AppConfig</a> docs.</p>
+				<p>For a complete reference see the <a href="https://djfdyuruiry.github.io/ts-lambda-api/classes/appconfig.html">AppConfig</a> docs.</p>
 				<h3 id="a-idlambda-api-configalambda-api"><a id="lambda-api-config"></a>lambda-api</h3>
 				<p>Configuring <code>lambda-api</code> directly can be done by calling the <code>configureApi</code> method like below:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> xmljs <span class="hljs-keyword">from</span> <span class="hljs-string">"xml-js"</span>
@@ -940,14 +940,14 @@ app.configureApi(api: <span class="hljs-function"><span class="hljs-params">API<
 <span class="hljs-number">2019</span><span class="hljs-number">-04</span><span class="hljs-number">-21</span>T22:<span class="hljs-number">20</span>:<span class="hljs-number">29.832</span>Z INFO Endpoint - [GET] /test - Authenticating request
 <span class="hljs-number">2019</span><span class="hljs-number">-04</span><span class="hljs-number">-21</span>T22:<span class="hljs-number">20</span>:<span class="hljs-number">29.833</span>Z ERROR Endpoint - [GET] /test - Error processing endpoint request
 Error: authenticate failed
-    at TestAuthFilter.authenticate (/home/matthew/src/ts/typescript-lambda-api/tests/src/test-components/TestAuthFilter.ts:<span class="hljs-number">25</span>:<span class="hljs-number">19</span>)
-    at Endpoint.authenticateRequest (/home/matthew/src/ts/typescript-lambda-api/dist/api/Endpoint.js:<span class="hljs-number">15</span>:<span class="hljs-number">2640</span>)
+    at TestAuthFilter.authenticate (/home/matthew/src/ts/ts-lambda-api/tests/src/test-components/TestAuthFilter.ts:<span class="hljs-number">25</span>:<span class="hljs-number">19</span>)
+    at Endpoint.authenticateRequest (/home/matthew/src/ts/ts-lambda-api/dist/api/Endpoint.js:<span class="hljs-number">15</span>:<span class="hljs-number">2640</span>)
     at processTicksAndRejections (<span class="hljs-built_in">int</span>ernal/process/task_queues.js:<span class="hljs-number">86</span>:<span class="hljs-number">5</span>)
     at process.runNextTicks [as _tickCallback] (<span class="hljs-built_in">int</span>ernal/process/task_queues.js:<span class="hljs-number">56</span>:<span class="hljs-number">3</span>)
     at Function.Module.runMain (<span class="hljs-built_in">int</span>ernal/modules/cjs/loader.js:<span class="hljs-number">880</span>:<span class="hljs-number">11</span>)
     at runMain (/home/matthew/.node-spawn-wrap<span class="hljs-number">-13541</span><span class="hljs-number">-13</span>c0098ec456/node:<span class="hljs-number">68</span>:<span class="hljs-number">10</span>)
     at Function.&lt;anonymous&gt; (/home/matthew/.node-spawn-wrap<span class="hljs-number">-13541</span><span class="hljs-number">-13</span>c0098ec456/node:<span class="hljs-number">171</span>:<span class="hljs-number">5</span>)
-    at Object.&lt;anonymous&gt; (/home/matthew/src/ts/typescript-lambda-api/node_modules/nyc/bin/wrap.js:<span class="hljs-number">23</span>:<span class="hljs-number">4</span>)
+    at Object.&lt;anonymous&gt; (/home/matthew/src/ts/ts-lambda-api/node_modules/nyc/bin/wrap.js:<span class="hljs-number">23</span>:<span class="hljs-number">4</span>)
     at Module._compile (<span class="hljs-built_in">int</span>ernal/modules/cjs/loader.js:<span class="hljs-number">816</span>:<span class="hljs-number">30</span>)
     at Object.Module._extensions..js (<span class="hljs-built_in">int</span>ernal/modules/cjs/loader.js:<span class="hljs-number">827</span>:<span class="hljs-number">10</span>)</code></pre><p>If you set the <code>format</code> to <code>json</code> the log messages will look like this:</p>
 				<pre><code class="language-json"> {
@@ -964,7 +964,7 @@ Error: authenticate failed
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 <span class="hljs-keyword">import</span> { Response, Request } <span class="hljs-keyword">from</span> <span class="hljs-string">"lambda-api"</span>
 
-<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"../../../dist/typescript-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"../../../dist/ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -1096,7 +1096,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
 				<ul>
 					<li><p>Customize the names of APIs and endpoints using <code>api</code>:</p>
 						<pre><code class="language-typescript">  <span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
-  <span class="hljs-keyword">import</span> { api, apiController } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+  <span class="hljs-keyword">import</span> { api, apiController } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
   <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/some"</span>)
   <span class="hljs-meta">@api</span>(<span class="hljs-string">"Awesome API"</span>, <span class="hljs-string">"descripton of API for doing amazing things"</span>) <span class="hljs-comment">// the second parameter is optional</span>
@@ -1211,7 +1211,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
 						<p>  <em>This is required because object properties are not set until a value is assigned, which makes any sort of reflection impossible.</em></p>
 					</li>
 					<li><p>Add security schemes to your specification (other than Basic auth) using <code>apiSecurity</code> on your authentication filter:</p>
-						<pre><code class="language-typescript">  <span class="hljs-keyword">import</span> { apiSecurity, IAuthFilter } <span class="hljs-keyword">from</span> <span class="hljs-string">"typescript-lambda-api"</span>
+						<pre><code class="language-typescript">  <span class="hljs-keyword">import</span> { apiSecurity, IAuthFilter } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
   <span class="hljs-keyword">import</span> { User } <span class="hljs-keyword">from</span> <span class="hljs-string">"./User"</span>
 
@@ -1245,7 +1245,7 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 				<hr>
 				<h2 id="a-idtestingatesting"><a id="testing"></a>Testing</h2>
 				<hr>
-				<p>For local dev testing and integration with functional tests see the <a href="https://www.npmjs.com/package/typescript-lambda-api-local">typescript-lambda-api-local</a> package which enables hosting your API using express as a local HTTP server.</p>
+				<p>For local dev testing and integration with functional tests see the <a href="https://www.npmjs.com/package/ts-lambda-api-local">ts-lambda-api-local</a> package which enables hosting your API using express as a local HTTP server.</p>
 				<p>Check out this project&#39;s dev dependencies to see what is required to test API code. The <code>tests</code> directory of this repo contains some acceptance tests which will show you how to build mock requests and invoke your application.</p>
 				<hr>
 				<h2 id="a-iduseful-linksauseful-links"><a id="useful-links"></a>Useful links</h2>

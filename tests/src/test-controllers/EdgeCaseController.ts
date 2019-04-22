@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { api, apiController, consumes, controllerConsumes, Controller, POST } from "../../../dist/typescript-lambda-api"
+import { api, apiController, consumes, controllerConsumes, Controller, POST } from "../../../dist/ts-lambda-api"
 import { Person } from '../test-components/model/Person';
 
 // this controller uses parameters from `api`, `controllerConsumes` and `consumes` not used anywhere else

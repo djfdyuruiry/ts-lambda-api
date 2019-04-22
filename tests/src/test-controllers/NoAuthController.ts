@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { apiController, controllerNoAuth, Controller, GET } from "../../../dist/typescript-lambda-api"
+import { apiController, controllerNoAuth, Controller, GET } from "../../../dist/ts-lambda-api"
 
 @apiController("/test-no-auth")
 @controllerNoAuth

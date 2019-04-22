@@ -1,6 +1,6 @@
 import { Request } from "lambda-api"
 
-import { IAuthFilter, apiSecurity } from "../../../dist/typescript-lambda-api"
+import { IAuthFilter, apiSecurity } from "../../../dist/ts-lambda-api"
 
 import { TestUser } from "./model/TestUser"
 

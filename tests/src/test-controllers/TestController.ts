@@ -1,7 +1,7 @@
 import { injectable } from "inversify"
 import { Response, Request } from "lambda-api"
 
-import { apiController, controllerProduces, noAuth, header, pathParam, queryParam, response, request, rolesAllowed, produces, principal, Controller, GET } from "../../../dist/typescript-lambda-api"
+import { apiController, controllerProduces, noAuth, header, pathParam, queryParam, response, request, rolesAllowed, produces, principal, Controller, GET } from "../../../dist/ts-lambda-api"
 
 import { TestUser } from '../test-components/model/TestUser';
 
