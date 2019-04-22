@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 43
+    private static readonly ROUTE_COUNT = 44
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup
@@ -749,12 +749,12 @@ export class OpenApiTests extends TestBase {
     @TestCase("yml")
     @AsyncTest()
     public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_unauthorized_then_openapi_spec_request_returns_401_unauthroized(specFileFormat: string) {
-        this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, {
-            openApi: {
-                enabled: true,
-                useAuthentication: true
-            }
-        })
+        this.appConfig.openApi = {
+            enabled: true,
+            useAuthentication: true
+        }
+
+        this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, this.appConfig)
 
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
@@ -767,12 +767,12 @@ export class OpenApiTests extends TestBase {
     @TestCase("yml")
     @AsyncTest()
     public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_authorized_then_openapi_spec_request_returns_200_ok(specFileFormat: string) {
-        this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, {
-            openApi: {
-                enabled: true,
-                useAuthentication: true
-            }
-        })
+        this.appConfig.openApi = {
+            enabled: true,
+            useAuthentication: true
+        }
+
+        this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, this.appConfig)
 
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 

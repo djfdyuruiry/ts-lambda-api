@@ -1,4 +1,6 @@
 import { Principal } from "../model/security/Principal"
+import { ILogger } from "../util/logging/ILogger"
+import { LogFactory } from "../util/logging/LogFactory"
 import { ErrorInterceptor } from "./error/ErrorInterceptor"
 import { IAuthFilter } from "./security/IAuthFilter"
 import { IAuthorizer } from "./security/IAuthorizer"
@@ -11,6 +13,7 @@ export class MiddlewareRegistry {
     private _authFilters: IAuthFilter<any, Principal>[]
     private _authorizers: IAuthorizer<Principal>[]
     private _errorInterceptors: ErrorInterceptor[]
+    private readonly logger: ILogger
 
     /**
      * Authentication filters to apply. These are chained, meaning only
@@ -39,24 +42,28 @@ export class MiddlewareRegistry {
         return this._errorInterceptors
     }
 
-    public constructor() {
+    public constructor(logFactory: LogFactory) {
         this._authFilters = []
         this._authorizers = []
         this._errorInterceptors = []
+
+        this.logger = logFactory.getLogger(MiddlewareRegistry)
     }
 
     /**
      * Add an authentication filter.
      *
-     * @param authFiler The filter to add.
+     * @param authFilter The filter to add.
      * @throws If the `authFilter` parameter is null or undefined.
      */
-    public addAuthFilter(authFiler: IAuthFilter<any, Principal>) {
-        if (!authFiler) {
+    public addAuthFilter(authFilter: IAuthFilter<any, Principal>) {
+        if (!authFilter) {
             throw new Error("Null or undefined authFiler passed to MiddlewareRegistry::authFiler")
         }
 
-        this._authFilters.push(authFiler)
+        this.logger.debug("Registering authentication filter: %s", authFilter.name)
+
+        this._authFilters.push(authFilter)
     }
 
     /**
@@ -69,6 +76,8 @@ export class MiddlewareRegistry {
         if (!authorizer) {
             throw new Error("Null or undefined authorizer passed to MiddlewareRegistry::addAuthorizer")
         }
+
+        this.logger.debug("Registering authorizer: %s", authorizer.name)
 
         this._authorizers.push(authorizer)
     }
@@ -83,6 +92,9 @@ export class MiddlewareRegistry {
         if (!errorInterceptor) {
             throw new Error("Null or undefined errorInterceptor passed to MiddlewareRegistry::addErrorInterceptor")
         }
+
+        this.logger.debug("Registering error interceptor for endpoint '%s' and controller '%s'",
+            errorInterceptor.endpointTarget, errorInterceptor.controllerTarget)
 
         this._errorInterceptors.push(errorInterceptor)
     }

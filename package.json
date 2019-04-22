@@ -1,18 +1,20 @@
 {
   "name": "typescript-lambda-api",
   "description": "Build REST API's using Typescript & AWS Lambda. Support for decorator based routing and dependecy injection using InversifyJS. This project is built on top of the wonderful lambda-api package.",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/djfdyuruiry/typescript-lambda-api.git"
   },
   "scripts": {
-    "build": "yarn run lint && rm -rf dist && tsc",
+    "build": "yarn run lint && rm -rf dist && tsc && yarn docs",
     "build-all": "yarn run install-with-audit && yarn run build && yarn run build-tests",
     "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
-    "clean-install": "rm -rf node_modules && yarn install",
-    "install-with-audit": "yarn install && yarn audit",
+    "docs": "rm -rf ./docs && typedoc --mode file --excludePrivate --out ./docs",
+    "clean-install": "rm -rf node_modules && yarn install-with-audit",
+    "install-with-audit": "yarn install --audit && yarn audit",
     "lint": "tslint 'src/**/*.ts'",
+    "shell": "bash",
     "test": "yarn run build-all && scripts/runTests.sh"
   },
   "main": "dist/typescript-lambda-api.js",
@@ -43,18 +45,22 @@
     "lambda-api": "^0.10.1",
     "marky": "^1.2.1",
     "openapi3-ts": "^1.2.0",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
     "@types/js-yaml": "^3.12.0",
     "@types/node": "^10.12.24",
+    "@types/sprintf-js": "^1.1.2",
     "alsatian": "^2.3.0",
     "aws-sdk": "^2.404.0",
     "js-yaml": "^3.12.2",
+    "junit-bark": "^1.1.1",
     "nyc": "^13.3.0",
-    "tap-junit": "^3.0.2",
+    "tap-spec": "^5.0.0",
     "tslint": "^5.13.0",
-    "typescript": "^3.3.3",
-    "xunit-viewer": "^5.1.8"
+    "typedoc": "^0.14.2",
+    "marked": "^0.6.2",
+    "typescript": "^3.3.3"
   }
 }

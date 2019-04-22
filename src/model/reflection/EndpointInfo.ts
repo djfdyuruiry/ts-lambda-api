@@ -79,7 +79,12 @@ export class EndpointInfo {
             }
         } else {
             this.method = controllerOrMethod
-            this.methodName = controllerOrMethod.name
+
+            if (controllerOrMethod.name && controllerOrMethod.name.trim() !== "") {
+                this.methodName = controllerOrMethod.name
+            } else {
+                this.methodName = this.name
+            }
         }
 
         this.parameterExtractors = Array(this.method.length)

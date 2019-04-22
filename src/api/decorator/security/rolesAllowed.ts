@@ -15,6 +15,10 @@ export function rolesAllowed(...roleNames: string[]) {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
+        DecoratorRegistry.getLogger().debug("@rolesAllowed(%j) decorator executed for endpoint: %s",
+            roleNames,
+            endpoint.name)
+
         endpoint.rolesAllowed = roleNames
     }
 }
@@ -30,8 +34,12 @@ export function rolesAllowed(...roleNames: string[]) {
  */
 export function controllerRolesAllowed(...roleNames: string[]) {
     return (classDefinition: Function) => {
-        let apiController = DecoratorRegistry.getOrCreateController(classDefinition)
+        let controller = DecoratorRegistry.getOrCreateController(classDefinition)
 
-        apiController.rolesAllowed = roleNames
+        DecoratorRegistry.getLogger().debug("@controllerRolesAllowed(%j) executed for controller: %s",
+            roleNames,
+            controller.name)
+
+        controller.rolesAllowed = roleNames
     }
 }

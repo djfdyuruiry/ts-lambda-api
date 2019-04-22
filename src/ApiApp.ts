@@ -7,6 +7,8 @@ import { Server } from "./api/Server"
 import { AppConfig } from "./model/AppConfig"
 import { ApiRequest } from "./model/ApiRequest"
 import { ApiResponse } from "./model/ApiResponse"
+import { ILogger } from "./util/logging/ILogger"
+import { LogFactory } from "./util/logging/LogFactory"
 
 /**
  * Application base class which combines the `Server`, `Container`(`InversifyJS`)
@@ -22,6 +24,10 @@ import { ApiResponse } from "./model/ApiResponse"
  */
 export abstract class ApiApp {
     protected readonly apiServer: Server
+    protected readonly logFactory: LogFactory
+
+    protected logger: ILogger
+    protected initialised: boolean
 
     public get middlewareRegistry() {
         return this.apiServer.middlewareRegistry
@@ -40,7 +46,16 @@ export abstract class ApiApp {
         protected appConfig: AppConfig = new AppConfig(),
         protected appContainer: Container = new Container({ autoBindInjectable: true })
     ) {
-        this.apiServer = new Server(appContainer, appConfig)
+        if (!controllersPath || controllersPath.trim() === "") {
+            throw new Error("Null, empty or whitespace controllersPath passed to ApiApp")
+        }
+        appContainer.bind(AppConfig).toConstantValue(this.appConfig)
+
+        this.apiServer = new Server(appContainer, this.appConfig)
+        this.logFactory = new LogFactory(appConfig)
+
+        this.logger = this.logFactory.getLogger(ApiApp)
+        this.initialised = false
     }
 
     /**
@@ -75,6 +90,23 @@ export abstract class ApiApp {
      * Initialise all controllers and endpoints declared using decorators.
      */
     public async initialiseControllers() {
-        await this.apiServer.discoverAndBuildRoutes(this.controllersPath)
+        if (this.initialised) {
+            this.logger.debug("Ignoring call to initialiseControllers, app has already been initialised")
+
+            return
+        }
+
+        this.logger.debug("Initialising app controllers")
+
+        try {
+            await this.apiServer.discoverAndBuildRoutes(this.controllersPath)
+
+            this.initialised = true
+        } catch (ex) {
+            this.logger.fatal("Error initialising API app:\n%s",
+                ex instanceof Error ? ex.stack : ex)
+
+            throw ex
+        }
     }
 }

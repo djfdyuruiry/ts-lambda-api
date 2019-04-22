@@ -12,6 +12,9 @@ export function produces(contentType: string) {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
+        DecoratorRegistry.getLogger().debug("@produces('%s') decorator executed for endpoint: %s",
+            contentType, endpoint.name)
+
         endpoint.produces = contentType
     }
 }
@@ -25,6 +28,9 @@ export function produces(contentType: string) {
 export function controllerProduces(contentType: string) {
     return (classDefinition: Function) => {
         let apiController = DecoratorRegistry.getOrCreateController(classDefinition)
+
+        DecoratorRegistry.getLogger().debug("@controllerProduces('%s') decorator executed for controller: %s",
+            contentType, apiController.name)
 
         apiController.produces = contentType
     }

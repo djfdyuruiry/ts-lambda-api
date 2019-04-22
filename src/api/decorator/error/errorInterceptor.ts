@@ -1,5 +1,8 @@
+import { inspect } from "util"
+
 import { interfaces } from "inversify/dts/interfaces/interfaces"
 
+import { LogLevel } from "../../../model/logging/LogLevel"
 import { ErrorInterceptor } from "../../error/ErrorInterceptor"
 import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 
@@ -15,6 +18,12 @@ export function errorInterceptor(interceptor: interfaces.ServiceIdentifier<Error
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
+        if (DecoratorRegistry.getLogger().debugEnabled()) {
+            DecoratorRegistry.getLogger().debug("@errorInterceptor(%s) decorator executed for endpoint: %s",
+                inspect(interceptor),
+                endpoint.name)
+        }
+
         endpoint.errorInterceptor = interceptor
     }
 }
@@ -26,8 +35,14 @@ export function errorInterceptor(interceptor: interfaces.ServiceIdentifier<Error
  */
 export function controllerErrorInterceptor(interceptor: interfaces.ServiceIdentifier<ErrorInterceptor>) {
     return (classDefinition: Function) => {
-        let apiController = DecoratorRegistry.getOrCreateController(classDefinition)
+        let controller = DecoratorRegistry.getOrCreateController(classDefinition)
 
-        apiController.errorInterceptor = interceptor
+        if (DecoratorRegistry.getLogger().debugEnabled()) {
+            DecoratorRegistry.getLogger().debug("@controllerErrorInterceptor(%s) decorator executed for controller: %s",
+                inspect(interceptor),
+                controller.name)
+        }
+
+        controller.errorInterceptor = interceptor
     }
 }

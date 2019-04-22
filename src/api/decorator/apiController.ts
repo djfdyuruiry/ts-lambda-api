@@ -8,8 +8,11 @@ import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
  */
 export function apiController(path?: string) {
     return (constructor: Function) => {
-        let registryController = DecoratorRegistry.getOrCreateController(constructor)
+        let controller = DecoratorRegistry.getOrCreateController(constructor)
 
-        registryController.path = path
+        DecoratorRegistry.getLogger().debug("@apiController('%s') decorator executed for controller: %s",
+            path, controller.name)
+
+        controller.path = path
     }
 }

@@ -9,11 +9,9 @@ import { TestBase } from "./TestBase"
 export class ApiLambdaAppTests extends TestBase {
     @AsyncTest()
     public async when_custom_config_passed_to_app_then_it_is_respected() {
-        let config: AppConfig = {
-            base: "api/v1/"
-        }
+        this.appConfig.base = "api/v1/"
 
-        this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, config)
+        this.app = new ApiLambdaApp(TestBase.CONTROLLERS_PATH, this.appConfig)
 
         let response = await this.sendRequest(
             RequestBuilder.get("/test").build()
@@ -34,7 +32,7 @@ export class ApiLambdaAppTests extends TestBase {
 
         let app = new ApiLambdaApp(
             TestBase.CONTROLLERS_PATH,
-            undefined,
+            this.appConfig,
             container
         )
 

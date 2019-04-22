@@ -3,6 +3,8 @@ import { IAuthorizer, Principal } from "../../../dist/typescript-lambda-api"
 import { TestUser } from "./model/TestUser"
 
 export class TestAuthorizer implements IAuthorizer<TestUser> {
+    public readonly name: string = TestAuthorizer.name
+
     public wasInvoked: boolean
     public principalPassed: Principal
     public rolePassed: string

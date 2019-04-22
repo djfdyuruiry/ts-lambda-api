@@ -1,5 +1,8 @@
-import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
+import { inspect } from "util"
+
+import { LogLevel } from "../../../model/logging/LogLevel"
 import { ApiBody } from "../../../model/open-api/ApiBody"
+import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 
 /**
  * Decorator that can be placed on an endpoint to describe the request
@@ -13,6 +16,12 @@ export function apiRequest(apiBodyInfo: ApiBody) {
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
         let operationInfo = endpoint.getOrCreateApiOperationInfo()
         let requestInfo = operationInfo.getOrCreateRequest()
+
+        if (DecoratorRegistry.getLogger().debugEnabled()) {
+            DecoratorRegistry.getLogger().debug("@apiRequest(%s) decorator executed for endpoint: %s",
+                inspect(apiBodyInfo),
+                endpoint.name)
+        }
 
         requestInfo.mergeInfo(apiBodyInfo)
     }

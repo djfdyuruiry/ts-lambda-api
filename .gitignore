@@ -80,9 +80,8 @@ typings/
 .dynamodb/
 
 dist
-
 tests/js
-tests/*.html
-tests/*.xml
+
+.test_results
 
 package-lock.json

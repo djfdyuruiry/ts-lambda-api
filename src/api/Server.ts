@@ -4,14 +4,15 @@ import { Container } from "inversify"
 import { ApiRequest } from "../model/ApiRequest"
 import { ApiResponse } from "../model/ApiResponse"
 import { AppConfig } from "../model/AppConfig"
-import { EndpointInfo } from "../model/reflection/EndpointInfo";
+import { EndpointInfo } from "../model/reflection/EndpointInfo"
+import { ILogger } from "../util/logging/ILogger"
+import { LogFactory } from "../util/logging/LogFactory"
 import { timed } from "../util/timed"
 import { Endpoint } from "./Endpoint"
 import { MiddlewareRegistry } from "./MiddlewareRegistry"
 import { OpenApiGenerator, OpenApiFormat } from "./open-api/OpenApiGenerator"
 import { ControllerLoader } from "./reflection/ControllerLoader"
 import { DecoratorRegistry } from "./reflection/DecoratorRegistry"
-import { BasicAuthFilter } from "./security/BasicAuthFilter"
 
 /**
  * Server that discovers routes using decorators on controller
@@ -19,8 +20,11 @@ import { BasicAuthFilter } from "./security/BasicAuthFilter"
  * `lambda-api` package.
  */
 export class Server {
+    private readonly logFactory: LogFactory
+    private readonly logger: ILogger
     private readonly api: API
     private readonly _middlewareRegistry: MiddlewareRegistry
+    private readonly openApiGenerator?: OpenApiGenerator
 
     public get middlewareRegistry() {
         return this._middlewareRegistry
@@ -32,9 +36,19 @@ export class Server {
      * @param appContainer Application container to use to build containers.
      * @param appConfig Application config to pass to `lambda-api`.
      */
-    public constructor(private appContainer: Container, private appConfig?: AppConfig) {
+    public constructor(private appContainer: Container, private appConfig: AppConfig) {
+        this.logFactory = new LogFactory(appConfig)
+        this.logger = this.logFactory.getLogger(Server)
+
+        // ensure decorator registry has the right log level (now that we know the app config)
+        DecoratorRegistry.setLogger(this.logFactory)
+
         this.api = createAPI(appConfig)
-        this._middlewareRegistry = new MiddlewareRegistry()
+        this._middlewareRegistry = new MiddlewareRegistry(this.logFactory)
+
+        if (this.appConfig.openApi && this.appConfig.openApi.enabled) {
+            this.openApiGenerator = new OpenApiGenerator(this.appConfig, this._middlewareRegistry, this.logFactory)
+        }
     }
 
     /**
@@ -65,13 +79,14 @@ export class Server {
      * This method must be called before invoking the `processEvent` method.
      *
      * @param controllersPath Path to the directory containing controller `js` files.
-     * @param appContainer `InversifyJS` IOC `Container` instance which can build controllers and error interceptors.
      */
     @timed
     public async discoverAndBuildRoutes(controllersPath: string) {
-        await ControllerLoader.loadControllers(controllersPath)
+        this.logger.debug("Loading controllers from path: %s", controllersPath)
 
-        if (this.appConfig.openApi && this.appConfig.openApi.enabled) {
+        await ControllerLoader.loadControllers(controllersPath, this.logFactory)
+
+        if (this.openApiGenerator) {
             this.registerOpenApiEndpoints()
         }
 
@@ -85,6 +100,8 @@ export class Server {
     }
 
     private registerOpenApiEndpoints() {
+        this.logger.info("Registering OpenAPI endpoints")
+
         this.registerOpenApiEndpoint("json")
         this.registerOpenApiEndpoint("yml")
     }
@@ -92,7 +109,7 @@ export class Server {
     private registerOpenApiEndpoint(format: OpenApiFormat) {
         let specEndpoint = new EndpointInfo(
             `internal__openapi::${format}`,
-            async () => await OpenApiGenerator.exportOpenApiSpec(format, this.appConfig, this._middlewareRegistry)
+            async () => await this.openApiGenerator.exportOpenApiSpec(format)
         )
 
         specEndpoint.path = `/open-api.${format}`
@@ -108,7 +125,8 @@ export class Server {
             endpointInfo,
             c => this.appContainer.get(c),
             ei => this.appContainer.get(ei),
-            this._middlewareRegistry
+            this._middlewareRegistry,
+            this.logFactory
         )
 
         apiEndpoint.register(this.api)
@@ -125,6 +143,11 @@ export class Server {
     @timed
     public async processEvent(request: ApiRequest, context: any): Promise<ApiResponse> {
         let event: any = request
+
+        this.logger.info("Processing API request event for path: %s", request.path)
+
+        this.logger.debug("Event data: %j", event)
+        this.logger.debug("Event context: %j", context)
 
         return await this.api.run(event, context)
     }

@@ -50,8 +50,12 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
     - [Using Decorators](#use-decorators)
 - [Dependency Injection](#di)
 - [Configuration](#config)
-    - [lambda-api](#lambda-api)
-    - [Logging](#logging)
+    - [lambda-api](#lambda-api-config)
+    - [Reference](#config-reference)
+- [Logging](#logging)
+    - [Writing Logs](#logging-writing)
+    - [API](#logging-api)
+    - [lambda-api](#lambda-api-logging)
 - [OpenAPI (Swagger)](#open-api)
     - [Decorators](#open-api-decorators)
     - [YAML Support](#open-api-yaml)
@@ -130,15 +134,15 @@ import * as path from "path"
 
 import { AppConfig, ApiLambdaApp } from "typescript-lambda-api"
 
+const appConfig = new AppConfig()
+
+appConfig.base = "/api/v1"
+appConfig.version = "v1"
+
+const controllersPath = path.join(__dirname, "controllers")
+const app = new ApiLambdaApp(controllersPath, appConfig)
+
 export async function handler(event, context) {
-    let appConfig = new AppConfig()
-
-    appConfig.base = "/api/v1"
-    appConfig.version = "v1"
-
-    let controllersPath = path.join(__dirname, "controllers")
-    let app = new ApiLambdaApp(controllersPath, appConfig)
-
     return await app.run(event, context)
 }
 ```
@@ -439,7 +443,7 @@ Implementation is heavily inspired by the Dropwizard framework for Java.
 
 ### <a id="auth-princ"></a>Authentication and Principals
 
-Authentication is preformed by filter classes that are executed before invoking an endpoint; all filter class implement the `IAuthFilter` interface.
+Authentication is preformed by filter classes that are executed before invoking an endpoint; all filter classes implement the `IAuthFilter` interface.
 
 Filters use information from the HTTP request to authenticate the request. If authentication is successful, a filter will return a principal. A principal is a simple class that contains information about the current user/entity that has been granted access to the endpoint.
 
@@ -470,6 +474,8 @@ import { BasicAuthFilter } from "typescript-lambda-api"
 import { StoreUser } from "./StoreUser"
 
 export class StoreAuthFilter extends BasicAuthFilter<StoreUser> {
+    public readonly name: string = StoreAuthFilter.name
+
     public async authenticate(basicAuth: BasicAuth): Promise<StoreUser | undefined> {
         let user = this.getUserFromDb(basicAuth.username)
 
@@ -493,8 +499,8 @@ You register your authentication filter when setting up your application instanc
 
 ```typescript
 // build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
-let authFilter = new StoreAuthFilter()
+const app = new ApiLambdaApp(controllersPath, appConfig)
+const authFilter = new StoreAuthFilter()
 
 // this will protect your endpoints using the auth filter to authenticate requests
 app.middlewareRegistry.addAuthFilter(authFilter)
@@ -535,7 +541,7 @@ For an endpoint:
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, fromBody, principal, GET, POST } from "typescript-lambda-api"
+import { apiController, fromBody, noAuth, principal, GET, POST } from "typescript-lambda-api"
 
 import { LoginRequest } from "./LoginRequest"
 import { StoreUser } from "./StoreUser"
@@ -607,6 +613,7 @@ export class TokenAuthFilter<T extends Principal> implements IAuthFilter<TokenAu
     // required to be defined for implementations, see:
     //   https://www.iana.org/assignments/http-authschemes/http-authschemes.xhtml
     public readonly authenticationSchemeName: string = "Bearer"
+    public readonly name: string = TokenAuthFilter.name
 
     public async extractAuthData(request: Request): Promise<TokenAuth | undefined> {
         // extract the data if the auth header is present
@@ -645,6 +652,8 @@ import { IAuthorizer } from "typescript-lambda-api"
 import { StoreUser } from "./StoreUser"
 
 export class StoreAuthorizer implements IAuthorizer<StoreUser> {
+    public readonly name: string = StoreAuthorizer.name
+
     public async authorize(user: StoreUser, role: string): Promise<boolean> {
         return user.roles.includes(role)
     }
@@ -693,8 +702,8 @@ You register your authentication filter when setting up your application instanc
 
 ```typescript
 // build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
-let authorizer = new StoreAuthorizer()
+const app = new ApiLambdaApp(controllersPath, appConfig)
+const authorizer = new StoreAuthorizer()
 
 // this will protect your endpoints using the authorizer to check access roles
 app.middlewareRegistry.addAuthorizer(authorizer)
@@ -771,8 +780,8 @@ You can manually register interceptors when setting up your application instance
 
 ```typescript
 // build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
-let errorInterceptor = new StoreErrorInterceptor()
+const app = new ApiLambdaApp(controllersPath, appConfig)
+const errorInterceptor = new StoreErrorInterceptor()
 
 // this will intercept errors thrown by any endpoint
 app.middlewareRegistry.addErrorInterceptor(errorInterceptor)
@@ -942,7 +951,7 @@ Configuring the IOC container to enable dependency injection into your controlle
 
 ```typescript
 // build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
+const app = new ApiLambdaApp(controllersPath, appConfig)
 
 app.configureApp(container => {
     // bind interface to implementation class, for example
@@ -999,8 +1008,8 @@ You can then configure the IOC container to bind to your configuration instance.
 
 ```typescript
 // build controllers path...
-let appConfig: MyCustomConfig = buildConfig()
-let app = new ApiLambdaApp(controllersPath, appConfig)
+const appConfig: MyCustomConfig = buildConfig()
+const app = new ApiLambdaApp(controllersPath, appConfig)
 
 app.configureApp(container => {
     container.bind(MyCustomConfig)
@@ -1038,7 +1047,11 @@ export class MyController {
 
 **Note: The `AppConfig` class supports all the configuration fields documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package.**
 
-### <a id="lambda-api"></a>lambda-api
+### <a id="config-reference"></a>Reference
+
+For a complete reference see the [AppConfig](https://djfdyuruiry.github.io/typescript-lambda-api/classes/appconfig.html) docs.
+
+### <a id="lambda-api-config"></a>lambda-api
 
 Configuring `lambda-api` directly can be done by calling the `configureApi` method like below:
 
@@ -1046,7 +1059,7 @@ Configuring `lambda-api` directly can be done by calling the `configureApi` meth
 import * as xmljs from "xml-js"
 
 // build config and controllers path...
-let app = new ApiLambdaApp(controllersPath, appConfig)
+const app = new ApiLambdaApp(controllersPath, appConfig)
 
 app.configureApi(api: API => {
     // add middleware handler, for example
@@ -1066,9 +1079,171 @@ app.configureApi(api: API => {
 
 See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documentation for guidance how to use the `API` class.
 
-### <a id="logging"></a>Logging
+## <a id="logging"></a>Logging
 
-Logging is currently provided by the [lambda-api](https://github.com/jeremydaly/lambda-api) package, use the `AppConfig` instance passed to `ApiLambdaApp` to configure logging.
+A logger interface is provided that can write messages to standard out. You can configure this logger using the `serverLogging` key in the `AppConfig` class. See the [Config Reference](#config-reference) for details on options available.
+
+By default, the logger is set to `info` and outputs messages as simple strings.
+
+The format of the messages written out is:
+
+```
+        ISO 8601 Datetime    level class                   message
+    vvvvvvvvvvvvvvvvvvvvvvvv vvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    2019-04-21T16:38:09.680Z INFO Endpoint - Invoking endpoint: [GET] /open-api.yml
+```
+
+Below is some example output, include a stack trace from an `Error` instance:
+
+```
+2019-04-21T22:20:29.622Z INFO ApiLambdaApp - Received event, initialising controllers and processing event
+2019-04-21T22:20:29.647Z INFO Server - Processing API request event for path: /test/
+2019-04-21T22:20:29.832Z INFO Endpoint - [GET] /test - Authenticating request
+2019-04-21T22:20:29.833Z ERROR Endpoint - [GET] /test - Error processing endpoint request
+Error: authenticate failed
+    at TestAuthFilter.authenticate (/home/matthew/src/ts/typescript-lambda-api/tests/src/test-components/TestAuthFilter.ts:25:19)
+    at Endpoint.authenticateRequest (/home/matthew/src/ts/typescript-lambda-api/dist/api/Endpoint.js:15:2640)
+    at processTicksAndRejections (internal/process/task_queues.js:86:5)
+    at process.runNextTicks [as _tickCallback] (internal/process/task_queues.js:56:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:880:11)
+    at runMain (/home/matthew/.node-spawn-wrap-13541-13c0098ec456/node:68:10)
+    at Function.<anonymous> (/home/matthew/.node-spawn-wrap-13541-13c0098ec456/node:171:5)
+    at Object.<anonymous> (/home/matthew/src/ts/typescript-lambda-api/node_modules/nyc/bin/wrap.js:23:4)
+    at Module._compile (internal/modules/cjs/loader.js:816:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:827:10)
+```
+
+If you set the `format` to `json` the log messages will look like this:
+
+```json
+ {
+    "level": "INFO",
+    "msg": "Endpoint - Invoking endpoint: [GET] /open-api.yml",
+    "time": 1555865906882 // milliseconds since epoch
+}
+```
+
+This format matches the keys used by the `lambda-api` framework in it's output.
+
+### <a id="logging-writing"></a>Writing Logs
+
+To write logs you will ned a logger instance. There are three ways to get one:
+
+- Extend the `Controller` class in your controller:
+
+```typescript
+import { injectable } from "inversify"
+import { Response, Request } from "lambda-api"
+
+import { apiController, Controller, GET } from "../../../dist/typescript-lambda-api"
+
+@apiController("/")
+@injectable()
+export class TestController extends Controller {
+    @GET()
+    public get() {
+        this.logger.info("In GET method!")
+
+        return "OK"
+    }
+}
+```
+
+- Use a `LogFactory` instance to build it:
+
+```typescript
+import { inject, injectable } from "inversify"
+import { AppConfig, LogFactory, LogLevel } from "lambda-api"
+
+@injectable()
+export class SomeServiceYouMightMake {
+    // get your app config using dependency injection
+    public constructor(@inject(AppConfig) private readonly appConfig: AppConfig)
+
+    public doStuff() {
+        let factory = new LogFactory(appConfig)
+        let logger = factory.getLogger(SomeServiceYouMightMake)
+
+        logger.debug("Inside doStuff!")
+    }
+}
+```
+
+- Use the `LogFactory` static methods to build it:
+
+```typescript
+import { LogFactory, LogLevel } from "lambda-api"
+
+export class SomeServiceYouMightMake {
+    public doStuff() {
+        // you can specify the level and format of the log
+        let logger = LogFactory.getCustomLogger(SomeServiceYouMightMake, LogLevel.debug, "json")
+
+        logger.debug("Inside doStuff!")
+    }
+}
+```
+
+### <a id="logging-api"></a> Logger API
+
+The logging API supports formatting of messages using the [`sprintf-js`](https://www.npmjs.com/package/sprintf-js) npm module, simply pass in your arguments and put placeholders in your message string:
+
+```typescript
+logger.warn("Hello there %s, how are you?", "Roy")
+logger.debug("Task status: %s. Task data: %j", "success", {event: "run batch"})
+```
+
+Using this will help to speed up your app if you do a lot of logging, because uneccessary work to convert values to strings and JSON for debug messages will not take place if a higher error level is set.
+
+----
+
+Below is an example of the methods available on logger instances:
+
+```typescript
+import { LogFactory, LogLevel } from "lambda-api"
+
+export class SomeServiceYouMightMake {
+    public doStuff() {
+        let logger = LogFactory.getCustomLogger(SomeServiceYouMightMake)
+
+        // different levels
+        logger.trace("trace")
+        logger.fatal("fatal")
+        logger.error("error")
+
+        // log exceptions with stack traces, also supports formatting of message
+        let exception = new Error("Bad stuff happened")
+
+        logger.errorWithStack("An error occurred somewhere, error code: %d", exception, 20000)
+
+        // check if a level is enabled
+        if (logger.debugEnabled()) {
+            logger.debug("Mode #%d", 355)
+        }
+
+        if (logger.traceEnabled()) {
+            logger.trace("Sending data: %j", {some: {payload: 2345}})
+        }
+
+        // check if the logging is currenly off (i.e. level is set to `off`)
+        if (logger.isOff()) {
+            // react to the cruel reality....
+        }
+
+        // pass level in as parameter
+        logger.log(LogLevel.info, "Manual call to the %s method", "log")
+
+        // check level is enabled using aparameter
+        if (logger.levelEnabled(LogLevel.info)) {
+            logger.info("I am enabled!")
+        }
+    }
+}
+```
+
+### <a id="lambda-api-logging"></a>lambda-api
+
+Logging is also provided by the [lambda-api](https://github.com/jeremydaly/lambda-api) package, use the `AppConfig` instance passed to `ApiLambdaApp` to configure logging using the `logger` key. See the [Config Reference](#config-reference) for details on options available.
 
 ----
 
@@ -1076,7 +1251,7 @@ Logging is currently provided by the [lambda-api](https://github.com/jeremydaly/
 
 ----
 
-The OpenAPI Specification, fka Swagger, is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
+The OpenAPI Specification, FKA Swagger, is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
 
 **This framework only supports OpenAPI v3**
 
@@ -1084,22 +1259,27 @@ The following features are supported:
 
 - Generating of an OpenAPI Specification, which includes:
     - All endpoints with full path and HTTP method
+    - Custom names and descriptions for endpoints
+    - Group endpoints together by API
     - Endpoint query, path and header parameters (set by parameter decorators)
     - Response content type headers (set by `produces` or `controllerProduces` decorators)
-    - HTTP Basic Security scheme (when a basic auth filter is configured)
+    - Request and Response bodies: class types, primitive values and files
+    - Response HTTP status codes
+    - HTTP Basic security scheme (when a basic auth filter is configured)
+    - Custom auth filter security schemes
 - Specification files can be generated in `JSON` or `YAML` format (see [YAML Support](#open-api-yaml))
 
 To enable it, use the `openApi` property in the `AppConfig` class when building your app:
 
 ```typescript
 // build controllers path...
-let appConfig = new AppConfig()
+const appConfig = new AppConfig()
 
 appConfig.base = "/api/v1"
 appConfig.version = "v1"
 appConfig.openApi.enabled = true
 
-let app = new ApiLambdaApp(controllersPath, appConfig)
+const app = new ApiLambdaApp(controllersPath, appConfig)
 // export handler
 ```
 
@@ -1125,6 +1305,8 @@ To further document your API endpoints you can use OpenAPI decorators.
         // ... endpoints ...
     }
     ```
+
+*The same `@api` name can be used on multiple controllers, meaning you can group by API area rather than controller*
 
 - Add descriptions to APIs and endpoints using `apiOperation`:
 
@@ -1273,14 +1455,14 @@ By default the OpenAPI endpoints do not require authentication. If you wish to a
 
 ```typescript
 // build controllers path...
-let appConfig = new AppConfig()
+const appConfig = new AppConfig()
 
 appConfig.base = "/api/v1"
 appConfig.version = "v1"
 appConfig.openApi.enabled = true
 appConfig.openApi.useAuthentication = true
 
-let app = new ApiLambdaApp(controllersPath, appConfig)
+const app = new ApiLambdaApp(controllersPath, appConfig)
 // export handler
 ```
 

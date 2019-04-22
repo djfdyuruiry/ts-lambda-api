@@ -3,6 +3,8 @@ import { BasicAuthFilter, BasicAuth } from "../../../dist/typescript-lambda-api"
 import { TestUser } from "./model/TestUser";
 
 export class TestAuthFilter extends BasicAuthFilter<TestUser> {
+    public readonly name: string = TestAuthFilter.name
+
     public wasInvoked: boolean
     public passedCredentials: BasicAuth
 

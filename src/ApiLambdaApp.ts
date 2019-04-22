@@ -23,6 +23,8 @@ export class ApiLambdaApp extends ApiApp {
      */
     public constructor(controllersPath: string, appConfig?: AppConfig, appContainer?: Container) {
         super(controllersPath, appConfig, appContainer)
+
+        this.logger = this.logFactory.getLogger(ApiLambdaApp)
     }
 
     /**
@@ -34,6 +36,8 @@ export class ApiLambdaApp extends ApiApp {
      */
     @timed
     public async run(event: ApiRequest, context: any) {
+        this.logger.info("Received event, initialising controllers and processing event")
+
         await super.initialiseControllers()
 
         return await this.apiServer.processEvent(event, context)

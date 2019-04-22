@@ -8,9 +8,14 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
  */
 export function api(name: string, description?: string) {
     return (classDefinition: Function) => {
-        let apiController = DecoratorRegistry.getOrCreateController(classDefinition)
+        let controller = DecoratorRegistry.getOrCreateController(classDefinition)
 
-        apiController.apiName = name
-        apiController.apiDescription = description
+        DecoratorRegistry.getLogger().debug("@api('%s'%s) decorator executed for controller: %s",
+            name,
+            description ? `, '${description}'` : "",
+            controller.name)
+
+        controller.apiName = name
+        controller.apiDescription = description
     }
 }
