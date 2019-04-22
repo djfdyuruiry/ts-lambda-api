@@ -4,7 +4,7 @@ import { ILogger, LogFormat } from "./ILogger"
 import { ConsoleLogger } from "./ConsoleLogger"
 
 /**
- * Builds implementations of @see{ILogger}.
+ * Builds implementations of [[ILogger]].
  */
 export class LogFactory {
     /**
@@ -40,7 +40,7 @@ export class LogFactory {
     }
 
     /**
-     * Create a new logger using @see{AppConfig} config defaults.
+     * Create a new logger using [[AppConfig]] config defaults.
      *
      * @param clazz The enclosing class that will use the new logger.
      */

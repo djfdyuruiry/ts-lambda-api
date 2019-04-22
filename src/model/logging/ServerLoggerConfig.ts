@@ -8,7 +8,7 @@ export class ServerLoggerConfig {
     /**
      * Lowest level of log message to output.
      *
-     * @see{LogLevel} for levels supported.
+     * See [[LogLevel]] for levels supported.
      */
     public level: LogLevel
 

@@ -7,11 +7,12 @@
     "url": "https://github.com/djfdyuruiry/typescript-lambda-api.git"
   },
   "scripts": {
-    "build": "yarn run lint && rm -rf dist && tsc",
+    "build": "yarn run lint && rm -rf dist && tsc && yarn docs",
     "build-all": "yarn run install-with-audit && yarn run build && yarn run build-tests",
     "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
-    "clean-install": "rm -rf node_modules && yarn install",
-    "install-with-audit": "yarn install && yarn audit",
+    "docs": "rm -rf ./docs && typedoc --mode file --excludePrivate --out ./docs",
+    "clean-install": "rm -rf node_modules && yarn install-with-audit",
+    "install-with-audit": "yarn install --audit && yarn audit",
     "lint": "tslint 'src/**/*.ts'",
     "shell": "bash",
     "test": "yarn run build-all && scripts/runTests.sh"
@@ -58,6 +59,8 @@
     "nyc": "^13.3.0",
     "tap-spec": "^5.0.0",
     "tslint": "^5.13.0",
+    "typedoc": "^0.14.2",
+    "marked": "^0.6.2",
     "typescript": "^3.3.3"
   }
 }

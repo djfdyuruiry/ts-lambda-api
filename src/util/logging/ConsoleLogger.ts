@@ -43,7 +43,7 @@ export class ConsoleLogger implements ILogger {
 
     /**
      * Log a message with a custom level. Ignores messages of a lower log
-     * level than the current level. If @see{Environment.UnderTest} is enabled
+     * level than the current level. If [[Environment.UnderTest]] is enabled
      * then this method will only log info messages or higher.
      *
      * @param level Level of the log message.

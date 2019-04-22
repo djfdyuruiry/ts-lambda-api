@@ -7,12 +7,12 @@ export type LogFormat = "string" | "json"
  */
 export interface ILogger {
     /**
-     * @see{ServerLoggerConfig}
+     * See [[ServerLoggerConfig]]
      */
     readonly level: LogLevel
 
     /**
-     * @see{ServerLoggerConfig}
+     * See [[ServerLoggerConfig]]
      */
     readonly format: LogFormat
 

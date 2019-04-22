@@ -50,7 +50,7 @@ export class AppConfig implements Options {
 
     /**
      * Logging configuration for ts-lambda-api.
-     * @see{ServerLoggerConfig} for more information.
+     * See [[ServerLoggerConfig]] for more information.
      *
      * Defaults to info level plain string logging.
      */

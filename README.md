@@ -1186,7 +1186,7 @@ export class SomeServiceYouMightMake {
 
 ### <a id="logging-api"></a> Logger API
 
-The logging API supports formatting of messages using the `sprintf` npm module, simply pass in your arguments and put placeholders in your message string:
+The logging API supports formatting of messages using the [`sprintf-js`](https://www.npmjs.com/package/sprintf-js) npm module, simply pass in your arguments and put placeholders in your message string:
 
 ```typescript
 logger.warn("Hello there %s, how are you?", "Roy")
@@ -1259,6 +1259,8 @@ The following features are supported:
 
 - Generating of an OpenAPI Specification, which includes:
     - All endpoints with full path and HTTP method
+    - Custom names and descriptions for endpoints
+    - Group endpoints together by API
     - Endpoint query, path and header parameters (set by parameter decorators)
     - Response content type headers (set by `produces` or `controllerProduces` decorators)
     - Request and Response bodies: class types, primitive values and files
@@ -1303,6 +1305,8 @@ To further document your API endpoints you can use OpenAPI decorators.
         // ... endpoints ...
     }
     ```
+
+*The same `@api` name can be used on multiple controllers, meaning you can group by API area rather than controller*
 
 - Add descriptions to APIs and endpoints using `apiOperation`:
 
