@@ -3,7 +3,13 @@ import { ApiOperation } from "./ApiOperation"
 import { ApiBody } from "./ApiBody"
 import { IDictionary } from "../../util/IDictionary"
 
+/**
+ * Describes an API endpoint.
+ */
 export class ApiOperationInfo extends ApiOperation {
+    /**
+     * Get the HTTP request info.
+     */
     public getOrCreateRequest() {
         if (!this.request) {
             this.request = new ApiBodyInfo()
@@ -12,6 +18,10 @@ export class ApiOperationInfo extends ApiOperation {
         return this.request
     }
 
+    /**
+     * Copy any properties from another instance that are not
+     * set in this instance.
+     */
     public mergeInfo(otherInstance: ApiOperation) {
         if (otherInstance.name) {
             this.name = otherInstance.name
@@ -30,6 +40,12 @@ export class ApiOperationInfo extends ApiOperation {
         }
     }
 
+    /**
+     * Copy any properties from another instance responses
+     * that are not set in this instance's responses.
+     *
+     * See [[ApiBodyInfo]]
+     */
     public mergeResponses(otherResponses: IDictionary<ApiBody>) {
         for (let statusCode in otherResponses) {
             if (!otherResponses.hasOwnProperty(statusCode)) {
