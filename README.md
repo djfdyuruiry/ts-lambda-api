@@ -1049,7 +1049,7 @@ export class MyController {
 
 ### <a id="config-reference"></a>Reference
 
-TODO: Config Reference
+For a complete reference see the [AppConfig](https://djfdyuruiry.github.io/typescript-lambda-api/classes/appconfig.html) docs.
 
 ### <a id="lambda-api-config"></a>lambda-api
 
