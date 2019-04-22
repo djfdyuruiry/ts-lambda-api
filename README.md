@@ -3,7 +3,9 @@
 Build REST API's using Typescript & AWS Lambda.
 
 [NPM Package](https://www.npmjs.com/package/typescript-lambda-api)
+[GitHub Repo](https://github.com/djfdyuruiry/typescript-lambda-api/)
 
+Read the full `typedoc` documentation: https://djfdyuruiry.github.io/typescript-lambda-api/
 
 Framework Features:
 
