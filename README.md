@@ -50,6 +50,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 - [Request / Response Context](#req-res-context)
     - [Extending Controller Class](#extend-controller)
     - [Using Decorators](#use-decorators)
+    - [Returning Files in a Response](#send-files)
 - [Dependency Injection](#di)
 - [Configuration](#config)
     - [lambda-api](#lambda-api-config)
@@ -339,12 +340,13 @@ Different parts of the HTTP request can be bound to endpoint method parameters u
 
 - `queryParam` - Query string parameter
 - `header` - HTTP header value
-- `fromBody` - Entity from request body, this will be an object if the request contains JSON, otherwise it will simply be a string
+- `body` - Entity from request body, this will be an object if the request contains JSON, otherwise it will simply be a string
+- `rawBody` - Entity from request body as a Buffer, containing a string or binary data
 
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, fromBody, header, queryParam, GET, POST } from "ts-lambda-api"
+import { apiController, body, header, queryParam, rawBody, GET, POST } from "ts-lambda-api"
 
 import { Thing } from "./Thing"
 
@@ -362,8 +364,13 @@ export class HelloWorldController {
     }
 
     @POST("/thing")
-    public addThing(@fromBody thing: Thing) {
+    public addThing(@body thing: Thing) {
         // do something with thing
+    }
+
+    @POST("/upload-file")
+    public addThing(@rawBody file: Buffer) {
+        // do something with file
     }
 }
 ```
@@ -377,7 +384,7 @@ export class HelloWorldController {
 There are two ways to respond to requests:
 
 - Return a value from your endpoint method
-- Use the response context to send a response (see `Request / Response Context` section below - the context has convience methods for html, json etc.)
+- Use the response context to send a response (see `Request / Response Context` section below - the context has convience methods for html, json, files etc.)
 
 By default all return values are serialised to JSON in the response body and the `content-type` response header is set to `application/json`. To change this you can use the `produces` and `controllerProduces` decorators.
 
@@ -543,7 +550,7 @@ For an endpoint:
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, fromBody, noAuth, principal, GET, POST } from "ts-lambda-api"
+import { apiController, body, noAuth, principal, GET, POST } from "ts-lambda-api"
 
 import { LoginRequest } from "./LoginRequest"
 import { StoreUser } from "./StoreUser"
@@ -553,7 +560,7 @@ import { StoreUser } from "./StoreUser"
 export class UserController {
     @POST("/login")
     @noAuth
-    public login(@fromBody loginRequest: LoginRequest) {
+    public login(@body loginRequest: LoginRequest) {
         // attempt to log in...
     }
 
@@ -569,7 +576,7 @@ For all endpoints in a controller:
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, controllerNoAuth, fromBody, POST } from "ts-lambda-api"
+import { apiController, controllerNoAuth, body, POST } from "ts-lambda-api"
 
 import { SearchRequest } from "./SearchRequest"
 
@@ -578,7 +585,7 @@ import { SearchRequest } from "./SearchRequest"
 @injectable()
 export class UserController {
     @POST("/search/products")
-    public searchProducts(@fromBody searchRequest: SearchRequest) {
+    public searchProducts(@body searchRequest: SearchRequest) {
         // I can be called without authentication
     }
 
@@ -869,7 +876,7 @@ import { Item } from "./Item"
 @injectable()
 export class StoreController extends Controller {
     @PATCH("/item/:id")
-    public modifyItem(@queryParam("id") id: string, @fromBody jsonPatch: JsonPatch) {
+    public modifyItem(@queryParam("id") id: string, @body jsonPatch: JsonPatch) {
         let item = this.lookupItem(id)
 
         // apply the patch operation
@@ -937,6 +944,31 @@ export class HelloWorldController {
         // ... do some logic ...
 
         response.html("<h1>Hello World</h1>");
+    }
+}
+```
+
+### <a id="send-files"></a>Returning Files in a Response
+
+You can return files by using the `sendFile` method in the response context.
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, Controller, GET } from "ts-lambda-api"
+
+@apiController("/files")
+@injectable()
+export class FilesController extends Controller {
+    @GET()
+    public get() {
+        let file: Buffer = this.getFile()
+
+        this.response.sendFile(file)
+    }
+
+    private getFile(): Buffer {
+        // ... do some logic to get a file Buffer ...
     }
 }
 ```
@@ -1330,7 +1362,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     @apiResponse(201, {class: Person}) // each response is associated with a HTTP status code
     @apiResponse(400, {class: ApiError})
     @apiResponse(500, {class: ApiError})
-    public post(@fromBody person: Person) {
+    public post(@body person: Person) {
         return person
     }
 
@@ -1339,7 +1371,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     @apiOperation({ name: "add some plain stuff", description: "go get some plain stuff"})
     @apiRequest({type: "string"})
     @apiResponse(200, {type: "string"})
-    public postString(@fromBody stuff: string) {
+    public postString(@body stuff: string) {
         return stuff
     }
 
@@ -1348,7 +1380,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     @apiOperation({ name: "add file", description: "upload a file"})
     @apiRequest({contentType: "application/octet-stream", type: "file"}) // contentType can be used in any request or response definition, inherits controller or endpoint type by default
     @apiResponse(201, {contentType: "application/octet-stream", type: "file"})
-    public postFile(@fromBody fileContents: string) {
+    public postFile(@body fileContents: string) {
         return fileContents
     }
 
@@ -1368,7 +1400,7 @@ To further document your API endpoints you can use OpenAPI decorators.
         example: `{"name": "another name", "age": 30}`,
         description: "Uploaded person information"
     })
-    public postCustomInfo(@fromBody person: Person) {
+    public postCustomInfo(@body person: Person) {
         return person
     }
 

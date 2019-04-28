@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 44
+    private static readonly ROUTE_COUNT = 45
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup

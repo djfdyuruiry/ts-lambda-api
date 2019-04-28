@@ -1,7 +1,7 @@
 {
   "name": "ts-lambda-api",
   "description": "Build REST API's using Typescript & AWS Lambda. Support for decorator based routing and dependecy injection using InversifyJS. This project is built on top of the wonderful lambda-api package.",
-  "version": "0.4.3",
+  "version": "0.4.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/djfdyuruiry/ts-lambda-api.git"
@@ -10,7 +10,7 @@
     "build": "yarn run lint && rm -rf dist && tsc && yarn docs",
     "build-all": "yarn run install-with-audit && yarn run build && yarn run build-tests",
     "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
-    "docs": "rm -rf ./docs && typedoc --mode file --excludePrivate --out ./docs",
+    "docs": "rm -rf ./docs && typedoc --mode file --excludePrivate --sourcefile-url-prefix https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ --out ./docs",
     "clean-install": "rm -rf node_modules && yarn install-with-audit",
     "install-with-audit": "yarn install --audit && yarn audit",
     "lint": "tslint 'src/**/*.ts'",
@@ -50,17 +50,22 @@
   },
   "devDependencies": {
     "@types/js-yaml": "^3.12.0",
+    "@types/md5-file": "^4.0.0",
     "@types/node": "^10.12.24",
     "@types/sprintf-js": "^1.1.2",
+    "@types/temp": "^0.8.34",
     "alsatian": "^2.3.0",
     "aws-sdk": "^2.404.0",
     "js-yaml": "^3.12.2",
     "junit-bark": "^1.1.1",
     "marked": "^0.6.2",
+    "md5-file": "^4.0.0",
     "nyc": "^13.3.0",
     "tap-spec": "^5.0.0",
+    "temp": "^0.9.0",
     "tslint": "^5.13.0",
     "typedoc": "^0.14.2",
+    "typedoc-plugin-sourcefile-url": "^1.0.4",
     "typescript": "^3.3.3"
   }
 }

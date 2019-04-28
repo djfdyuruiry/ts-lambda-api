@@ -108,6 +108,7 @@
 								<li class="tsd-kind-class"><a href="classes/pathparameterextractor.html" class="tsd-kind-icon">Path<wbr>Parameter<wbr>Extractor</a></li>
 								<li class="tsd-kind-class"><a href="classes/principal.html" class="tsd-kind-icon">Principal</a></li>
 								<li class="tsd-kind-class"><a href="classes/queryparameterextractor.html" class="tsd-kind-icon">Query<wbr>Parameter<wbr>Extractor</a></li>
+								<li class="tsd-kind-class"><a href="classes/rawbodyparameterextractor.html" class="tsd-kind-icon">Raw<wbr>Body<wbr>Parameter<wbr>Extractor</a></li>
 								<li class="tsd-kind-class"><a href="classes/requestbuilder.html" class="tsd-kind-icon">Request<wbr>Builder</a></li>
 								<li class="tsd-kind-class"><a href="classes/requestparameterextractor.html" class="tsd-kind-icon">Request<wbr>Parameter<wbr>Extractor</a></li>
 								<li class="tsd-kind-class"><a href="classes/responseparameterextractor.html" class="tsd-kind-icon">Response<wbr>Parameter<wbr>Extractor</a></li>
@@ -158,6 +159,7 @@
 								<li class="tsd-kind-function"><a href="globals.html#apirequest" class="tsd-kind-icon">api<wbr>Request</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#apiresponse" class="tsd-kind-icon">api<wbr>Response</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#apisecurity" class="tsd-kind-icon">api<wbr>Security</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#body" class="tsd-kind-icon">body</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#consumes" class="tsd-kind-icon">consumes</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#controllerconsumes" class="tsd-kind-icon">controller<wbr>Consumes</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#controllererrorinterceptor" class="tsd-kind-icon">controller<wbr>Error<wbr>Interceptor</a></li>
@@ -165,13 +167,13 @@
 								<li class="tsd-kind-function"><a href="globals.html#controllerproduces" class="tsd-kind-icon">controller<wbr>Produces</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#controllerrolesallowed" class="tsd-kind-icon">controller<wbr>Roles<wbr>Allowed</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#errorinterceptor" class="tsd-kind-icon">error<wbr>Interceptor</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#frombody" class="tsd-kind-icon">from<wbr>Body</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#header" class="tsd-kind-icon">header</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#noauth" class="tsd-kind-icon">no<wbr>Auth</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#pathparam" class="tsd-kind-icon">path<wbr>Param</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#principal" class="tsd-kind-icon">principal</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#produces" class="tsd-kind-icon">produces</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#queryparam" class="tsd-kind-icon">query<wbr>Param</a></li>
+								<li class="tsd-kind-function"><a href="globals.html#rawbody" class="tsd-kind-icon">raw<wbr>Body</a></li>
 								<li class="tsd-kind-function tsd-is-not-exported"><a href="globals.html#registerapiendpoint" class="tsd-kind-icon">register<wbr>Api<wbr>Endpoint</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#request" class="tsd-kind-icon">request</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#response" class="tsd-kind-icon">response</a></li>
@@ -191,7 +193,7 @@
 					<div class="tsd-signature tsd-kind-icon">Controller<wbr>Factory<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/Endpoint.ts#L16">api/Endpoint.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/Endpoint.ts#L16">api/Endpoint.ts:16</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -222,7 +224,7 @@
 					<div class="tsd-signature tsd-kind-icon">Error<wbr>Interceptor<wbr>Factory<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/Endpoint.ts#L17">api/Endpoint.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/Endpoint.ts#L17">api/Endpoint.ts:17</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -253,7 +255,7 @@
 					<div class="tsd-signature tsd-kind-icon">Json<wbr>Patch<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Operation</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/model/JsonPatch.ts#L6">model/JsonPatch.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/model/JsonPatch.ts#L6">model/JsonPatch.ts:6</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -268,7 +270,7 @@
 					<div class="tsd-signature tsd-kind-icon">Log<wbr>Format<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"string"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"json"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/logging/ILogger.ts#L3">util/logging/ILogger.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ILogger.ts#L3">util/logging/ILogger.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -278,7 +280,7 @@
 					<div class="tsd-signature tsd-kind-icon">Open<wbr>Api<wbr>Format<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"json"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"yml"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/open-api/OpenApiGenerator.ts#L27">api/open-api/OpenApiGenerator.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/open-api/OpenApiGenerator.ts#L27">api/open-api/OpenApiGenerator.ts:27</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -288,7 +290,7 @@
 					<div class="tsd-signature tsd-kind-icon">Parameter<wbr>Source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"query"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"header"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"path"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"cookie"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"virtual"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/parameters/IParameterExtractor.ts#L6">api/parameters/IParameterExtractor.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/parameters/IParameterExtractor.ts#L6">api/parameters/IParameterExtractor.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -301,7 +303,7 @@
 					<div class="tsd-signature tsd-kind-icon">Profiling<wbr>Enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;(process.env.PROFILE_API &#x3D;&#x3D;&#x3D; &quot;1&quot;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/Environment.ts#L1">util/Environment.ts:1</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/Environment.ts#L1">util/Environment.ts:1</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -311,7 +313,7 @@
 					<div class="tsd-signature tsd-kind-icon">Under<wbr>Test<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;(process.env.TLA_UNDER_TEST &#x3D;&#x3D;&#x3D; &quot;1&quot;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/Environment.ts#L2">util/Environment.ts:2</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/Environment.ts#L2">util/Environment.ts:2</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -328,7 +330,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/endpoints.ts#L50">api/decorator/endpoints.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/endpoints.ts#L50">api/decorator/endpoints.ts:50</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -362,7 +364,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/endpoints.ts#L11">api/decorator/endpoints.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/endpoints.ts#L11">api/decorator/endpoints.ts:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -396,7 +398,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/endpoints.ts#L63">api/decorator/endpoints.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/endpoints.ts#L63">api/decorator/endpoints.ts:63</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -430,7 +432,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/endpoints.ts#L24">api/decorator/endpoints.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/endpoints.ts#L24">api/decorator/endpoints.ts:24</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -464,7 +466,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/endpoints.ts#L37">api/decorator/endpoints.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/endpoints.ts#L37">api/decorator/endpoints.ts:37</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -498,7 +500,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/open-api/api.ts#L9">api/decorator/open-api/api.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/api.ts#L9">api/decorator/open-api/api.ts:9</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -533,7 +535,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/apiController.ts#L9">api/decorator/apiController.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/apiController.ts#L9">api/decorator/apiController.ts:9</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -565,7 +567,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/open-api/apiOperation.ts#L15">api/decorator/open-api/apiOperation.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/apiOperation.ts#L15">api/decorator/open-api/apiOperation.ts:15</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -599,7 +601,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/open-api/apiRequest.ts#L13">api/decorator/open-api/apiRequest.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/apiRequest.ts#L13">api/decorator/open-api/apiRequest.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -631,7 +633,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/open-api/apiResponse.ts#L15">api/decorator/open-api/apiResponse.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/apiResponse.ts#L15">api/decorator/open-api/apiResponse.ts:15</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -669,7 +671,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/open-api/apiSecurity.ts#L12">api/decorator/open-api/apiSecurity.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/apiSecurity.ts#L12">api/decorator/open-api/apiSecurity.ts:12</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -698,6 +700,42 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="body" class="tsd-anchor"></a>
+					<h3>body</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">(</span>classDefinition<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Function</span>, methodName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, paramIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/body.ts#L10">api/decorator/context/parameters/body.ts:10</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decorator which injects the HTTP request body as a parameter value.</p>
+								</div>
+								<p>Value passed to the method will be an object, array or primitive value
+								if the request body is JSON, otherwise it will be a string.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>classDefinition: <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Function</span></h5>
+								</li>
+								<li>
+									<h5>methodName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>paramIndex: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
 					<a name="consumes" class="tsd-anchor"></a>
 					<h3>consumes</h3>
 					<ul class="tsd-signatures tsd-kind-function">
@@ -707,7 +745,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/consumes.ts#L14">api/decorator/context/consumes.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/consumes.ts#L14">api/decorator/context/consumes.ts:14</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -742,7 +780,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/consumes.ts#L43">api/decorator/context/consumes.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/consumes.ts#L43">api/decorator/context/consumes.ts:43</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -777,7 +815,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/error/errorInterceptor.ts#L36">api/decorator/error/errorInterceptor.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/error/errorInterceptor.ts#L36">api/decorator/error/errorInterceptor.ts:36</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -806,7 +844,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/security/noAuth.ts#L18">api/decorator/security/noAuth.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/security/noAuth.ts#L18">api/decorator/security/noAuth.ts:18</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -834,7 +872,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/produces.ts#L28">api/decorator/context/produces.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/produces.ts#L28">api/decorator/context/produces.ts:28</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -866,7 +904,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/security/rolesAllowed.ts#L35">api/decorator/security/rolesAllowed.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/security/rolesAllowed.ts#L35">api/decorator/security/rolesAllowed.ts:35</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -900,7 +938,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/error/errorInterceptor.ts#L16">api/decorator/error/errorInterceptor.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/error/errorInterceptor.ts#L16">api/decorator/error/errorInterceptor.ts:16</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -921,42 +959,6 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="frombody" class="tsd-anchor"></a>
-					<h3>from<wbr>Body</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">from<wbr>Body<span class="tsd-signature-symbol">(</span>classDefinition<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Function</span>, methodName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, paramIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/parameters/fromBody.ts#L10">api/decorator/context/parameters/fromBody.ts:10</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Decorator which injects the HTTP request body as a parameter value.</p>
-								</div>
-								<p>Value passed to the method will be an object, array or primitive value
-								if the request body is JSON, otherwise it will be a string.</p>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>classDefinition: <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Function</span></h5>
-								</li>
-								<li>
-									<h5>methodName: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>paramIndex: <span class="tsd-signature-type">number</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
 					<a name="header" class="tsd-anchor"></a>
 					<h3>header</h3>
 					<ul class="tsd-signatures tsd-kind-function">
@@ -966,7 +968,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/parameters/header.ts#L11">api/decorator/context/parameters/header.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/header.ts#L11">api/decorator/context/parameters/header.ts:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -998,7 +1000,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/security/noAuth.ts#L6">api/decorator/security/noAuth.ts:6</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/security/noAuth.ts#L6">api/decorator/security/noAuth.ts:6</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1029,7 +1031,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/parameters/pathParam.ts#L11">api/decorator/context/parameters/pathParam.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/pathParam.ts#L11">api/decorator/context/parameters/pathParam.ts:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1061,7 +1063,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/parameters/principal.ts#L9">api/decorator/context/parameters/principal.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/principal.ts#L9">api/decorator/context/parameters/principal.ts:9</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1096,7 +1098,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/produces.ts#L10">api/decorator/context/produces.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/produces.ts#L10">api/decorator/context/produces.ts:10</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1128,7 +1130,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/parameters/queryParam.ts#L11">api/decorator/context/parameters/queryParam.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/queryParam.ts#L11">api/decorator/context/parameters/queryParam.ts:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1150,6 +1152,41 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="rawbody" class="tsd-anchor"></a>
+					<h3>raw<wbr>Body</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">raw<wbr>Body<span class="tsd-signature-symbol">(</span>classDefinition<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Function</span>, methodName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, paramIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/rawBody.ts#L9">api/decorator/context/parameters/rawBody.ts:9</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decorator which injects the raw HTTP request body as a parameter value.</p>
+								</div>
+								<p>Value passed to the method will be a Buffer.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>classDefinition: <span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Function</span></h5>
+								</li>
+								<li>
+									<h5>methodName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>paramIndex: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-is-not-exported">
 					<a name="registerapiendpoint" class="tsd-anchor"></a>
 					<h3>register<wbr>Api<wbr>Endpoint</h3>
@@ -1160,7 +1197,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/endpoints.ts#L68">api/decorator/endpoints.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/endpoints.ts#L68">api/decorator/endpoints.ts:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1192,7 +1229,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/parameters/request.ts#L9">api/decorator/context/parameters/request.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/request.ts#L9">api/decorator/context/parameters/request.ts:9</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1227,7 +1264,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/context/parameters/response.ts#L9">api/decorator/context/parameters/response.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/response.ts#L9">api/decorator/context/parameters/response.ts:9</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1262,7 +1299,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/api/decorator/security/rolesAllowed.ts#L13">api/decorator/security/rolesAllowed.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/security/rolesAllowed.ts#L13">api/decorator/security/rolesAllowed.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1296,7 +1333,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/timed.ts#L13">util/timed.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/timed.ts#L13">util/timed.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1334,7 +1371,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/jsonUtils.ts#L1">util/jsonUtils.ts:1</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/jsonUtils.ts#L1">util/jsonUtils.ts:1</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1462,6 +1499,9 @@
 						<a href="classes/queryparameterextractor.html" class="tsd-kind-icon">Query<wbr>Parameter<wbr>Extractor</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/rawbodyparameterextractor.html" class="tsd-kind-icon">Raw<wbr>Body<wbr>Parameter<wbr>Extractor</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/requestbuilder.html" class="tsd-kind-icon">Request<wbr>Builder</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -1552,6 +1592,9 @@
 						<a href="globals.html#apisecurity" class="tsd-kind-icon">api<wbr>Security</a>
 					</li>
 					<li class=" tsd-kind-function">
+						<a href="globals.html#body" class="tsd-kind-icon">body</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#consumes" class="tsd-kind-icon">consumes</a>
 					</li>
 					<li class=" tsd-kind-function">
@@ -1573,9 +1616,6 @@
 						<a href="globals.html#errorinterceptor" class="tsd-kind-icon">error<wbr>Interceptor</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#frombody" class="tsd-kind-icon">from<wbr>Body</a>
-					</li>
-					<li class=" tsd-kind-function">
 						<a href="globals.html#header" class="tsd-kind-icon">header</a>
 					</li>
 					<li class=" tsd-kind-function">
@@ -1592,6 +1632,9 @@
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#queryparam" class="tsd-kind-icon">query<wbr>Param</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#rawbody" class="tsd-kind-icon">raw<wbr>Body</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#registerapiendpoint" class="tsd-kind-icon">register<wbr>Api<wbr>Endpoint</a>

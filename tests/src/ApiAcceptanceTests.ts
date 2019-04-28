@@ -1,14 +1,22 @@
 import { AsyncTest, Expect, Test, TestCase, TestFixture } from "alsatian"
 import { ReplaceOperation } from "fast-json-patch/lib/core"
+import { readFileSync, statSync as statFileSync, writeFileSync } from "fs"
 import { METHODS } from "lambda-api"
+import { sync as calculateFileMd5Sync } from "md5-file"
+import { join as joinPath } from "path"
+import { openSync as openTempFileSync } from "temp"
 
-import { ApiLambdaApp, JsonPatch, RequestBuilder } from "../../dist/ts-lambda-api"
+import { ApiLambdaApp, ApiResponse, JsonPatch, RequestBuilder } from "../../dist/ts-lambda-api"
 
 import { TestBase } from "./TestBase"
 import { Person } from "./test-components/model/Person"
 
 @TestFixture()
 export class ApiAcceptanceTests extends TestBase {
+    private static readonly TEST_FILE_PATH = joinPath(__dirname, "../test.pdf")
+    private static readonly TEST_FILE_SIZE = 19605
+    private static readonly TEST_FILE_MD5 = "bb0cf6ccd0fe8e18e0a14e8028709abe"
+
     @TestCase("/test/")
     @TestCase("/test/no-root-path")
     @TestCase("/test/response-model")
@@ -23,6 +31,7 @@ export class ApiAcceptanceTests extends TestBase {
     }
 
     @TestCase("POST", "/test/methods/post")
+    @TestCase("POST", "/test/methods/post-raw")
     @TestCase("PUT", "/test/methods/put")
     @AsyncTest()
     public async when_request_with_body_made_for_decorator_route_then_app_passes_body_to_endpoint_and_returns_http_status_200_ok(
@@ -41,8 +50,47 @@ export class ApiAcceptanceTests extends TestBase {
         )
 
         Expect(response.statusCode).toEqual(200)
-        Expect(JSON.parse(response.body)).toEqual(requestBody)
+
+        let body = response.body
+
+        if (response.isBase64Encoded) {
+            body = Buffer.from(response.body, 'base64').toString('utf8')
+        }
+
+        Expect(JSON.parse(body)).toEqual(requestBody)
     }
+
+    @AsyncTest()
+    public async when_request_with_binary_body_made_for_decorator_route_then_app_passes_raw_body_to_endpoint_and_returns_http_status_200_ok() {
+        let response: ApiResponse
+        let fileContent = readFileSync(ApiAcceptanceTests.TEST_FILE_PATH)
+
+        response = await this.sendRequest(
+            RequestBuilder.post("/test/methods/post-raw")
+                .binaryBody(fileContent)
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(200)
+        Expect(response.isBase64Encoded).toBe(true)
+
+        let outputFile = openTempFileSync()
+
+        writeFileSync(outputFile.path, Buffer.from(response.body, "base64"))
+
+        Expect(
+            statFileSync(outputFile.path).size
+        ).toBe(
+            ApiAcceptanceTests.TEST_FILE_SIZE
+        )
+
+        Expect(
+            calculateFileMd5Sync(outputFile.path)
+        ).toBe(
+            ApiAcceptanceTests.TEST_FILE_MD5
+        )
+    }
+
 
     @AsyncTest()
     public async when_delete_request_made_then_app_returns_http_status_204_no_content() {

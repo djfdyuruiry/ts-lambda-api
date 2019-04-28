@@ -124,6 +124,7 @@
 						<ul>
 							<li><a href="#extend-controller">Extending Controller Class</a></li>
 							<li><a href="#use-decorators">Using Decorators</a></li>
+							<li><a href="#send-files">Returning Files in a Response</a></li>
 						</ul>
 					</li>
 					<li><p><a href="#di">Dependency Injection</a></p>
@@ -366,11 +367,12 @@ zip -r lambda.zip ./</code></pre>
 				<ul>
 					<li><code>queryParam</code> - Query string parameter</li>
 					<li><code>header</code> - HTTP header value</li>
-					<li><code>fromBody</code> - Entity from request body, this will be an object if the request contains JSON, otherwise it will simply be a string</li>
+					<li><code>body</code> - Entity from request body, this will be an object if the request contains JSON, otherwise it will simply be a string</li>
+					<li><code>rawBody</code> - Entity from request body as a Buffer, containing a string or binary data</li>
 				</ul>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, fromBody, header, queryParam, GET, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, body, header, queryParam, rawBody, GET, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { Thing } <span class="hljs-keyword">from</span> <span class="hljs-string">"./Thing"</span>
 
@@ -388,8 +390,13 @@ zip -r lambda.zip ./</code></pre>
     }
 
     <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/thing"</span>)
-    <span class="hljs-keyword">public</span> addThing(<span class="hljs-meta">@fromBody</span> thing: Thing) {
+    <span class="hljs-keyword">public</span> addThing(<span class="hljs-meta">@body</span> thing: Thing) {
         <span class="hljs-comment">// do something with thing</span>
+    }
+
+    <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/upload-file"</span>)
+    <span class="hljs-keyword">public</span> addThing(<span class="hljs-meta">@rawBody</span> file: Buffer) {
+        <span class="hljs-comment">// do something with file</span>
     }
 }</code></pre>
 				<hr>
@@ -398,7 +405,7 @@ zip -r lambda.zip ./</code></pre>
 				<p>There are two ways to respond to requests:</p>
 				<ul>
 					<li>Return a value from your endpoint method</li>
-					<li>Use the response context to send a response (see <code>Request / Response Context</code> section below - the context has convience methods for html, json etc.)</li>
+					<li>Use the response context to send a response (see <code>Request / Response Context</code> section below - the context has convience methods for html, json, files etc.)</li>
 				</ul>
 				<p>By default all return values are serialised to JSON in the response body and the <code>content-type</code> response header is set to <code>application/json</code>. To change this you can use the <code>produces</code> and <code>controllerProduces</code> decorators.</p>
 				<p>Only JSON content types are serialised automatically, all other types simply convert the return value to a string.</p>
@@ -524,7 +531,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 				<p>For an endpoint:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, fromBody, noAuth, principal, GET, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, body, noAuth, principal, GET, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { LoginRequest } <span class="hljs-keyword">from</span> <span class="hljs-string">"./LoginRequest"</span>
 <span class="hljs-keyword">import</span> { StoreUser } <span class="hljs-keyword">from</span> <span class="hljs-string">"./StoreUser"</span>
@@ -534,7 +541,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> UserController {
     <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/login"</span>)
     <span class="hljs-meta">@noAuth</span>
-    <span class="hljs-keyword">public</span> login(<span class="hljs-meta">@fromBody</span> loginRequest: LoginRequest) {
+    <span class="hljs-keyword">public</span> login(<span class="hljs-meta">@body</span> loginRequest: LoginRequest) {
         <span class="hljs-comment">// attempt to log in...</span>
     }
 
@@ -546,7 +553,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 				<p>For all endpoints in a controller:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, controllerNoAuth, fromBody, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, controllerNoAuth, body, POST } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { SearchRequest } <span class="hljs-keyword">from</span> <span class="hljs-string">"./SearchRequest"</span>
 
@@ -555,7 +562,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 <span class="hljs-meta">@injectable</span>()
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> UserController {
     <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/search/products"</span>)
-    <span class="hljs-keyword">public</span> searchProducts(<span class="hljs-meta">@fromBody</span> searchRequest: SearchRequest) {
+    <span class="hljs-keyword">public</span> searchProducts(<span class="hljs-meta">@body</span> searchRequest: SearchRequest) {
         <span class="hljs-comment">// I can be called without authentication</span>
     }
 
@@ -772,7 +779,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 <span class="hljs-meta">@injectable</span>()
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> StoreController <span class="hljs-keyword">extends</span> Controller {
     <span class="hljs-meta">@PATCH</span>(<span class="hljs-string">"/item/:id"</span>)
-    <span class="hljs-keyword">public</span> modifyItem(<span class="hljs-meta">@queryParam</span>(<span class="hljs-string">"id"</span>) id: <span class="hljs-built_in">string</span>, <span class="hljs-meta">@fromBody</span> jsonPatch: JsonPatch) {
+    <span class="hljs-keyword">public</span> modifyItem(<span class="hljs-meta">@queryParam</span>(<span class="hljs-string">"id"</span>) id: <span class="hljs-built_in">string</span>, <span class="hljs-meta">@body</span> jsonPatch: JsonPatch) {
         <span class="hljs-keyword">let</span> item = <span class="hljs-keyword">this</span>.lookupItem(id)
 
         <span class="hljs-comment">// apply the patch operation</span>
@@ -825,6 +832,26 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
         <span class="hljs-comment">// ... do some logic ...</span>
 
         response.html(<span class="hljs-string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>);
+    }
+}</code></pre>
+				<h3 id="a-idsend-filesareturning-files-in-a-response"><a id="send-files"></a>Returning Files in a Response</h3>
+				<p>You can return files by using the <code>sendFile</code> method in the response context.</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
+
+<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
+
+<span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/files"</span>)
+<span class="hljs-meta">@injectable</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> FilesController <span class="hljs-keyword">extends</span> Controller {
+    <span class="hljs-meta">@GET</span>()
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">get</span>() {
+        <span class="hljs-keyword">let</span> file: Buffer = <span class="hljs-keyword">this</span>.getFile()
+
+        <span class="hljs-keyword">this</span>.response.sendFile(file)
+    }
+
+    <span class="hljs-keyword">private</span> getFile(): Buffer {
+        <span class="hljs-comment">// ... do some logic to get a file Buffer ...</span>
     }
 }</code></pre>
 				<p><strong>The <code>Request</code> and <code>Response</code> classes are documented in the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package.</strong></p>
@@ -1123,7 +1150,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
   <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">201</span>, {<span class="hljs-keyword">class</span>: Person}) <span class="hljs-comment">// each response is associated with a HTTP status code</span>
   <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">400</span>, {<span class="hljs-keyword">class</span>: ApiError})
   <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">500</span>, {<span class="hljs-keyword">class</span>: ApiError})
-  <span class="hljs-keyword">public</span> post(<span class="hljs-meta">@fromBody</span> person: Person) {
+  <span class="hljs-keyword">public</span> post(<span class="hljs-meta">@body</span> person: Person) {
       <span class="hljs-keyword">return</span> person
   }
 
@@ -1132,7 +1159,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
   <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add some plain stuff"</span>, description: <span class="hljs-string">"go get some plain stuff"</span>})
   <span class="hljs-meta">@apiRequest</span>({<span class="hljs-keyword">type</span>: <span class="hljs-string">"string"</span>})
   <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">200</span>, {<span class="hljs-keyword">type</span>: <span class="hljs-string">"string"</span>})
-  <span class="hljs-keyword">public</span> postString(<span class="hljs-meta">@fromBody</span> stuff: <span class="hljs-built_in">string</span>) {
+  <span class="hljs-keyword">public</span> postString(<span class="hljs-meta">@body</span> stuff: <span class="hljs-built_in">string</span>) {
       <span class="hljs-keyword">return</span> stuff
   }
 
@@ -1141,7 +1168,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
   <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add file"</span>, description: <span class="hljs-string">"upload a file"</span>})
   <span class="hljs-meta">@apiRequest</span>({contentType: <span class="hljs-string">"application/octet-stream"</span>, <span class="hljs-keyword">type</span>: <span class="hljs-string">"file"</span>}) <span class="hljs-comment">// contentType can be used in any request or response definition, inherits controller or endpoint type by default</span>
   <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">201</span>, {contentType: <span class="hljs-string">"application/octet-stream"</span>, <span class="hljs-keyword">type</span>: <span class="hljs-string">"file"</span>})
-  <span class="hljs-keyword">public</span> postFile(<span class="hljs-meta">@fromBody</span> fileContents: <span class="hljs-built_in">string</span>) {
+  <span class="hljs-keyword">public</span> postFile(<span class="hljs-meta">@body</span> fileContents: <span class="hljs-built_in">string</span>) {
       <span class="hljs-keyword">return</span> fileContents
   }
 
@@ -1161,7 +1188,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
       example: <span class="hljs-string">`{"name": "another name", "age": 30}`</span>,
       description: <span class="hljs-string">"Uploaded person information"</span>
   })
-  <span class="hljs-keyword">public</span> postCustomInfo(<span class="hljs-meta">@fromBody</span> person: Person) {
+  <span class="hljs-keyword">public</span> postCustomInfo(<span class="hljs-meta">@body</span> person: Person) {
       <span class="hljs-keyword">return</span> person
   }
 
@@ -1370,6 +1397,9 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 						<a href="classes/queryparameterextractor.html" class="tsd-kind-icon">Query<wbr>Parameter<wbr>Extractor</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/rawbodyparameterextractor.html" class="tsd-kind-icon">Raw<wbr>Body<wbr>Parameter<wbr>Extractor</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/requestbuilder.html" class="tsd-kind-icon">Request<wbr>Builder</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -1460,6 +1490,9 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 						<a href="globals.html#apisecurity" class="tsd-kind-icon">api<wbr>Security</a>
 					</li>
 					<li class=" tsd-kind-function">
+						<a href="globals.html#body" class="tsd-kind-icon">body</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#consumes" class="tsd-kind-icon">consumes</a>
 					</li>
 					<li class=" tsd-kind-function">
@@ -1481,9 +1514,6 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 						<a href="globals.html#errorinterceptor" class="tsd-kind-icon">error<wbr>Interceptor</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#frombody" class="tsd-kind-icon">from<wbr>Body</a>
-					</li>
-					<li class=" tsd-kind-function">
 						<a href="globals.html#header" class="tsd-kind-icon">header</a>
 					</li>
 					<li class=" tsd-kind-function">
@@ -1500,6 +1530,9 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#queryparam" class="tsd-kind-icon">query<wbr>Param</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#rawbody" class="tsd-kind-icon">raw<wbr>Body</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#registerapiendpoint" class="tsd-kind-icon">register<wbr>Api<wbr>Endpoint</a>

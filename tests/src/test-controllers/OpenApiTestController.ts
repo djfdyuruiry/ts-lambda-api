@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { api, apiController, apiOperation, apiRequest, apiResponse, fromBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/ts-lambda-api"
+import { api, apiController, apiOperation, apiRequest, apiResponse, body, rawBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/ts-lambda-api"
 
 import { ApiError } from "../test-components/model/ApiError"
 import { ConstructorOnlyModel } from "../test-components/model/ConstructorOnlyModel"
@@ -38,7 +38,7 @@ export class OpenApiTestControllerController extends Controller {
     @apiResponse(201, {class: Person})
     @apiResponse(400, {class: ApiError})
     @apiResponse(500, {class: ApiError})
-    public post(@fromBody person: Person) {
+    public post(@body person: Person) {
         return person
     }
 
@@ -62,7 +62,7 @@ export class OpenApiTestControllerController extends Controller {
         example: `{"statusCode": 400, "error": "you screwed up"}`,
         description: "A bad request error message"
     })
-    public postCustomInfo(@fromBody person: Person) {
+    public postCustomInfo(@body person: Person) {
         return person
     }
 
@@ -70,7 +70,7 @@ export class OpenApiTestControllerController extends Controller {
     @apiOperation({ name: "add some plain stuff", description: "go get some plain stuff"})
     @apiRequest({contentType: "text/plain", type: "string"})
     @apiResponse(200, {type: "string"})
-    public postString(@fromBody stuff: string) {
+    public postString(@body stuff: string) {
         return stuff
     }
 
@@ -78,22 +78,22 @@ export class OpenApiTestControllerController extends Controller {
     @apiOperation({ name: "add file", description: "upload a file"})
     @apiRequest({contentType: "application/octet-stream", type: "file"})
     @apiResponse(201, {contentType: "application/octet-stream", type: "file"})
-    public postFile(@fromBody fileContents: string) {
-        return fileContents
+    public postFile(@rawBody file: Buffer) {
+        this.response.sendFile(file)
     }
 
     @PUT()
     @apiOperation({name: "put stuff", description: "go put some stuff"})
     @apiRequest({class: Person})
     @apiResponse(200, {class: Person})
-    public put(@fromBody person: Person) {
+    public put(@body person: Person) {
         return person
     }
 
     @PATCH()
     @apiOperation({name: "patch stuff", description: "go patch some stuff"})
     @apiResponse(200, {class: Person})
-    public patch(@fromBody jsonPatch: JsonPatch) {
+    public patch(@body jsonPatch: JsonPatch) {
         let somePerson: Person = {
             name: "Should Not Come Back",
             age: 42

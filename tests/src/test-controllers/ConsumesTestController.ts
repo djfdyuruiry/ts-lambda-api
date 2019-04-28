@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { apiController, apiOperation, apiRequest, apiResponse, consumes, controllerConsumes, fromBody, Controller, POST } from "../../../dist/ts-lambda-api"
+import { apiController, apiOperation, apiRequest, apiResponse, consumes, controllerConsumes, body, Controller, POST } from "../../../dist/ts-lambda-api"
 
 import { Person } from "../test-components/model/Person"
 
@@ -12,7 +12,7 @@ export class ConsumesTestControllerController extends Controller {
     @apiOperation({name: "add stuff", description: "go add some stuff"})
     @apiRequest({class: Person})
     @apiResponse(201, {class: Person})
-    public post(@fromBody person: Person) {
+    public post(@body person: Person) {
         return person
     }
 
@@ -21,7 +21,7 @@ export class ConsumesTestControllerController extends Controller {
     @consumes("application/xml")
     @apiRequest({class: Person})
     @apiResponse(201, {class: Person})
-    public xmlPost(@fromBody person: Person) {
+    public xmlPost(@body person: Person) {
         return person
     }
 }
