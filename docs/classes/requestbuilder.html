@@ -89,7 +89,9 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requestbuilder.html#base64encodedbody" class="tsd-kind-icon">base64<wbr>Encoded<wbr>Body</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requestbuilder.html#basicauth" class="tsd-kind-icon">basic<wbr>Auth</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requestbuilder.html#binarybody" class="tsd-kind-icon">binary<wbr>Body</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requestbuilder.html#body" class="tsd-kind-icon">body</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requestbuilder.html#build" class="tsd-kind-icon">build</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="requestbuilder.html#header" class="tsd-kind-icon">header</a></li>
@@ -110,6 +112,38 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="base64encodedbody" class="tsd-anchor"></a>
+					<h3>base64<wbr>Encoded<wbr>Body</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">base64<wbr>Encoded<wbr>Body<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L159">util/RequestBuilder.ts:159</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a base64 encoded HTTP body to the request.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The body as a base64 string.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+							<p>This builder instance.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="basicauth" class="tsd-anchor"></a>
 					<h3>basic<wbr>Auth</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -119,7 +153,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L158">util/RequestBuilder.ts:158</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L184">util/RequestBuilder.ts:184</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -148,6 +182,38 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="binarybody" class="tsd-anchor"></a>
+					<h3>binary<wbr>Body</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">binary<wbr>Body<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L172">util/RequestBuilder.ts:172</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a binary HTTP body to the request.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">Buffer</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The binary body as a Buffer.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+							<p>This builder instance.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="body" class="tsd-anchor"></a>
 					<h3>body</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -157,7 +223,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L146">util/RequestBuilder.ts:146</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L148">util/RequestBuilder.ts:148</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -189,7 +255,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L182">util/RequestBuilder.ts:182</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L208">util/RequestBuilder.ts:208</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -211,7 +277,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L87">util/RequestBuilder.ts:87</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L89">util/RequestBuilder.ts:89</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -249,7 +315,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L98">util/RequestBuilder.ts:98</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L100">util/RequestBuilder.ts:100</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -281,7 +347,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L117">util/RequestBuilder.ts:117</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L119">util/RequestBuilder.ts:119</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -316,7 +382,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L128">util/RequestBuilder.ts:128</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L130">util/RequestBuilder.ts:130</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -348,7 +414,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L58">util/RequestBuilder.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L59">util/RequestBuilder.ts:59</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -379,7 +445,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L68">util/RequestBuilder.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L69">util/RequestBuilder.ts:69</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -416,7 +482,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L22">util/RequestBuilder.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L23">util/RequestBuilder.ts:23</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -447,7 +513,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L49">util/RequestBuilder.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L50">util/RequestBuilder.ts:50</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -478,7 +544,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L31">util/RequestBuilder.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L32">util/RequestBuilder.ts:32</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -509,7 +575,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/typescript-lambda-api/blob/ce6415e/src/util/RequestBuilder.ts#L40">util/RequestBuilder.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/9c008b2/src/util/RequestBuilder.ts#L41">util/RequestBuilder.ts:41</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -548,7 +614,13 @@
 						<a href="requestbuilder.html" class="tsd-kind-icon">Request<wbr>Builder</a>
 						<ul>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="requestbuilder.html#base64encodedbody" class="tsd-kind-icon">base64<wbr>Encoded<wbr>Body</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="requestbuilder.html#basicauth" class="tsd-kind-icon">basic<wbr>Auth</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="requestbuilder.html#binarybody" class="tsd-kind-icon">binary<wbr>Body</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="requestbuilder.html#body" class="tsd-kind-icon">body</a>

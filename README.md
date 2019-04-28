@@ -339,12 +339,13 @@ Different parts of the HTTP request can be bound to endpoint method parameters u
 
 - `queryParam` - Query string parameter
 - `header` - HTTP header value
-- `fromBody` - Entity from request body, this will be an object if the request contains JSON, otherwise it will simply be a string
+- `body` - Entity from request body, this will be an object if the request contains JSON, otherwise it will simply be a string
+- `rawBody` - Entity from request body as a Buffer, containing a string or binary data
 
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, fromBody, header, queryParam, GET, POST } from "ts-lambda-api"
+import { apiController, body, header, queryParam, rawBody, GET, POST } from "ts-lambda-api"
 
 import { Thing } from "./Thing"
 
@@ -362,8 +363,13 @@ export class HelloWorldController {
     }
 
     @POST("/thing")
-    public addThing(@fromBody thing: Thing) {
+    public addThing(@body thing: Thing) {
         // do something with thing
+    }
+
+    @POST("/upload-file")
+    public addThing(@rawBody file: Buffer) {
+        // do something with file
     }
 }
 ```
@@ -543,7 +549,7 @@ For an endpoint:
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, fromBody, noAuth, principal, GET, POST } from "ts-lambda-api"
+import { apiController, body, noAuth, principal, GET, POST } from "ts-lambda-api"
 
 import { LoginRequest } from "./LoginRequest"
 import { StoreUser } from "./StoreUser"
@@ -553,7 +559,7 @@ import { StoreUser } from "./StoreUser"
 export class UserController {
     @POST("/login")
     @noAuth
-    public login(@fromBody loginRequest: LoginRequest) {
+    public login(@body loginRequest: LoginRequest) {
         // attempt to log in...
     }
 
@@ -569,7 +575,7 @@ For all endpoints in a controller:
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, controllerNoAuth, fromBody, POST } from "ts-lambda-api"
+import { apiController, controllerNoAuth, body, POST } from "ts-lambda-api"
 
 import { SearchRequest } from "./SearchRequest"
 
@@ -578,7 +584,7 @@ import { SearchRequest } from "./SearchRequest"
 @injectable()
 export class UserController {
     @POST("/search/products")
-    public searchProducts(@fromBody searchRequest: SearchRequest) {
+    public searchProducts(@body searchRequest: SearchRequest) {
         // I can be called without authentication
     }
 
@@ -869,7 +875,7 @@ import { Item } from "./Item"
 @injectable()
 export class StoreController extends Controller {
     @PATCH("/item/:id")
-    public modifyItem(@queryParam("id") id: string, @fromBody jsonPatch: JsonPatch) {
+    public modifyItem(@queryParam("id") id: string, @body jsonPatch: JsonPatch) {
         let item = this.lookupItem(id)
 
         // apply the patch operation
@@ -1330,7 +1336,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     @apiResponse(201, {class: Person}) // each response is associated with a HTTP status code
     @apiResponse(400, {class: ApiError})
     @apiResponse(500, {class: ApiError})
-    public post(@fromBody person: Person) {
+    public post(@body person: Person) {
         return person
     }
 
@@ -1339,7 +1345,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     @apiOperation({ name: "add some plain stuff", description: "go get some plain stuff"})
     @apiRequest({type: "string"})
     @apiResponse(200, {type: "string"})
-    public postString(@fromBody stuff: string) {
+    public postString(@body stuff: string) {
         return stuff
     }
 
@@ -1348,7 +1354,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     @apiOperation({ name: "add file", description: "upload a file"})
     @apiRequest({contentType: "application/octet-stream", type: "file"}) // contentType can be used in any request or response definition, inherits controller or endpoint type by default
     @apiResponse(201, {contentType: "application/octet-stream", type: "file"})
-    public postFile(@fromBody fileContents: string) {
+    public postFile(@body fileContents: string) {
         return fileContents
     }
 
@@ -1368,7 +1374,7 @@ To further document your API endpoints you can use OpenAPI decorators.
         example: `{"name": "another name", "age": 30}`,
         description: "Uploaded person information"
     })
-    public postCustomInfo(@fromBody person: Person) {
+    public postCustomInfo(@body person: Person) {
         return person
     }
 

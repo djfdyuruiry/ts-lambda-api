@@ -13,6 +13,7 @@ export class RequestBuilder {
     private readonly httpHeaders: IDictionary<String>
     private readonly httpQueryParams: IDictionary<String>
     private httpBody: string
+    private isBase64Encoded: boolean
 
     /**
      * Start building a HTTP GET request.
@@ -75,6 +76,7 @@ export class RequestBuilder {
 
         this.httpHeaders = {}
         this.httpQueryParams = {}
+        this.isBase64Encoded = false
     }
 
     /**
@@ -149,6 +151,30 @@ export class RequestBuilder {
     }
 
     /**
+     * Add a base64 encoded HTTP body to the request.
+     *
+     * @param value The body as a base64 string.
+     * @returns This builder instance.
+     */
+    public base64EncodedBody(value: string) {
+        this.body(value)
+        this.isBase64Encoded = true
+
+        return this
+    }
+
+    /**
+     * Add a binary HTTP body to the request.
+     *
+     * @param value The binary body as a Buffer.
+     * @returns This builder instance.
+     */
+    public binaryBody(value: Buffer) {
+        this.base64EncodedBody(value.toString("base64"))
+        return this
+    }
+
+    /**
      * Add basic authentication to the request.
      *
      * @param username Username to send.
@@ -187,7 +213,7 @@ export class RequestBuilder {
         request.headers = this.mapToObject(this.httpHeaders)
         request.queryStringParameters = this.mapToObject(this.httpQueryParams)
         request.body = this.httpBody
-        request.isBase64Encoded = false
+        request.isBase64Encoded = this.isBase64Encoded
 
         return request
     }

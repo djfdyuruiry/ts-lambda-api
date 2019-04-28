@@ -7,7 +7,7 @@ import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
  * Value passed to the method will be an object, array or primitive value
  * if the request body is JSON, otherwise it will be a string.
  */
-export function fromBody(classDefinition: Object | Function, methodName: string, paramIndex: number) {
+export function body(classDefinition: Object | Function, methodName: string, paramIndex: number) {
     let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
     let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

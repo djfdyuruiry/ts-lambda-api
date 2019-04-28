@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { apiController, fromBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE } from "../../../dist/ts-lambda-api"
+import { apiController, body, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE } from "../../../dist/ts-lambda-api"
 
 import { Person } from "../test-components/model/Person"
 
@@ -13,17 +13,17 @@ export class ImplicitRoutesController extends Controller {
     }
 
     @POST()
-    public post(@fromBody person: Person) {
+    public post(@body person: Person) {
         return person
     }
 
     @PUT()
-    public put(@fromBody person: Person) {
+    public put(@body person: Person) {
         return person
     }
 
     @PATCH()
-    public patch(@fromBody jsonPatch: JsonPatch) {
+    public patch(@body jsonPatch: JsonPatch) {
         let somePerson: Person = {
             name: "Should Not Come Back",
             age: 42
