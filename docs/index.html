@@ -124,6 +124,7 @@
 						<ul>
 							<li><a href="#extend-controller">Extending Controller Class</a></li>
 							<li><a href="#use-decorators">Using Decorators</a></li>
+							<li><a href="#send-files">Returning Files in a Response</a></li>
 						</ul>
 					</li>
 					<li><p><a href="#di">Dependency Injection</a></p>
@@ -404,7 +405,7 @@ zip -r lambda.zip ./</code></pre>
 				<p>There are two ways to respond to requests:</p>
 				<ul>
 					<li>Return a value from your endpoint method</li>
-					<li>Use the response context to send a response (see <code>Request / Response Context</code> section below - the context has convience methods for html, json etc.)</li>
+					<li>Use the response context to send a response (see <code>Request / Response Context</code> section below - the context has convience methods for html, json, files etc.)</li>
 				</ul>
 				<p>By default all return values are serialised to JSON in the response body and the <code>content-type</code> response header is set to <code>application/json</code>. To change this you can use the <code>produces</code> and <code>controllerProduces</code> decorators.</p>
 				<p>Only JSON content types are serialised automatically, all other types simply convert the return value to a string.</p>
@@ -831,6 +832,26 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
         <span class="hljs-comment">// ... do some logic ...</span>
 
         response.html(<span class="hljs-string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>);
+    }
+}</code></pre>
+				<h3 id="a-idsend-filesareturning-files-in-a-response"><a id="send-files"></a>Returning Files in a Response</h3>
+				<p>You can return files by using the <code>sendFile</code> method in the response context.</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
+
+<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
+
+<span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/files"</span>)
+<span class="hljs-meta">@injectable</span>()
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> FilesController <span class="hljs-keyword">extends</span> Controller {
+    <span class="hljs-meta">@GET</span>()
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">get</span>() {
+        <span class="hljs-keyword">let</span> file: Buffer = <span class="hljs-keyword">this</span>.getFile()
+
+        <span class="hljs-keyword">this</span>.response.sendFile(file)
+    }
+
+    <span class="hljs-keyword">private</span> getFile(): Buffer {
+        <span class="hljs-comment">// ... do some logic to get a file Buffer ...</span>
     }
 }</code></pre>
 				<p><strong>The <code>Request</code> and <code>Response</code> classes are documented in the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package.</strong></p>
