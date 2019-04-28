@@ -50,6 +50,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 - [Request / Response Context](#req-res-context)
     - [Extending Controller Class](#extend-controller)
     - [Using Decorators](#use-decorators)
+    - [Returning Files in a Response](#send-files)
 - [Dependency Injection](#di)
 - [Configuration](#config)
     - [lambda-api](#lambda-api-config)
@@ -383,7 +384,7 @@ export class HelloWorldController {
 There are two ways to respond to requests:
 
 - Return a value from your endpoint method
-- Use the response context to send a response (see `Request / Response Context` section below - the context has convience methods for html, json etc.)
+- Use the response context to send a response (see `Request / Response Context` section below - the context has convience methods for html, json, files etc.)
 
 By default all return values are serialised to JSON in the response body and the `content-type` response header is set to `application/json`. To change this you can use the `produces` and `controllerProduces` decorators.
 
@@ -943,6 +944,31 @@ export class HelloWorldController {
         // ... do some logic ...
 
         response.html("<h1>Hello World</h1>");
+    }
+}
+```
+
+### <a id="send-files"></a>Returning Files in a Response
+
+You can return files by using the `sendFile` method in the response context.
+
+```typescript
+import { injectable } from "inversify"
+
+import { apiController, Controller, GET } from "ts-lambda-api"
+
+@apiController("/files")
+@injectable()
+export class FilesController extends Controller {
+    @GET()
+    public get() {
+        let file: Buffer = this.getFile()
+
+        this.response.sendFile(file)
+    }
+
+    private getFile(): Buffer {
+        // ... do some logic to get a file Buffer ...
     }
 }
 ```
