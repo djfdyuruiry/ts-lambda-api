@@ -102,6 +102,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="consolelogger.html#format" class="tsd-kind-icon">format</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="consolelogger.html#level" class="tsd-kind-icon">level</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="consolelogger.html#logtimestamp" class="tsd-kind-icon">log<wbr>Timestamp</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -134,7 +135,7 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Console<wbr>Logger<span class="tsd-signature-symbol">(</span>clazz<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, level<span class="tsd-signature-symbol">: </span><a href="../enums/loglevel.html" class="tsd-signature-type">LogLevel</a>, format<span class="tsd-signature-symbol">: </span><a href="../globals.html#logformat" class="tsd-signature-type">LogFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="consolelogger.html" class="tsd-signature-type">ConsoleLogger</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Console<wbr>Logger<span class="tsd-signature-symbol">(</span>clazz<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, level<span class="tsd-signature-symbol">: </span><a href="../enums/loglevel.html" class="tsd-signature-type">LogLevel</a>, format<span class="tsd-signature-symbol">: </span><a href="../globals.html#logformat" class="tsd-signature-type">LogFormat</a>, logTimestamp<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="consolelogger.html" class="tsd-signature-type">ConsoleLogger</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -163,6 +164,9 @@
 								</li>
 								<li>
 									<h5>format: <a href="../globals.html#logformat" class="tsd-signature-type">LogFormat</a></h5>
+								</li>
+								<li>
+									<h5>logTimestamp: <span class="tsd-signature-type">boolean</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="consolelogger.html" class="tsd-signature-type">ConsoleLogger</a></h4>
@@ -194,6 +198,16 @@
 						</ul>
 					</aside>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="logtimestamp" class="tsd-anchor"></a>
+					<h3>log<wbr>Timestamp</h3>
+					<div class="tsd-signature tsd-kind-icon">log<wbr>Timestamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L26">util/logging/ConsoleLogger.ts:26</a></li>
+						</ul>
+					</aside>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
@@ -208,7 +222,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#debug">debug</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L106">util/logging/ConsoleLogger.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L107">util/logging/ConsoleLogger.ts:107</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -246,7 +260,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#debugenabled">debugEnabled</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L184">util/logging/ConsoleLogger.ts:184</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L185">util/logging/ConsoleLogger.ts:185</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -269,7 +283,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#error">error</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L136">util/logging/ConsoleLogger.ts:136</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L137">util/logging/ConsoleLogger.ts:137</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -307,7 +321,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#errorenabled">errorEnabled</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L205">util/logging/ConsoleLogger.ts:205</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L206">util/logging/ConsoleLogger.ts:206</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -330,7 +344,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#errorwithstack">errorWithStack</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L147">util/logging/ConsoleLogger.ts:147</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L148">util/logging/ConsoleLogger.ts:148</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -374,7 +388,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#fatal">fatal</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L157">util/logging/ConsoleLogger.ts:157</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L158">util/logging/ConsoleLogger.ts:158</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -412,7 +426,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#fatalenabled">fatalEnabled</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L212">util/logging/ConsoleLogger.ts:212</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L213">util/logging/ConsoleLogger.ts:213</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -435,7 +449,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#info">info</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L116">util/logging/ConsoleLogger.ts:116</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L117">util/logging/ConsoleLogger.ts:117</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -473,7 +487,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#infoenabled">infoEnabled</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L191">util/logging/ConsoleLogger.ts:191</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L192">util/logging/ConsoleLogger.ts:192</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -496,7 +510,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#isoff">isOff</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L219">util/logging/ConsoleLogger.ts:219</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L220">util/logging/ConsoleLogger.ts:220</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -519,7 +533,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#levelenabled">levelEnabled</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L166">util/logging/ConsoleLogger.ts:166</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L167">util/logging/ConsoleLogger.ts:167</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -551,7 +565,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#log">log</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L53">util/logging/ConsoleLogger.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L54">util/logging/ConsoleLogger.ts:54</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -597,7 +611,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#trace">trace</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L96">util/logging/ConsoleLogger.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L97">util/logging/ConsoleLogger.ts:97</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -635,7 +649,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#traceenabled">traceEnabled</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L177">util/logging/ConsoleLogger.ts:177</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L178">util/logging/ConsoleLogger.ts:178</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -658,7 +672,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#warn">warn</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L126">util/logging/ConsoleLogger.ts:126</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L127">util/logging/ConsoleLogger.ts:127</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -696,7 +710,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/ilogger.html">ILogger</a>.<a href="../interfaces/ilogger.html#warnenabled">warnEnabled</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L198">util/logging/ConsoleLogger.ts:198</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/ConsoleLogger.ts#L199">util/logging/ConsoleLogger.ts:199</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -733,6 +747,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="consolelogger.html#level" class="tsd-kind-icon">level</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="consolelogger.html#logtimestamp" class="tsd-kind-icon">log<wbr>Timestamp</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="consolelogger.html#debug" class="tsd-kind-icon">debug</a>

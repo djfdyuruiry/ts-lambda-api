@@ -22,7 +22,8 @@ export class ConsoleLogger implements ILogger {
     public constructor(
         private readonly clazz: string,
         public readonly level: LogLevel,
-        public readonly format: LogFormat
+        public readonly format: LogFormat,
+        public readonly logTimestamp: boolean
     ) {
         this.useStringLogFormat = this.format === "string"
     }
@@ -65,8 +66,8 @@ export class ConsoleLogger implements ILogger {
 
         let logLine = this.useStringLogFormat ?
             sprintf(
-                "%s %s %s - %s",
-                now.toISOString(),
+                "%s%s %s - %s",
+                this.logTimestamp ? `${now.toISOString()} ` : "",
                 uppercaseLevel,
                 this.clazz,
                 formattedMessage

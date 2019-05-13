@@ -90,6 +90,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="serverloggerconfig.html#format" class="tsd-kind-icon">format</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="serverloggerconfig.html#level" class="tsd-kind-icon">level</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="serverloggerconfig.html#logtimestamp" class="tsd-kind-icon">log<wbr>Timestamp</a></li>
 							</ul>
 						</section>
 					</div>
@@ -103,16 +104,19 @@
 					<div class="tsd-signature tsd-kind-icon">format<span class="tsd-signature-symbol">:</span> <a href="../globals.html#logformat" class="tsd-signature-type">LogFormat</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/model/logging/ServerLoggerConfig.ts#L34">model/logging/ServerLoggerConfig.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/model/logging/ServerLoggerConfig.ts#L50">model/logging/ServerLoggerConfig.ts:50</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Format of log messages. Either a plain string:</p>
+							<p>Format of log messages. A plain string:</p>
 						</div>
-						<pre><code>      ISO <span class="hljs-number">8601</span> Datetime    <span class="hljs-keyword">level</span> <span class="hljs-keyword">class</span>                   message
-  vvvvvvvvvvvvvvvvvvvvvvvv vvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-  <span class="hljs-number">2019</span><span class="hljs-number">-04</span><span class="hljs-number">-21</span>T16:<span class="hljs-number">38</span>:<span class="hljs-number">09.680</span>Z <span class="hljs-keyword">INFO</span> Endpoint - Invoking endpoint: [<span class="hljs-keyword">GET</span>] /<span class="hljs-keyword">open</span>-api.yml</code></pre><p>Or a JSON format message (matches lambda-api format):</p>
+						<pre><code><span class="hljs-keyword">level</span>  <span class="hljs-keyword">class</span>                   message
+vvvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+<span class="hljs-keyword">INFO</span>  Endpoint - Invoking endpoint: [<span class="hljs-keyword">GET</span>] /<span class="hljs-keyword">open</span>-api.yml</code></pre><p>A plain string with <code>logTimestamp</code> set to true:</p>
+						<pre><code>    ISO <span class="hljs-number">8601</span> Datetime    <span class="hljs-keyword">level</span> <span class="hljs-keyword">class</span>                   message
+vvvvvvvvvvvvvvvvvvvvvvvv vvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+<span class="hljs-number">2019</span><span class="hljs-number">-04</span><span class="hljs-number">-21</span>T16:<span class="hljs-number">38</span>:<span class="hljs-number">09.680</span>Z <span class="hljs-keyword">INFO</span> Endpoint - Invoking endpoint: [<span class="hljs-keyword">GET</span>] /<span class="hljs-keyword">open</span>-api.yml</code></pre><p>A JSON format message (matches lambda-api format):</p>
 						<pre><code class="language-json">{
   <span class="hljs-attr">"level"</span>: <span class="hljs-string">"INFO"</span>,
   <span class="hljs-attr">"msg"</span>: <span class="hljs-string">"Endpoint - Invoking endpoint: [GET] /open-api.yml"</span>,
@@ -134,6 +138,23 @@
 							<p>Lowest level of log message to output.</p>
 						</div>
 						<p>See <a href="../enums/loglevel.html">LogLevel</a> for levels supported.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="logtimestamp" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> log<wbr>Timestamp</h3>
+					<div class="tsd-signature tsd-kind-icon">log<wbr>Timestamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/model/logging/ServerLoggerConfig.ts#L21">model/logging/ServerLoggerConfig.ts:21</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Print an ISO 8601 timestamp before every log message.</p>
+						</div>
+						<p>Defaults to false, AWS Lambda already includes timestamps
+						in it&#39;s log of standard output.</p>
 					</div>
 				</section>
 			</section>
@@ -158,6 +179,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="serverloggerconfig.html#level" class="tsd-kind-icon">level</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="serverloggerconfig.html#logtimestamp" class="tsd-kind-icon">log<wbr>Timestamp</a>
 							</li>
 						</ul>
 					</li>

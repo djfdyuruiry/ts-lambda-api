@@ -17,7 +17,8 @@ export class LogFactory {
     public constructor(
         appConfig: AppConfig,
         private readonly logLevel: LogLevel = LogLevel.info,
-        private readonly logFormat: LogFormat = "string"
+        private readonly logFormat: LogFormat = "string",
+        private readonly logTimestamp: boolean = false
     ) {
         if (appConfig && appConfig.serverLogger) {
             if (appConfig.serverLogger.level) {
@@ -26,6 +27,11 @@ export class LogFactory {
 
             if (appConfig.serverLogger.format) {
                 this.logFormat = appConfig.serverLogger.format
+            }
+
+            if (appConfig.serverLogger.logTimestamp !== null &&
+                appConfig.serverLogger.logTimestamp !== undefined) {
+                this.logTimestamp = appConfig.serverLogger.logTimestamp
             }
         }
     }
@@ -36,7 +42,7 @@ export class LogFactory {
      * @param clazz The enclosing class that will use the new logger.
      */
     public getLogger(clazz: Function): ILogger {
-        return new ConsoleLogger(clazz ? clazz.name : "?", this.logLevel, this.logFormat)
+        return new ConsoleLogger(clazz ? clazz.name : "?", this.logLevel, this.logFormat, this.logTimestamp)
     }
 
     /**
@@ -57,11 +63,17 @@ export class LogFactory {
      * @param logLevel (Optional) Lowest level to log, defaults to `info`.
      * @param logFormat (Optional) Format to output log messages in, defaults to `string`.
      */
-    public static getCustomLogger(clazz: Function, level: LogLevel = LogLevel.info, format: LogFormat = "string") {
+    public static getCustomLogger(
+        clazz: Function,
+        level: LogLevel = LogLevel.info,
+        format: LogFormat = "string",
+        logTimestamp: boolean = false
+    ) {
         let logFactory = new LogFactory({
             serverLogger: {
                 format,
-                level
+                level,
+                logTimestamp
             }
         })
 
