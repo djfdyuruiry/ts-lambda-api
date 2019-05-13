@@ -1122,18 +1122,18 @@ By default, the logger is set to `info` and outputs messages as simple strings.
 The format of the messages written out is:
 
 ```
-        ISO 8601 Datetime    level class                   message
-    vvvvvvvvvvvvvvvvvvvvvvvv vvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    2019-04-21T16:38:09.680Z INFO Endpoint - Invoking endpoint: [GET] /open-api.yml
+level  class                   message
+vvvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+INFO  Endpoint - Invoking endpoint: [GET] /open-api.yml
 ```
 
 Below is some example output, include a stack trace from an `Error` instance:
 
 ```
-2019-04-21T22:20:29.622Z INFO ApiLambdaApp - Received event, initialising controllers and processing event
-2019-04-21T22:20:29.647Z INFO Server - Processing API request event for path: /test/
-2019-04-21T22:20:29.832Z INFO Endpoint - [GET] /test - Authenticating request
-2019-04-21T22:20:29.833Z ERROR Endpoint - [GET] /test - Error processing endpoint request
+INFO ApiLambdaApp - Received event, initialising controllers and processing event
+INFO Server - Processing API request event for path: /test/
+INFO Endpoint - [GET] /test - Authenticating request
+ERROR Endpoint - [GET] /test - Error processing endpoint request
 Error: authenticate failed
     at TestAuthFilter.authenticate (/home/matthew/src/ts/ts-lambda-api/tests/src/test-components/TestAuthFilter.ts:25:19)
     at Endpoint.authenticateRequest (/home/matthew/src/ts/ts-lambda-api/dist/api/Endpoint.js:15:2640)

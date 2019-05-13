@@ -108,7 +108,7 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Log<wbr>Factory<span class="tsd-signature-symbol">(</span>appConfig<span class="tsd-signature-symbol">: </span><a href="appconfig.html" class="tsd-signature-type">AppConfig</a>, logLevel<span class="tsd-signature-symbol">?: </span><a href="../enums/loglevel.html" class="tsd-signature-type">LogLevel</a>, logFormat<span class="tsd-signature-symbol">?: </span><a href="../globals.html#logformat" class="tsd-signature-type">LogFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="logfactory.html" class="tsd-signature-type">LogFactory</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Log<wbr>Factory<span class="tsd-signature-symbol">(</span>appConfig<span class="tsd-signature-symbol">: </span><a href="appconfig.html" class="tsd-signature-type">AppConfig</a>, logLevel<span class="tsd-signature-symbol">?: </span><a href="../enums/loglevel.html" class="tsd-signature-type">LogLevel</a>, logFormat<span class="tsd-signature-symbol">?: </span><a href="../globals.html#logformat" class="tsd-signature-type">LogFormat</a>, logTimestamp<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="logfactory.html" class="tsd-signature-type">LogFactory</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -148,6 +148,9 @@
 										</div>
 									</div>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> logTimestamp: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="logfactory.html" class="tsd-signature-type">LogFactory</a></h4>
 						</li>
@@ -166,7 +169,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/LogFactory.ts#L38">util/logging/LogFactory.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/LogFactory.ts#L44">util/logging/LogFactory.ts:44</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -191,13 +194,13 @@
 					<a name="getcustomlogger" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Custom<wbr>Logger</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Custom<wbr>Logger<span class="tsd-signature-symbol">(</span>clazz<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span>, level<span class="tsd-signature-symbol">?: </span><a href="../enums/loglevel.html" class="tsd-signature-type">LogLevel</a>, format<span class="tsd-signature-symbol">?: </span><a href="../globals.html#logformat" class="tsd-signature-type">LogFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/ilogger.html" class="tsd-signature-type">ILogger</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Custom<wbr>Logger<span class="tsd-signature-symbol">(</span>clazz<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span>, level<span class="tsd-signature-symbol">?: </span><a href="../enums/loglevel.html" class="tsd-signature-type">LogLevel</a>, format<span class="tsd-signature-symbol">?: </span><a href="../globals.html#logformat" class="tsd-signature-type">LogFormat</a>, logTimestamp<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/ilogger.html" class="tsd-signature-type">ILogger</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/LogFactory.ts#L60">util/logging/LogFactory.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/LogFactory.ts#L66">util/logging/LogFactory.ts:66</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -219,6 +222,9 @@
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> format: <a href="../globals.html#logformat" class="tsd-signature-type">LogFormat</a><span class="tsd-signature-symbol"> =&nbsp;&quot;string&quot;</span></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> logTimestamp: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/ilogger.html" class="tsd-signature-type">ILogger</a></h4>
 						</li>
@@ -234,7 +240,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/LogFactory.ts#L47">util/logging/LogFactory.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/util/logging/LogFactory.ts#L53">util/logging/LogFactory.ts:53</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

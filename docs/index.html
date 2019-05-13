@@ -959,24 +959,24 @@ app.configureApi(api: <span class="hljs-function"><span class="hljs-params">API<
 				<p>A logger interface is provided that can write messages to standard out. You can configure this logger using the <code>serverLogging</code> key in the <code>AppConfig</code> class. See the <a href="#config-reference">Config Reference</a> for details on options available.</p>
 				<p>By default, the logger is set to <code>info</code> and outputs messages as simple strings.</p>
 				<p>The format of the messages written out is:</p>
-				<pre><code>        ISO <span class="hljs-number">8601</span> Datetime    <span class="hljs-keyword">level</span> <span class="hljs-keyword">class</span>                   message
-    vvvvvvvvvvvvvvvvvvvvvvvv vvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    <span class="hljs-number">2019</span><span class="hljs-number">-04</span><span class="hljs-number">-21</span>T16:<span class="hljs-number">38</span>:<span class="hljs-number">09.680</span>Z <span class="hljs-keyword">INFO</span> Endpoint - Invoking endpoint: [<span class="hljs-keyword">GET</span>] /<span class="hljs-keyword">open</span>-api.yml</code></pre><p>Below is some example output, include a stack trace from an <code>Error</code> instance:</p>
-				<pre><code><span class="hljs-number">2019</span><span class="hljs-number">-04</span><span class="hljs-number">-21</span>T22:<span class="hljs-number">20</span>:<span class="hljs-number">29.622</span>Z INFO ApiLambdaApp - Received event, initialising controllers <span class="hljs-keyword">and</span> processing event
-<span class="hljs-number">2019</span><span class="hljs-number">-04</span><span class="hljs-number">-21</span>T22:<span class="hljs-number">20</span>:<span class="hljs-number">29.647</span>Z INFO Server - Processing API request event <span class="hljs-keyword">for</span> path: /test/
-<span class="hljs-number">2019</span><span class="hljs-number">-04</span><span class="hljs-number">-21</span>T22:<span class="hljs-number">20</span>:<span class="hljs-number">29.832</span>Z INFO Endpoint - [GET] /test - Authenticating request
-<span class="hljs-number">2019</span><span class="hljs-number">-04</span><span class="hljs-number">-21</span>T22:<span class="hljs-number">20</span>:<span class="hljs-number">29.833</span>Z ERROR Endpoint - [GET] /test - Error processing endpoint request
-Error: authenticate failed
-    at TestAuthFilter.authenticate (/home/matthew/src/ts/ts-lambda-api/tests/src/test-components/TestAuthFilter.ts:<span class="hljs-number">25</span>:<span class="hljs-number">19</span>)
-    at Endpoint.authenticateRequest (/home/matthew/src/ts/ts-lambda-api/dist/api/Endpoint.js:<span class="hljs-number">15</span>:<span class="hljs-number">2640</span>)
-    at processTicksAndRejections (<span class="hljs-built_in">int</span>ernal/process/task_queues.js:<span class="hljs-number">86</span>:<span class="hljs-number">5</span>)
-    at process.runNextTicks [as _tickCallback] (<span class="hljs-built_in">int</span>ernal/process/task_queues.js:<span class="hljs-number">56</span>:<span class="hljs-number">3</span>)
-    at Function.Module.runMain (<span class="hljs-built_in">int</span>ernal/modules/cjs/loader.js:<span class="hljs-number">880</span>:<span class="hljs-number">11</span>)
-    at runMain (/home/matthew/.node-spawn-wrap<span class="hljs-number">-13541</span><span class="hljs-number">-13</span>c0098ec456/node:<span class="hljs-number">68</span>:<span class="hljs-number">10</span>)
-    at Function.&lt;anonymous&gt; (/home/matthew/.node-spawn-wrap<span class="hljs-number">-13541</span><span class="hljs-number">-13</span>c0098ec456/node:<span class="hljs-number">171</span>:<span class="hljs-number">5</span>)
-    at Object.&lt;anonymous&gt; (/home/matthew/src/ts/ts-lambda-api/node_modules/nyc/bin/wrap.js:<span class="hljs-number">23</span>:<span class="hljs-number">4</span>)
-    at Module._compile (<span class="hljs-built_in">int</span>ernal/modules/cjs/loader.js:<span class="hljs-number">816</span>:<span class="hljs-number">30</span>)
-    at Object.Module._extensions..js (<span class="hljs-built_in">int</span>ernal/modules/cjs/loader.js:<span class="hljs-number">827</span>:<span class="hljs-number">10</span>)</code></pre><p>If you set the <code>format</code> to <code>json</code> the log messages will look like this:</p>
+				<pre><code><span class="hljs-keyword">level</span>  <span class="hljs-keyword">class</span>                   message
+vvvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+<span class="hljs-keyword">INFO</span>  Endpoint - Invoking endpoint: [<span class="hljs-keyword">GET</span>] /<span class="hljs-keyword">open</span>-api.yml</code></pre><p>Below is some example output, include a stack trace from an <code>Error</code> instance:</p>
+				<pre><code>INFO ApiLambdaApp - Received event, initialising controllers and processing event
+INFO Server - Processing API request event <span class="hljs-keyword">for</span> <span class="hljs-string">path:</span> <span class="hljs-regexp">/test/</span>
+INFO Endpoint - [GET] /test - Authenticating request
+ERROR Endpoint - [GET] /test - Error processing endpoint request
+<span class="hljs-string">Error:</span> authenticate failed
+    at TestAuthFilter.authenticate (<span class="hljs-regexp">/home/</span>matthew<span class="hljs-regexp">/src/</span>ts<span class="hljs-regexp">/ts-lambda-api/</span>tests<span class="hljs-regexp">/src/</span>test-components/TestAuthFilter.<span class="hljs-string">ts:</span><span class="hljs-number">25</span>:<span class="hljs-number">19</span>)
+    at Endpoint.authenticateRequest (<span class="hljs-regexp">/home/</span>matthew<span class="hljs-regexp">/src/</span>ts<span class="hljs-regexp">/ts-lambda-api/</span>dist<span class="hljs-regexp">/api/</span>Endpoint.<span class="hljs-string">js:</span><span class="hljs-number">15</span>:<span class="hljs-number">2640</span>)
+    at processTicksAndRejections (internal<span class="hljs-regexp">/process/</span>task_queues.<span class="hljs-string">js:</span><span class="hljs-number">86</span>:<span class="hljs-number">5</span>)
+    at process.runNextTicks [<span class="hljs-keyword">as</span> _tickCallback] (internal<span class="hljs-regexp">/process/</span>task_queues.<span class="hljs-string">js:</span><span class="hljs-number">56</span>:<span class="hljs-number">3</span>)
+    at Function.Module.runMain (internal<span class="hljs-regexp">/modules/</span>cjs/loader.<span class="hljs-string">js:</span><span class="hljs-number">880</span>:<span class="hljs-number">11</span>)
+    at runMain (<span class="hljs-regexp">/home/</span>matthew<span class="hljs-regexp">/.node-spawn-wrap-13541-13c0098ec456/</span><span class="hljs-string">node:</span><span class="hljs-number">68</span>:<span class="hljs-number">10</span>)
+    at Function.&lt;anonymous&gt; (<span class="hljs-regexp">/home/</span>matthew<span class="hljs-regexp">/.node-spawn-wrap-13541-13c0098ec456/</span><span class="hljs-string">node:</span><span class="hljs-number">171</span>:<span class="hljs-number">5</span>)
+    at Object.&lt;anonymous&gt; (<span class="hljs-regexp">/home/</span>matthew<span class="hljs-regexp">/src/</span>ts<span class="hljs-regexp">/ts-lambda-api/</span>node_modules<span class="hljs-regexp">/nyc/</span>bin/wrap.<span class="hljs-string">js:</span><span class="hljs-number">23</span>:<span class="hljs-number">4</span>)
+    at Module._compile (internal<span class="hljs-regexp">/modules/</span>cjs/loader.<span class="hljs-string">js:</span><span class="hljs-number">816</span>:<span class="hljs-number">30</span>)
+    at Object.Module._extensions..js (internal<span class="hljs-regexp">/modules/</span>cjs/loader.<span class="hljs-string">js:</span><span class="hljs-number">827</span>:<span class="hljs-number">10</span>)</code></pre><p>If you set the <code>format</code> to <code>json</code> the log messages will look like this:</p>
 				<pre><code class="language-json"> {
     <span class="hljs-attr">"level"</span>: <span class="hljs-string">"INFO"</span>,
     <span class="hljs-attr">"msg"</span>: <span class="hljs-string">"Endpoint - Invoking endpoint: [GET] /open-api.yml"</span>,

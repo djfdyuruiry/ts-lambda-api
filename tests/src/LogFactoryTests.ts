@@ -70,6 +70,15 @@ export class LogFactoryTests {
     }
 
     @Test()
+    @TestCase("string")
+    @TestCase("json")
+    public when_logger_called_with_timestamp_enabled_then_no_exceptions_occur(format: LogFormat) {
+        let logger = LogFactory.getCustomLogger(LogFactoryTests, LogLevel.trace, format, true)
+
+        logger.info("%s: %j", "Timestamp enabled test", {so: "I am"})
+    }
+
+    @Test()
     public when_logger_called_with_circular_array_then_no_exceptions_occur() {
         let logger = LogFactory.getCustomLogger(LogFactoryTests, LogLevel.trace)
 
