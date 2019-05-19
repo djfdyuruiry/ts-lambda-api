@@ -1,21 +1,21 @@
 {
   "name": "ts-lambda-api",
   "description": "Build REST API's using Typescript & AWS Lambda. Support for decorator based routing and dependecy injection using InversifyJS. This project is built on top of the wonderful lambda-api package.",
-  "version": "0.5.0",
+  "version": "0.6.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/djfdyuruiry/ts-lambda-api.git"
   },
   "scripts": {
-    "build": "yarn run lint && rm -rf dist && tsc && yarn docs",
-    "build-all": "yarn run install-with-audit && yarn run build && yarn run build-tests",
+    "build": "yarn lint && rm -rf dist && tsc && yarn docs",
+    "build-all": "yarn clean-install && yarn build && yarn build-tests",
     "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
+    "clean-install": "rm -rf node_modules && yarn install && yarn improved-audit",
     "docs": "rm -rf ./docs && typedoc --mode file --excludePrivate --sourcefile-url-prefix https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ --out ./docs",
-    "clean-install": "rm -rf node_modules && yarn install-with-audit",
-    "install-with-audit": "yarn install --audit && yarn audit",
+    "improved-audit": "improved-yarn-audit -e $(cat .audit-exceptions)",
     "lint": "tslint 'src/**/*.ts'",
-    "shell": "bash",
-    "test": "yarn run build-all && scripts/runTests.sh"
+    "shell": "$SHELL",
+    "test": "yarn build-all && scripts/runTests.sh"
   },
   "main": "dist/ts-lambda-api.js",
   "typings": "dist/ts-lambda-api.d.ts",
@@ -50,11 +50,12 @@
   "devDependencies": {
     "@types/js-yaml": "^3.12.0",
     "@types/md5-file": "^4.0.0",
-    "@types/node": "^10.12.24",
+    "@types/node": "^12.0.2",
     "@types/sprintf-js": "^1.1.2",
     "@types/temp": "^0.8.34",
     "alsatian": "^2.3.0",
     "aws-sdk": "^2.404.0",
+    "improved-yarn-audit": "^1.0.1",
     "js-yaml": "^3.12.2",
     "junit-bark": "^1.1.1",
     "marked": "^0.6.2",
