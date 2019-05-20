@@ -7,7 +7,7 @@ import { ILogger } from "../util/logging/ILogger"
 
 /**
  * Base class for API controllers. Provides access to the
- * current HTTP context as protected fields, and convience
+ * current HTTP context as protected fields, and convenience
  * method for applying JSON patches.
  */
 @injectable()
