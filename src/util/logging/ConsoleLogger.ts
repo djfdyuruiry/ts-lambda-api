@@ -18,6 +18,7 @@ export class ConsoleLogger implements ILogger {
      * @param clazz The enclosing class that will use the new logger.
      * @param logLevel Lowest level to log, defaults to `info`.
      * @param logFormat Format to output log messages in, defaults to `string`.
+     * @param logTimestamp Print an ISO 8601 timestamp before every log message? (string format only)
      */
     public constructor(
         private readonly clazz: string,
