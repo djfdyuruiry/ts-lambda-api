@@ -474,20 +474,16 @@ export class OpenApiGenerator {
         }
     }
 
-    private getPrimitiveTypeSchema(apiBodyInfo: ApiBodyInfo, instanceType?: string) {
-        let type = instanceType
+    private getPrimitiveTypeSchema(apiBodyInfo: ApiBodyInfo) {
+        let type = apiBodyInfo.type.toLowerCase()
 
-        if (!type) {
-            type = apiBodyInfo.type.toLowerCase()
+        if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
+            this.logger.trace("Skipping adding unknown body type to OpenAPI spec: %s", type)
 
-            if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
-                this.logger.trace("Skipping adding unknown body type to OpenAPI spec: %s", type)
-
-                return
-            }
+            return
         }
 
-        let schemaType = OpenApiGenerator.OPEN_API_SCHEMA_TYPE_MAP[apiBodyInfo.type]
+        let schemaType = OpenApiGenerator.OPEN_API_SCHEMA_TYPE_MAP[type]
 
         if (type !== "file") {
             this.logger.trace("Setting body to type: %s", type)
