@@ -85,3 +85,5 @@ tests/js
 .test_results
 
 package-lock.json
+
+.DS_Store

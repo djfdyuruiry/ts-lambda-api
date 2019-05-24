@@ -8,15 +8,20 @@ codeCoverageReportFile="coverage/index.html"
 
 exitCode=0
 
+# polyfill for realpath command using python
+command -v realpath &> /dev/null || realpath() {
+    python -c "import os; print os.path.abspath('$1')"
+}
+
 printReportSummary() {
     echo
-    echo "TAP File: $(readlink -f ${tapFile})"
+    echo "TAP File: $(realpath ${tapFile})"
 
     if [ -f "${reportFile}" ]; then
-        echo "HTML Test Report: $(readlink -f ${reportFile})"
+        echo "HTML Test Report: $(realpath ${reportFile})"
     fi
 
-    echo "Code Coverage Report: $(readlink -f ${codeCoverageReportFile})"
+    echo "Code Coverage Report: $(realpath ${codeCoverageReportFile})"
     echo
 }
 

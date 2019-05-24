@@ -15,12 +15,15 @@
                 "./tests/js/**/*Tests.js"
             ],
             // the below settings are required, otherwise debugging is flaky
-            "protocol": "inspector",
+            // "protocol": "inspector",
             "sourceMaps": true,
             "outFiles": [
                 "dist/**/*.js",
                 "tests/js/**/*.js"
-            ]
+            ],
+            "env": {
+                "TLA_UNDER_TEST": "1"
+            }
         }
     ]
 }
