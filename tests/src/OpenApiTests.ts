@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 45
+    private static readonly ROUTE_COUNT = 49
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup
@@ -528,6 +528,47 @@ export class OpenApiTests extends TestBase {
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_response_schema_for_primitive_class_examples(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/primitive-class-example", "get")
+        let response: ResponseObject = endpoint.responses["200"]
+        let content: MediaTypeObject = response.content["application/json"]
+        let schema: SchemaObject = content.schema
+
+        Expect(content.example).toEqual(30)
+
+        Expect(schema.type).toEqual("number")
+        Expect(schema.example).toEqual(30)
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_response_schema_for_primitive_class_array_examples(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/primitive-array-class-example", "get")
+        let response: ResponseObject = endpoint.responses["200"]
+        let content: MediaTypeObject = response.content["application/json"]
+        let schema: SchemaObject = content.schema
+
+        Expect(content.example).toEqual(`[
+  "a",
+  "b"
+]`)
+
+        Expect(schema.type).toEqual("array")
+        Expect(schema.example).toEqual(`[
+  "a",
+  "b"
+]`)
+
+        let itemSchema = schema.items as SchemaObject
+
+        Expect(itemSchema.type).toEqual("string")
+        Expect(itemSchema.example).toEqual("a")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
     public async when_openapi_enabled_then_openapi_spec_contains_custom_response_examples(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
         let response_201: ResponseObject = endpoint.responses["201"]
@@ -659,6 +700,159 @@ export class OpenApiTests extends TestBase {
             "items": {
                 "type": "string",
                 "example": "a"
+            }
+        })
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_schemas_with_example_object_array_types_at_root(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/example-array-objects", "get")
+        let response = endpoint.responses["200"] as ResponseObject
+        let content = response.content["application/json"]
+        let schema = content.schema as SchemaObject
+
+        Expect(schema.type).toEqual("array")
+        Expect(schema.example).toEqual(`[
+  {},
+  {},
+  {}
+]`)
+
+        let arrayItemsSchema = schema.items as SchemaObject
+
+        Expect(arrayItemsSchema.type).toEqual("object")
+        Expect(arrayItemsSchema.additionalProperties).toEqual(true)
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_schemas_with_object_array_types_at_root(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/array-objects", "get")
+        let response = endpoint.responses["200"] as ResponseObject
+        let content = response.content["application/json"]
+        let schema = content.schema as SchemaObject
+
+        Expect(schema.type).toEqual("array")
+
+        Expect(schema.example).toEqual(`[
+  {
+    "name": "name",
+    "age": 18,
+    "location": {
+      "city": "city",
+      "country": "country",
+      "localeCodes": [
+        10,
+        20,
+        30
+      ]
+    },
+    "roles": [
+      "role1",
+      "role2",
+      "roleN"
+    ]
+  },
+  {
+    "name": "name",
+    "age": 18,
+    "location": {
+      "city": "city",
+      "country": "country",
+      "localeCodes": [
+        10,
+        20,
+        30
+      ]
+    },
+    "roles": [
+      "role1",
+      "role2",
+      "roleN"
+    ]
+  },
+  {
+    "name": "name",
+    "age": 18,
+    "location": {
+      "city": "city",
+      "country": "country",
+      "localeCodes": [
+        10,
+        20,
+        30
+      ]
+    },
+    "roles": [
+      "role1",
+      "role2",
+      "roleN"
+    ]
+  }
+]`)
+
+        let arrayItemsSchema = schema.items as SchemaObject
+
+        Expect(arrayItemsSchema.type).toEqual("object")
+        Expect(arrayItemsSchema.example).toEqual(`{
+  "name": "name",
+  "age": 18,
+  "location": {
+    "city": "city",
+    "country": "country",
+    "localeCodes": [
+      10,
+      20,
+      30
+    ]
+  },
+  "roles": [
+    "role1",
+    "role2",
+    "roleN"
+  ]
+}`)
+        Expect(arrayItemsSchema.properties).toEqual({
+            "name": {
+                "type": "string",
+                "example": "name"
+            },
+            "age": {
+                "type": "number",
+                "example": 18
+            },
+            "location": {
+                "type": "object",
+                "example": "{\n  \"city\": \"city\",\n  \"country\": \"country\",\n  \"localeCodes\": [\n    10,\n    20,\n    30\n  ]\n}",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "example": "city"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "country"
+                    },
+                    "localeCodes": {
+                        "type": "array",
+                        "example": "[\n  10,\n  20,\n  30\n]",
+                        "items": {
+                            "type": "number",
+                            "example": 10
+                        }
+                    }
+                }
+            },
+            "roles": {
+                "type": "array",
+                "example": "[\n  \"role1\",\n  \"role2\",\n  \"roleN\"\n]",
+                "items": {
+                    "type": "string",
+                    "example": "role1"
+                }
             }
         })
     }

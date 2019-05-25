@@ -3,9 +3,12 @@ import { injectable } from "inversify"
 import { api, apiController, apiOperation, apiRequest, apiResponse, body, rawBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/ts-lambda-api"
 
 import { ApiError } from "../test-components/model/ApiError"
+import { ArrayofPrimitivesExample } from '../test-components/model/ArrayOfPrimitivesExample'
 import { ConstructorOnlyModel } from "../test-components/model/ConstructorOnlyModel"
+import { EdgeCaseModel } from "../test-components/model/EdgeCaseModel"
+import { People } from "../test-components/model/People"
 import { Person } from "../test-components/model/Person"
-import { EdgeCaseModel } from "../test-components/model/EdgeCaseModel";
+import { PrimitiveExample } from '../test-components/model/PrimitiveExample'
 
 @apiController("/test/open-api")
 @api("Open API Test", "Endpoints with OpenAPI decorators")
@@ -16,6 +19,34 @@ export class OpenApiTestControllerController extends Controller {
     @apiResponse(200, {type: "string"})
     public get() {
         return "OK"
+    }
+
+    @GET("/example-array-objects")
+    @apiOperation({ name: "get example array of objects", description: "go get example array of objects"})
+    @apiResponse(200, {type: "object-array", example: `[{"age":23,"name":"carlos","gender":"male","city":"Dubai"},{"age":24,"name":"carlos","gender":"male","city":"Dubai"},{"age":25,"name":"carlos","gender":"male","city":"Dubai"}]` })
+    public getExampleArrayOfObjects() {
+        return [{"age":23,"name":"carlos","gender":"male","city":"Dubai"},{"age":24,"name":"carlos","gender":"male","city":"Dubai"},{"age":25,"name":"carlos","gender":"male","city":"Dubai"}]
+    }
+
+    @GET("/primitive-class-example")
+    @apiOperation({ name: "get primitive class example", description: "go get primitive class example"})
+    @apiResponse(200, { class: PrimitiveExample })
+    public getPrimitiveClassExample() {
+        return PrimitiveExample.example()
+    }
+
+    @GET("/primitive-array-class-example")
+    @apiOperation({ name: "get primitive array class example", description: "go get primitive array class example"})
+    @apiResponse(200, { class: ArrayofPrimitivesExample })
+    public getPrimitiveArrayClassExample() {
+        return ArrayofPrimitivesExample.example()
+    }
+
+    @GET("/array-objects")
+    @apiOperation({ name: "get array of objects", description: "go get array of objects"})
+    @apiResponse(200, { class: People })
+    public getArrayOfObjects() {
+        return People.example()
     }
 
     @GET("/constructor")

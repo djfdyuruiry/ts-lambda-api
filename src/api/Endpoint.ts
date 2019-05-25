@@ -122,11 +122,19 @@ export class Endpoint {
         let authResult = await this.authenticateRequest(request, response)
 
         if (!authResult.authenticated) {
-            this.sendStatusCodeResponse(401, response)
+            this.log(LogLevel.info, "Request authentication failed")
+
+            if (!this.responseSent(response)) {
+                this.sendStatusCodeResponse(401, response)
+            }
         }
 
         if (!await this.authorizeRequest(authResult.principal)) {
-            this.sendStatusCodeResponse(403, response)
+            this.log(LogLevel.info, "Request authorization failed")
+
+            if (!this.responseSent(response)) {
+                this.sendStatusCodeResponse(403, response)
+            }
         }
 
         return authResult.principal
@@ -156,14 +164,14 @@ export class Endpoint {
                 authResult.principal = await filter.authenticate(authData)
             } else {
                 // authData extraction was either aborted or failed
-                this.log(LogLevel.info, "No auth data returned by authentication filter: %s", filter.name)
+                this.log(LogLevel.debug, "No auth data returned by authentication filter: %s", filter.name)
             }
 
             authResult.authenticated =
                 (authResult.principal !== null && authResult.principal !== undefined)
 
             if (authResult.authenticated) {
-                this.log(LogLevel.info, "Authenticated request principal '%s' using authentication filter: %s",
+                this.log(LogLevel.debug, "Authenticated request principal '%s' using authentication filter: %s",
                     authResult.principal.name, filter.name)
 
                 // return after finding a filter that authenticates the user
@@ -174,7 +182,7 @@ export class Endpoint {
         }
 
         if (!authResult.authenticated && authScheme) {
-            this.log(LogLevel.info, "Request not authenticated, returning 'WWW-Authenticate' header in" +
+            this.log(LogLevel.debug, "Request not authenticated, returning 'WWW-Authenticate' header in" +
                 " response with scheme: %s", authScheme)
 
             response.header("WWW-Authenticate", authScheme)
@@ -185,10 +193,9 @@ export class Endpoint {
 
     private sendStatusCodeResponse(statusCode: number, response: Response) {
         this.log(
-            LogLevel.debug,
-            "Returning status code only (HTTP %d) response for endpoint: %s",
-            statusCode,
-            response
+            LogLevel.info,
+            "Returning status code only response for endpoint: HTTP %d",
+            statusCode
         )
 
         response.status(statusCode)
@@ -211,7 +218,9 @@ export class Endpoint {
                 ` middleware registry, path: ${this.endpointInfo.path} | endpoint: ${this.endpointInfo.name}`)
         }
 
-        this.log(LogLevel.info, "Authorizing request by principal '%s'", principal.name)
+        this.log(LogLevel.info, "Authorizing request")
+
+        this.log(LogLevel.debug, "Authorizing current principal '%s'", principal.name)
         this.log(LogLevel.debug, "Roles defined for endpoint: '%j'", roles)
 
         for (let authorizer of this.middlewareRegistry.authorizers) {
@@ -219,7 +228,7 @@ export class Endpoint {
             for (let role of roles) {
                 if (await authorizer.authorize(principal, role)) {
                     this.log(
-                        LogLevel.info,
+                        LogLevel.debug,
                         "Authorized request by principal '%s' using authorizer '%s' and role '%s'",
                         principal.name,
                         authorizer.name,
@@ -309,12 +318,14 @@ export class Endpoint {
     private setResponseContentType(response: Response) {
         let produces = this.endpointInfo.responseContentType
 
-        if (produces) {
-            this.log(LogLevel.debug, "Setting response 'Content-Type' header: %s", produces)
-
-            response.removeHeader("Content-Type")
-                .header("Content-Type", produces)
+        if (!produces) {
+            return
         }
+
+        this.log(LogLevel.debug, "Setting response 'Content-Type' header: %s", produces)
+
+        response.removeHeader("Content-Type")
+            .header("Content-Type", produces)
     }
 
     private mapHttpMethodToCall(api: API, method: string) {

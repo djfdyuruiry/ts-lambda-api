@@ -13,6 +13,8 @@ export class LogFactory {
      * @param appConfig Config object to read logging config from.
      * @param logLevel (Optional) Lowest level to log, defaults to `info`.
      * @param logFormat (Optional) Format to output log messages in, defaults to `string`.
+     * @param logTimestamp (Optional) Print an ISO 8601 timestamp before every log message?
+     *                     (string format only, defaults to `false`).
      */
     public constructor(
         appConfig: AppConfig,
@@ -62,6 +64,8 @@ export class LogFactory {
      * @param clazz The enclosing class that will use the new logger.
      * @param logLevel (Optional) Lowest level to log, defaults to `info`.
      * @param logFormat (Optional) Format to output log messages in, defaults to `string`.
+     * @param logTimestamp (Optional) Print an ISO 8601 timestamp before every log message?
+     *                     (string format only, defaults to `false`).
      */
     public static getCustomLogger(
         clazz: Function,

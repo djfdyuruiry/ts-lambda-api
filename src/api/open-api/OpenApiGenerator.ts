@@ -338,7 +338,7 @@ export class OpenApiGenerator {
         mediaTypeObject.schema = {}
 
         if (requestInfo.type) {
-            this.addPrimitiveToMediaTypeObject(mediaTypeObject, requestInfo)
+            mediaTypeObject.schema = this.getPrimitiveTypeSchema(requestInfo)
         } else if (requestInfo.class) {
             this.addClassToMediaTypeObject(
                 mediaTypeObject, requestInfo, operationRequestType
@@ -425,7 +425,7 @@ export class OpenApiGenerator {
             if (apiBodyInfo.type) {
                 this.logger.trace("Building response schema from primitive type")
 
-                this.addPrimitiveToMediaTypeObject(mediaTypeObject, apiBodyInfo)
+                mediaTypeObject.schema = this.getPrimitiveTypeSchema(apiBodyInfo)
             } else if (apiBodyInfo.class) {
                 this.logger.trace("Building response schema from class type")
 
@@ -474,7 +474,7 @@ export class OpenApiGenerator {
         }
     }
 
-    private addPrimitiveToMediaTypeObject(mediaTypeObject: MediaTypeObject, apiBodyInfo: ApiBodyInfo) {
+    private getPrimitiveTypeSchema(apiBodyInfo: ApiBodyInfo) {
         let type = apiBodyInfo.type.toLowerCase()
 
         if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
@@ -483,17 +483,25 @@ export class OpenApiGenerator {
             return
         }
 
-        let schemaType = OpenApiGenerator.OPEN_API_SCHEMA_TYPE_MAP[apiBodyInfo.type]
+        let schemaType = OpenApiGenerator.OPEN_API_SCHEMA_TYPE_MAP[type]
 
         if (type !== "file") {
-            mediaTypeObject.schema = {
+            this.logger.trace("Setting body to type: %s", type)
+
+            let schema = {
                 example: this.getPrimitiveTypeExample(apiBodyInfo.type),
                 type: schemaType
             }
+
+            if (schemaType === "array") {
+                this.addPrimitiveArrayInfoToSchema(schema, apiBodyInfo.type)
+            }
+
+            return schema
         } else {
             this.logger.trace("Setting body to file")
 
-            mediaTypeObject.schema = {
+            return {
                 format: "binary",
                 type: schemaType
             }
@@ -506,6 +514,27 @@ export class OpenApiGenerator {
         this.logger.trace("Adding body example: %s", example)
 
         return toJson(example)
+    }
+
+    private addPrimitiveArrayInfoToSchema(schema: SchemaObject, type: string) {
+        let itemType = type.replace("-array", "")
+        let itemSchemaType = OpenApiGenerator.OPEN_API_SCHEMA_TYPE_MAP[itemType]
+
+        // ensure array items have a type
+        schema.items = {
+            type: itemSchemaType
+        }
+
+        if (itemSchemaType === "object") {
+            // ensure object items can have any properties
+            schema.items.additionalProperties = true
+        } else if (itemSchemaType === "array") {
+            // ensure arrays inside an array have any item types
+            schema.items.items = {
+                additionalProperties: true,
+                type: "object"
+            }
+        }
     }
 
     private addClassToMediaTypeObject(
@@ -528,9 +557,22 @@ export class OpenApiGenerator {
             instance = new clazz()
         }
 
+        let instanceType = "object"
+
+        if (!(instance instanceof clazz)) {
+            instanceType = this.getInstanceType(instance)
+
+            if (!OpenApiGenerator.OPEN_API_TYPES.includes(instanceType)) {
+                // not a supported type or null/undefined, ommit this property
+                this.logger.trace("Ignoring class '%s' as it is of an invalid type: %s",
+                    apiBodyInfo.class.name, instanceType)
+
+                return
+            }
+        }
+
         let schema: SchemaObject = {
-            properties: {},
-            type: "object"
+            type: instanceType
         }
 
         mediaTypeObject.schema = schema
@@ -544,7 +586,22 @@ export class OpenApiGenerator {
             schema.example = exampleJson
         }
 
-        this.addObjectPropertiesToSchema(mediaTypeObject.schema, instance)
+        if (instanceType === "object") {
+            this.addObjectPropertiesToSchema(schema, instance)
+        } else if (instanceType === "array") {
+            if (instance.length > 0) {
+                this.addArrayToSchema(schema, instance)
+            } else {
+                this.logger.trace("Ignoring class '%s' array as it has no items in it's example",
+                    apiBodyInfo.class.name)
+
+                delete mediaTypeObject.schema
+                return
+            }
+        } else {
+            schema.example = instance
+            mediaTypeObject.example = instance
+        }
     }
 
     private addObjectPropertiesToSchema(schema: SchemaObject, instance: any) {
@@ -555,6 +612,8 @@ export class OpenApiGenerator {
 
             if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
                 // not a supported type or null/undefined, ommit this property
+                this.logger.trace("Ignoring property '%s' as it is of an invalid type: %s", property, type)
+
                 continue
             }
 

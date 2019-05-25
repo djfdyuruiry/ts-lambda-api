@@ -11,7 +11,7 @@ import { ILogger } from "./util/logging/ILogger"
 import { LogFactory } from "./util/logging/LogFactory"
 
 /**
- * Application base class which combines the `Server`, `Container`(`InversifyJS`)
+ * Application base class which combines the `Server`, `Container` (see `InversifyJS`)
  * and `AppConfig` classes to create a decorator driven API with typescript
  * middleware and dependency injection. It uses the `lambda-api` package as the
  * underlying HTTP API framework.
@@ -20,7 +20,7 @@ import { LogFactory } from "./util/logging/LogFactory"
  * compatible with either API Gateway or an ALB.
  *
  * Extending this class will allow creating an app implementation for runtimes,
- * AWS Lambda or local web server for example.
+ * AWS Lambda, Local Web Server etc.
  */
 export abstract class ApiApp {
     protected readonly apiServer: Server
@@ -37,9 +37,10 @@ export abstract class ApiApp {
      * Create a new app.
      *
      * @param controllersPath Path to a directory containing `js` files containing that declare controllers.
-     * @param appConfig (Optional) Application config to pass to `lambda-api`.
+     * @param appConfig (Optional) Application config to pass to `lambda-api`, defaults to new `AppConfig`.
      * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can
-     *                     build controllers and error interceptors.
+     *                     build controllers and error interceptors, defaults to new `Container` with
+     *                     `autoBindInjectable` flag set to `true.
      */
     public constructor(
         protected readonly controllersPath: string,

@@ -13,7 +13,7 @@ export class ServerLoggerConfig {
     public level: LogLevel
 
     /**
-     * Print an ISO 8601 timestamp before every log message.
+     * Print an ISO 8601 timestamp before every log message? (string format only)
      *
      * Defaults to false, AWS Lambda already includes timestamps
      * in it's log of standard output.
