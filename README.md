@@ -1,9 +1,14 @@
+[![npm](https://img.shields.io/npm/v/ts-lambda-api.svg?style=flat-square)](https://www.npmjs.com/package/ts-lambda-api) [![downloads](https://img.shields.io/npm/dw/ts-lambda-api.svg?style=flat-square)](https://travis-ci.com/djfdyuruiry/ts-lambda-api)
+
+[![build](https://img.shields.io/travis/com/djfdyuruiry/ts-lambda-api.svg?style=flat-square)](https://travis-ci.com/djfdyuruiry/ts-lambda-api) [![dependencies](https://img.shields.io/david/djfdyuruiry/ts-lambda-api.svg?style=flat-square)](https://github.com/djfdyuruiry/ts-lambda-api/network/dependencies)
+
 # ts-lambda-api
 
 Build REST API's using Typescript & AWS Lambda.
 
-[NPM Package](https://www.npmjs.com/package/ts-lambda-api)
 [GitHub Repo](https://github.com/djfdyuruiry/ts-lambda-api/)
+
+[![NPM](https://nodei.co/npm/ts-lambda-api.png)](https://nodei.co/npm/ts-lambda-api/)
 
 Read the full `typedoc` documentation: https://djfdyuruiry.github.io/ts-lambda-api/
 
@@ -1509,25 +1514,3 @@ const app = new ApiLambdaApp(controllersPath, appConfig)
 For local dev testing and integration with functional tests see the [ts-lambda-api-local](https://www.npmjs.com/package/ts-lambda-api-local) package which enables hosting your API using express as a local HTTP server.
 
 Check out this project's dev dependencies to see what is required to test API code. The `tests` directory of this repo contains some acceptance tests which will show you how to build mock requests and invoke your application.
-
----
-
-## <a id="useful-links"></a>Useful links
-
----
-
-https://blog.risingstack.com/building-a-node-js-app-with-typescript-tutorial/
-
-https://github.com/jeremydaly/lambda-api
-
-https://codeburst.io/typescript-node-starter-simplified-60c7b7d99e27
-
-https://www.typescriptlang.org/docs/handbook/decorators.html
-
-https://medium.com/@samueleresca/inversion-of-control-and-dependency-injection-in-typescript-3040d568aabe
-
-https://github.com/inversify/InversifyJS
-
-https://www.npmjs.com/package/marky
-
-https://www.meziantou.net/2018/01/11/aspect-oriented-programming-in-typescript
