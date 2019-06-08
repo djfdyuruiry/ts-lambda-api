@@ -16,6 +16,7 @@ import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
 import { BasicAuthFilter } from "../security/BasicAuthFilter"
 import { AppConfig } from "../../model/AppConfig"
 import { ApiBodyInfo } from "../../model/open-api/ApiBodyInfo"
+import { ApiParam } from "../../model/open-api/ApiParam"
 import { ControllerInfo } from "../../model/reflection/ControllerInfo"
 import { EndpointInfo } from "../../model/reflection/EndpointInfo"
 import { IDictionary } from "../../util/IDictionary"
@@ -474,7 +475,7 @@ export class OpenApiGenerator {
         }
     }
 
-    private getPrimitiveTypeSchema(apiBodyInfo: ApiBodyInfo) {
+    private getPrimitiveTypeSchema(apiBodyInfo: ApiBodyInfo | ApiParam) {
         let type = apiBodyInfo.type.toLowerCase()
 
         if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
@@ -539,7 +540,7 @@ export class OpenApiGenerator {
 
     private addClassToMediaTypeObject(
         mediaTypeObject: MediaTypeObject,
-        apiBodyInfo: ApiBodyInfo,
+        apiBodyInfo: ApiBodyInfo | ApiParam,
         responseContentType: string
     ) {
         let clazz: any = apiBodyInfo.class
@@ -708,6 +709,10 @@ export class OpenApiGenerator {
                 schema: {} // required, or breaks query parameters
             }
 
+            if (p.apiParamInfo) {
+                this.addEndpointParameterInfo(paramInfo, p.apiParamInfo)
+            }
+
             if (p.source === "path") {
                 // swagger ui will break if this is not set to true
                 paramInfo.required = true
@@ -717,5 +722,27 @@ export class OpenApiGenerator {
         })
 
         this.logger.trace("Setting path parameters: %j", endpointOperation.parameters)
+    }
+
+    private addEndpointParameterInfo(paramInfo: ParameterObject, apiParamInfo: ApiParam) {
+        let mediaTypeObject: MediaTypeObject = {}
+        let paramContentType = apiParamInfo.contentType || "text/plain"
+
+        paramInfo.content = {}
+        paramInfo.content[paramContentType] = mediaTypeObject
+
+        if (apiParamInfo.type) {
+            mediaTypeObject.schema = this.getPrimitiveTypeSchema(apiParamInfo)
+        } else if (apiParamInfo.class) {
+            this.addClassToMediaTypeObject(
+                mediaTypeObject, apiParamInfo, paramContentType
+            )
+        }
+
+        if (typeof apiParamInfo.required === "boolean") {
+            paramInfo.required = apiParamInfo.required
+        }
+
+        paramInfo.description = apiParamInfo.description || ""
     }
 }

@@ -1,6 +1,5 @@
 import { inspect } from "util"
 
-import { LogLevel } from "../../../model/logging/LogLevel"
 import { ApiOperation } from "../../../model/open-api/ApiOperation"
 import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 

@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { api, apiController, apiOperation, apiRequest, apiResponse, body, rawBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/ts-lambda-api"
+import { api, apiController, apiOperation, apiRequest, apiResponse, body, rawBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE, queryParam} from "../../../dist/ts-lambda-api"
 
 import { ApiError } from "../test-components/model/ApiError"
 import { ArrayofPrimitivesExample } from '../test-components/model/ArrayOfPrimitivesExample'
@@ -138,5 +138,11 @@ export class OpenApiTestControllerController extends Controller {
     @apiResponse(204)
     public delete() {
         this.response.status(204).send("")
+    }
+
+    @GET("/query-info-test")
+    @apiOperation({name: "query info test", description: "go get query info stuff"})
+    public getQueryTest(@queryParam("test", { description: "test query param" }) test: string) {
+        this.response.status(200).send("")
     }
 }

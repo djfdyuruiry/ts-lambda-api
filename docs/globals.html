@@ -83,6 +83,7 @@
 								<li class="tsd-kind-class"><a href="classes/apilambdaapp.html" class="tsd-kind-icon">Api<wbr>Lambda<wbr>App</a></li>
 								<li class="tsd-kind-class"><a href="classes/apioperation.html" class="tsd-kind-icon">Api<wbr>Operation</a></li>
 								<li class="tsd-kind-class"><a href="classes/apioperationinfo.html" class="tsd-kind-icon">Api<wbr>Operation<wbr>Info</a></li>
+								<li class="tsd-kind-class"><a href="classes/apiparam.html" class="tsd-kind-icon">Api<wbr>Param</a></li>
 								<li class="tsd-kind-class"><a href="classes/apirequest.html" class="tsd-kind-icon">Api<wbr>Request</a></li>
 								<li class="tsd-kind-class"><a href="classes/apiresponse.html" class="tsd-kind-icon">Api<wbr>Response</a></li>
 								<li class="tsd-kind-class"><a href="classes/appconfig.html" class="tsd-kind-icon">App<wbr>Config</a></li>
@@ -280,7 +281,7 @@
 					<div class="tsd-signature tsd-kind-icon">Open<wbr>Api<wbr>Format<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"json"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"yml"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/open-api/OpenApiGenerator.ts#L27">api/open-api/OpenApiGenerator.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/open-api/OpenApiGenerator.ts#L28">api/open-api/OpenApiGenerator.ts:28</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -290,7 +291,7 @@
 					<div class="tsd-signature tsd-kind-icon">Parameter<wbr>Source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"query"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"header"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"path"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"cookie"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"virtual"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/parameters/IParameterExtractor.ts#L6">api/parameters/IParameterExtractor.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/parameters/IParameterExtractor.ts#L7">api/parameters/IParameterExtractor.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -567,7 +568,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/apiOperation.ts#L15">api/decorator/open-api/apiOperation.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/apiOperation.ts#L14">api/decorator/open-api/apiOperation.ts:14</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -601,7 +602,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/apiRequest.ts#L13">api/decorator/open-api/apiRequest.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/apiRequest.ts#L12">api/decorator/open-api/apiRequest.ts:12</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -633,7 +634,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/apiResponse.ts#L15">api/decorator/open-api/apiResponse.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/open-api/apiResponse.ts#L14">api/decorator/open-api/apiResponse.ts:14</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -962,13 +963,13 @@
 					<a name="header" class="tsd-anchor"></a>
 					<h3>header</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">header<span class="tsd-signature-symbol">(</span>headerName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+						<li class="tsd-signature tsd-kind-icon">header<span class="tsd-signature-symbol">(</span>headerName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, apiParamInfo<span class="tsd-signature-symbol">?: </span><a href="classes/apiparam.html" class="tsd-signature-type">ApiParam</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/header.ts#L11">api/decorator/context/parameters/header.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/header.ts#L12">api/decorator/context/parameters/header.ts:12</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -984,6 +985,9 @@
 									<div class="tsd-comment tsd-typography">
 										<p>The name of the header to inject.</p>
 									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> apiParamInfo: <a href="classes/apiparam.html" class="tsd-signature-type">ApiParam</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
@@ -1025,13 +1029,13 @@
 					<a name="pathparam" class="tsd-anchor"></a>
 					<h3>path<wbr>Param</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">path<wbr>Param<span class="tsd-signature-symbol">(</span>paramName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+						<li class="tsd-signature tsd-kind-icon">path<wbr>Param<span class="tsd-signature-symbol">(</span>paramName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, apiParamInfo<span class="tsd-signature-symbol">?: </span><a href="classes/apiparam.html" class="tsd-signature-type">ApiParam</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/pathParam.ts#L11">api/decorator/context/parameters/pathParam.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/pathParam.ts#L13">api/decorator/context/parameters/pathParam.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1046,6 +1050,12 @@
 									<h5>paramName: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The name of the path parameter to inject.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> apiParamInfo: <a href="classes/apiparam.html" class="tsd-signature-type">ApiParam</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>(Optional) OpenApi metadata about the path parameter.</p>
 									</div>
 								</li>
 							</ul>
@@ -1124,13 +1134,13 @@
 					<a name="queryparam" class="tsd-anchor"></a>
 					<h3>query<wbr>Param</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">query<wbr>Param<span class="tsd-signature-symbol">(</span>paramName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
+						<li class="tsd-signature tsd-kind-icon">query<wbr>Param<span class="tsd-signature-symbol">(</span>paramName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, apiParamInfo<span class="tsd-signature-symbol">?: </span><a href="classes/apiparam.html" class="tsd-signature-type">ApiParam</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">(Anonymous function)</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/queryParam.ts#L11">api/decorator/context/parameters/queryParam.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/api/decorator/context/parameters/queryParam.ts#L12">api/decorator/context/parameters/queryParam.ts:12</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1146,6 +1156,9 @@
 									<div class="tsd-comment tsd-typography">
 										<p>The name of the query parameter to inject.</p>
 									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> apiParamInfo: <a href="classes/apiparam.html" class="tsd-signature-type">ApiParam</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
@@ -1422,6 +1435,9 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/apioperationinfo.html" class="tsd-kind-icon">Api<wbr>Operation<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/apiparam.html" class="tsd-kind-icon">Api<wbr>Param</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/apirequest.html" class="tsd-kind-icon">Api<wbr>Request</a>

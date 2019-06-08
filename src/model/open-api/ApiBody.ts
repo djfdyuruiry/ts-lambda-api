@@ -35,8 +35,6 @@ export class ApiBody {
      * Class type that the content will store. This will
      * generate a schema in the OpenAPI spec for the given
      * type.
-     *
-     * If you specify this value, `type` is ignored.
      */
     public class?: Function
 

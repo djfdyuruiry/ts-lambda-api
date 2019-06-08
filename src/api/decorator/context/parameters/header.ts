@@ -1,3 +1,4 @@
+import { ApiParam } from "../../../../model/open-api/ApiParam"
 import { HeaderParameterExtractor } from "../../../parameters/HeaderParameterExtractor"
 import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 
@@ -8,11 +9,11 @@ import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
  *
  * @param headerName The name of the header to inject.
  */
-export function header(headerName: string) {
+export function header(headerName: string, apiParamInfo?: ApiParam) {
     return (classDefinition: Object | Function, methodName: string, paramIndex: number) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
-        endpoint.parameterExtractors[paramIndex] = new HeaderParameterExtractor(headerName)
+        endpoint.parameterExtractors[paramIndex] = new HeaderParameterExtractor(headerName, apiParamInfo)
     }
 }

@@ -1,12 +1,13 @@
 import { Request } from "lambda-api"
 
+import { ApiParam } from "../../model/open-api/ApiParam"
 import { BaseParameterExtractor } from "./BaseParameterExtractor"
 
 export class PathParameterExtractor extends BaseParameterExtractor {
     public readonly source = "path"
 
-    public constructor(public readonly name: string) {
-        super(PathParameterExtractor)
+    public constructor(public readonly name: string, apiParamInfo?: ApiParam) {
+        super(PathParameterExtractor, apiParamInfo)
     }
 
     public extract(request: Request) {
