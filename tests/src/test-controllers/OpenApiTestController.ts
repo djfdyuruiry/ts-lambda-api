@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { api, apiController, apiOperation, apiRequest, apiResponse, body, rawBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE, queryParam} from "../../../dist/ts-lambda-api"
+import { api, apiController, apiOperation, apiRequest, apiResponse, body, header, pathParam, queryParam, rawBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/ts-lambda-api"
 
 import { ApiError } from "../test-components/model/ApiError"
 import { ArrayofPrimitivesExample } from '../test-components/model/ArrayOfPrimitivesExample'
@@ -140,9 +140,27 @@ export class OpenApiTestControllerController extends Controller {
         this.response.status(204).send("")
     }
 
+    @GET("/path-info-test/:pathTest")
+    @apiOperation({name: "path info test", description: "go get query info stuff"})
+    public getPathTest(@pathParam("pathTest", { description: "test path param" }) test: string) {
+        this.response.status(200).send("")
+    }
+
     @GET("/query-info-test")
     @apiOperation({name: "query info test", description: "go get query info stuff"})
-    public getQueryTest(@queryParam("test", { description: "test query param" }) test: string) {
+    public getQueryTest(
+        @queryParam("queryTest", { description: "test query param", type: "int" }) test: string,
+        @queryParam("queryTest2", { description: "test query param 2", type: "int-array", required: true }) test2: string
+    ) {
+        this.response.status(200).send("")
+    }
+
+    @GET("/header-info-test")
+    @apiOperation({name: "header info test", description: "go get header info stuff"})
+    public getHeaderTest(
+        @header("x-test-header", { description: "test header param" }) test: string,
+        @header("x-test-header2", { description: "test header param 2", class: Person, style: "spaceDelimited", explode: true }) test2: string
+    ) {
         this.response.status(200).send("")
     }
 }

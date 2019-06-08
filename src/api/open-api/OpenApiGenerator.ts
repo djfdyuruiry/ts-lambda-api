@@ -725,6 +725,8 @@ export class OpenApiGenerator {
     }
 
     private addEndpointParameterInfo(paramInfo: ParameterObject, apiParamInfo: ApiParam) {
+        delete paramInfo.schema
+
         let mediaTypeObject: MediaTypeObject = {}
         let paramContentType = apiParamInfo.contentType || "text/plain"
 
@@ -733,10 +735,20 @@ export class OpenApiGenerator {
 
         if (apiParamInfo.type) {
             mediaTypeObject.schema = this.getPrimitiveTypeSchema(apiParamInfo)
+
+            if (apiParamInfo.type.endsWith("array")) {
+                this.setParamValueStyle(paramInfo, apiParamInfo)
+            }
         } else if (apiParamInfo.class) {
             this.addClassToMediaTypeObject(
                 mediaTypeObject, apiParamInfo, paramContentType
             )
+
+            this.setParamValueStyle(paramInfo, apiParamInfo)
+        } else {
+            apiParamInfo.type = "string"
+
+            mediaTypeObject.schema = this.getPrimitiveTypeSchema(apiParamInfo)
         }
 
         if (typeof apiParamInfo.required === "boolean") {
@@ -744,5 +756,13 @@ export class OpenApiGenerator {
         }
 
         paramInfo.description = apiParamInfo.description || ""
+    }
+
+    private setParamValueStyle(paramInfo: ParameterObject, apiParamInfo: ApiParam) {
+        paramInfo.style = apiParamInfo.style || "form"
+
+        if (typeof apiParamInfo.explode === "boolean") {
+            paramInfo.explode = apiParamInfo.explode
+        }
     }
 }
