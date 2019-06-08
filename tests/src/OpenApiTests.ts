@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 52
+    private static readonly ROUTE_COUNT = 53
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup
@@ -168,7 +168,7 @@ export class OpenApiTests extends TestBase {
     public async when_openapi_enabled_then_openapi_spec_contains_header_parameters_with_info(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/header-info-test", "get")
         let headerParameter = pathEndpoint.parameters[0] as ParameterObject
-        let schema: SchemaObject = headerParameter.content["text/plain"].schema
+        let schema: SchemaObject = headerParameter.schema
 
         Expect(headerParameter.in).toEqual("header")
         Expect(headerParameter.name).toEqual("x-test-header")
@@ -179,12 +179,11 @@ export class OpenApiTests extends TestBase {
         })
 
         headerParameter = pathEndpoint.parameters[1] as ParameterObject
-        schema = headerParameter.content["text/plain"].schema
+        schema = headerParameter.schema
 
         Expect(headerParameter.in).toEqual("header")
         Expect(headerParameter.name).toEqual("x-test-header2")
         Expect(headerParameter.description).toEqual("test header param 2")
-        Expect(headerParameter.style).toEqual("spaceDelimited")
         Expect(headerParameter.explode).toEqual(true)
         Expect(schema.type).toEqual("object")
         Expect(schema.properties).toEqual({
@@ -254,17 +253,15 @@ export class OpenApiTests extends TestBase {
     public async when_openapi_enabled_then_openapi_spec_contains_path_parameters_with_info(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/path-info-test/:pathTest", "get")
         let pathParameter = pathEndpoint.parameters[0] as ParameterObject
-        let contentSchema = pathParameter.content["text/plain"]
+        let contentSchema = pathParameter.schema
 
         Expect(pathParameter.in).toEqual("path")
         Expect(pathParameter.name).toEqual("pathTest")
         Expect(pathParameter.description).toEqual("test path param")
         Expect(pathParameter.required).toEqual(true)
         Expect(contentSchema).toEqual({
-            schema: {
-                example: "\"a string\"",
-                type: "string"
-            }
+            example: "\"a string\"",
+            type: "string"
         })
     }
 
@@ -286,7 +283,7 @@ export class OpenApiTests extends TestBase {
     public async when_openapi_enabled_then_openapi_spec_contains_query_parameters_with_info(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/query-info-test", "get")
         let queryParameter = pathEndpoint.parameters[0] as ParameterObject
-        let schema: SchemaObject = queryParameter.content["text/plain"].schema
+        let schema: SchemaObject = queryParameter.schema
 
         Expect(queryParameter.in).toEqual("query")
         Expect(queryParameter.name).toEqual("queryTest")
@@ -297,13 +294,13 @@ export class OpenApiTests extends TestBase {
         })
 
         queryParameter = pathEndpoint.parameters[1] as ParameterObject
-        schema = queryParameter.content["text/plain"].schema
+        schema = queryParameter.schema
 
         Expect(queryParameter.in).toEqual("query")
         Expect(queryParameter.name).toEqual("queryTest2")
         Expect(queryParameter.description).toEqual("test query param 2")
         Expect(queryParameter.required).toEqual(true)
-        Expect(queryParameter.style).toEqual("form")
+        Expect(queryParameter.style).toEqual("spaceDelimited")
         Expect(schema).toEqual({
             example: "[\n  1,\n  2,\n  3\n]",
             type: "array",

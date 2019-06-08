@@ -1,14 +1,15 @@
 import { OpenApiBuilder } from "openapi3-ts"
 import {
-    OperationObject,
-    PathItemObject,
-    ParameterObject,
     ContentObject,
-    ResponseObject,
-    TagObject,
-    RequestBodyObject,
     MediaTypeObject,
-    SchemaObject
+    OperationObject,
+    ParameterObject,
+    ParameterStyle,
+    PathItemObject,
+    RequestBodyObject,
+    ResponseObject,
+    SchemaObject,
+    TagObject
 } from "openapi3-ts/dist/model"
 
 import { MiddlewareRegistry } from "../MiddlewareRegistry"
@@ -80,6 +81,16 @@ export class OpenApiGenerator {
         "string": "a string",
         "string-array": ["1st string", "2nd string", "3rd string"]
     }
+    private static readonly FORBIDDEN_HEADER_PARAMS: string[] = [
+        "accept",
+        "content-type",
+        "authorization"
+    ]
+    private static readonly VALID_PATH_PARAM_STYLES: ParameterStyle[] = [
+        "simple",
+        "label",
+        "matrix"
+    ]
 
     private readonly logger: ILogger
 
@@ -703,6 +714,12 @@ export class OpenApiGenerator {
                 return
             }
 
+            if (p.source === "header" &&
+                OpenApiGenerator.FORBIDDEN_HEADER_PARAMS.includes(p.name.toLowerCase())) {
+                this.logger.debug("Parameters for header %s is forbidden by the OpenAPI v3 Spec", p.name)
+                return;
+            }
+
             let paramInfo: ParameterObject = {
                 in: p.source,
                 name: p.name,
@@ -725,13 +742,17 @@ export class OpenApiGenerator {
     }
 
     private addEndpointParameterInfo(paramInfo: ParameterObject, apiParamInfo: ApiParam) {
+        // remove any previously written schema
         delete paramInfo.schema
 
+        let paramContentType = apiParamInfo.contentType
         let mediaTypeObject: MediaTypeObject = {}
-        let paramContentType = apiParamInfo.contentType || "text/plain"
 
-        paramInfo.content = {}
-        paramInfo.content[paramContentType] = mediaTypeObject
+        if (paramContentType) {
+            // we have a content type, use it in the param info
+            paramInfo.content = {}
+            paramInfo.content[paramContentType] = mediaTypeObject
+        }
 
         if (apiParamInfo.type) {
             mediaTypeObject.schema = this.getPrimitiveTypeSchema(apiParamInfo)
@@ -751,6 +772,17 @@ export class OpenApiGenerator {
             mediaTypeObject.schema = this.getPrimitiveTypeSchema(apiParamInfo)
         }
 
+        if (!paramInfo.content) {
+            // we don't have info in content, place schema and example inside param info
+            if (mediaTypeObject.schema) {
+                paramInfo.schema = mediaTypeObject.schema
+            }
+
+            if (mediaTypeObject.example) {
+                paramInfo.example = mediaTypeObject.example
+            }
+        }
+
         if (typeof apiParamInfo.required === "boolean") {
             paramInfo.required = apiParamInfo.required
         }
@@ -759,10 +791,36 @@ export class OpenApiGenerator {
     }
 
     private setParamValueStyle(paramInfo: ParameterObject, apiParamInfo: ApiParam) {
-        paramInfo.style = apiParamInfo.style || "form"
+        if (paramInfo.content) {
+            // can't set style or explode if a content type is provided
+            return
+        }
 
         if (typeof apiParamInfo.explode === "boolean") {
             paramInfo.explode = apiParamInfo.explode
+        }
+
+        if (!apiParamInfo.style) {
+            return
+        }
+
+        if (paramInfo.in === "header" && apiParamInfo.style) {
+            this.logger.debug(
+                "Header parameters only support the simple style, style '%s' ignored",
+                apiParamInfo.style
+            )
+
+            return
+        }
+
+        if (paramInfo.in === "path") {
+            if (OpenApiGenerator.VALID_PATH_PARAM_STYLES.includes(apiParamInfo.style)) {
+                paramInfo.style = apiParamInfo.style
+            } else {
+                this.logger.debug("'%s' is not a valid path param style", apiParamInfo.style)
+            }
+        } else {
+            paramInfo.style = apiParamInfo.style
         }
     }
 }

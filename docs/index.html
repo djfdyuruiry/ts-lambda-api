@@ -1226,6 +1226,40 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
 							</li>
 						</ol>
 					</li>
+					<li><p>Describe the path, query and header parameters consumed by your endpoints:</p>
+						<pre><code class="language-typescript">  <span class="hljs-comment">// the below uses the same options used to describe api requests and responses</span>
+  <span class="hljs-meta">@GET</span>()
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">get</span>(
+      <span class="hljs-meta">@queryParam</span>(<span class="hljs-string">"param"</span>, { description: <span class="hljs-string">"whatever you like"</span>, <span class="hljs-keyword">type</span>: <span class="hljs-string">"int"</span> }) param: <span class="hljs-built_in">string</span>
+  ) {
+      <span class="hljs-comment">// remember, defining a type does not affect the parameter type, will always be a string</span>
+      <span class="hljs-keyword">return</span> param
+  }
+
+  <span class="hljs-comment">// You can mark query and header params as required or not,</span>
+  <span class="hljs-comment">// path parameters are always set to required.</span>
+  <span class="hljs-meta">@GET</span>()
+  <span class="hljs-keyword">public</span> getAnotherThing(
+      <span class="hljs-meta">@header</span>(<span class="hljs-string">"x-param"</span>, { required: <span class="hljs-literal">true</span> }) param: <span class="hljs-built_in">string</span>
+  ) {
+      <span class="hljs-comment">// remember, defining required will not perform any validation, null/undefined will</span>
+      <span class="hljs-comment">// still be passed if the parameter is missing from the request</span>
+      <span class="hljs-keyword">return</span> param
+  }
+
+  <span class="hljs-comment">// When expecting an object/array, you can pass in the</span>
+  <span class="hljs-comment">// expected formatting style, defaults to 'form'.</span>
+  <span class="hljs-comment">//</span>
+  <span class="hljs-comment">// For help with the `style` field, see: https://swagger.io/docs/specification/serialization/</span>
+  <span class="hljs-meta">@GET</span>()
+  <span class="hljs-keyword">public</span> getAnotherThing(
+      <span class="hljs-meta">@queryParam</span>(<span class="hljs-string">"param"</span>, { <span class="hljs-keyword">type</span>: <span class="hljs-string">"int-array"</span>, style: <span class="hljs-string">"pipeDelimited"</span> }) param: <span class="hljs-built_in">string</span>
+  ) {
+      <span class="hljs-comment">// we would expect param to be passed in the query string as 'param=1|2|3|4'</span>
+      <span class="hljs-keyword">return</span> param
+  }</code></pre>
+						<p>  <em>Note: Setting a content type for your parameter is supported, but due to an outstanding issue, these parameters will not display in Swagger UI / Editor, see: <a href="https://github.com/swagger-api/swagger-ui/issues/4442">https://github.com/swagger-api/swagger-ui/issues/4442</a></em></p>
+					</li>
 					<li><p>Add security schemes to your specification (other than Basic auth) using <code>apiSecurity</code> on your authentication filter:</p>
 						<pre><code class="language-typescript">  <span class="hljs-keyword">import</span> { apiSecurity, IAuthFilter } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 

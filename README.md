@@ -1460,6 +1460,44 @@ To further document your API endpoints you can use OpenAPI decorators.
 
     *This is required because object properties are not set until a value is assigned, which makes any sort of reflection impossible.*
 
+- Describe the path, query and header parameters consumed by your endpoints:
+
+    ```typescript
+    // the below uses the same options used to describe api requests and responses
+    @GET()
+    public get(
+        @queryParam("param", { description: "whatever you like", type: "int" }) param: string
+    ) {
+        // remember, defining a type does not affect the parameter type, will always be a string
+        return param
+    }
+
+    // You can mark query and header params as required or not,
+    // path parameters are always set to required.
+    @GET()
+    public getAnotherThing(
+        @header("x-param", { required: true }) param: string
+    ) {
+        // remember, defining required will not perform any validation, null/undefined will
+        // still be passed if the parameter is missing from the request
+        return param
+    }
+
+    // When expecting an object/array, you can pass in the
+    // expected formatting style, defaults to 'form'.
+    //
+    // For help with the `style` field, see: https://swagger.io/docs/specification/serialization/
+    @GET()
+    public getAnotherThing(
+        @queryParam("param", { type: "int-array", style: "pipeDelimited" }) param: string
+    ) {
+        // we would expect param to be passed in the query string as 'param=1|2|3|4'
+        return param
+    }
+    ```
+
+    *Note: Setting a content type for your parameter is supported, but due to an outstanding issue, these parameters will not display in Swagger UI / Editor, see: https://github.com/swagger-api/swagger-ui/issues/4442*
+
 - Add security schemes to your specification (other than Basic auth) using `apiSecurity` on your authentication filter:
 
     ```typescript
