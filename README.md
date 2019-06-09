@@ -1503,6 +1503,16 @@ To further document your API endpoints you can use OpenAPI decorators.
         // we would expect param to be passed in the query string as 'param=1|2|3|4'
         return param
     }
+
+    // you can specify a content type if the string is expected to be JSON etc.
+    @GET()
+    public getHeaderTest(
+        @header("x-custom-header", { class: Person, contentType: "application/json" }) customHeader: string
+    ) {
+        let person: Person = JSON.parse(customHeader)
+
+        return person
+    }
     ```
 
     *Path parameters support the following styles: simple, label, matrix*
