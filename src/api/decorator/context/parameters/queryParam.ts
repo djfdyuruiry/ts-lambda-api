@@ -1,3 +1,4 @@
+import { ApiParam } from "../../../../model/open-api/ApiParam"
 import { QueryParameterExtractor } from "../../../parameters/QueryParameterExtractor"
 import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
 
@@ -8,11 +9,11 @@ import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
  *
  * @param paramName The name of the query parameter to inject.
  */
-export function queryParam(paramName: string) {
+export function queryParam(paramName: string, apiParamInfo?: ApiParam) {
     return (classDefinition: Object | Function, methodName: string, paramIndex: number) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
-        endpoint.parameterExtractors[paramIndex] = new QueryParameterExtractor(paramName)
+        endpoint.parameterExtractors[paramIndex] = new QueryParameterExtractor(paramName, apiParamInfo)
     }
 }

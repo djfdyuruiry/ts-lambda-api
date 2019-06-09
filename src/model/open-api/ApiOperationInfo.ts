@@ -19,8 +19,7 @@ export class ApiOperationInfo extends ApiOperation {
     }
 
     /**
-     * Copy any properties from another instance that are not
-     * set in this instance.
+     * Copy valid properties from another instance.
      */
     public mergeInfo(otherInstance: ApiOperation) {
         if (otherInstance.name) {
@@ -41,8 +40,7 @@ export class ApiOperationInfo extends ApiOperation {
     }
 
     /**
-     * Copy any properties from another instance responses
-     * that are not set in this instance's responses.
+     * Copy valid properties from another instance responses.
      *
      * See [[ApiBodyInfo]]
      */

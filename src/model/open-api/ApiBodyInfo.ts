@@ -5,8 +5,7 @@ import { ApiBody } from "./ApiBody"
  */
 export class ApiBodyInfo extends ApiBody {
     /**
-     * Copy any properties from another instance that are not
-     * set in this instance.
+     * Copy any valid properties from another instance.
      */
     public mergeInfo(otherInstance: ApiBody) {
         if (otherInstance.class) {

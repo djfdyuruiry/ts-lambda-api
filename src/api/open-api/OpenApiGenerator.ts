@@ -1,14 +1,15 @@
 import { OpenApiBuilder } from "openapi3-ts"
 import {
-    OperationObject,
-    PathItemObject,
-    ParameterObject,
     ContentObject,
-    ResponseObject,
-    TagObject,
-    RequestBodyObject,
     MediaTypeObject,
-    SchemaObject
+    OperationObject,
+    ParameterObject,
+    ParameterStyle,
+    PathItemObject,
+    RequestBodyObject,
+    ResponseObject,
+    SchemaObject,
+    TagObject
 } from "openapi3-ts/dist/model"
 
 import { MiddlewareRegistry } from "../MiddlewareRegistry"
@@ -16,6 +17,7 @@ import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
 import { BasicAuthFilter } from "../security/BasicAuthFilter"
 import { AppConfig } from "../../model/AppConfig"
 import { ApiBodyInfo } from "../../model/open-api/ApiBodyInfo"
+import { ApiParam } from "../../model/open-api/ApiParam"
 import { ControllerInfo } from "../../model/reflection/ControllerInfo"
 import { EndpointInfo } from "../../model/reflection/EndpointInfo"
 import { IDictionary } from "../../util/IDictionary"
@@ -79,6 +81,20 @@ export class OpenApiGenerator {
         "string": "a string",
         "string-array": ["1st string", "2nd string", "3rd string"]
     }
+    private static readonly FORBIDDEN_HEADER_PARAMS: string[] = [
+        "accept",
+        "content-type",
+        "authorization"
+    ]
+    private static readonly VALID_PATH_PARAM_STYLES: ParameterStyle[] = [
+        "simple",
+        "label",
+        "matrix"
+    ]
+    private static readonly VALID_QUERY_OBJECT_PARAM_STYLES: ParameterStyle[] = [
+        "form",
+        "deepObject"
+    ]
 
     private readonly logger: ILogger
 
@@ -326,6 +342,8 @@ export class OpenApiGenerator {
             requestInfo
         )
 
+        requestInfo.contentType = operationRequestType
+
         if (!requestInfo || (!requestInfo.type && !requestInfo.class)) {
             this.logger.trace("No request type info found for endpoint: %s", endpointInfo.name)
 
@@ -413,7 +431,10 @@ export class OpenApiGenerator {
             // user defined response body info
             let responseContent: ContentObject = {}
             let mediaTypeObject: MediaTypeObject = {}
-            let responseType = (apiBodyInfo.contentType || responseContentType).toLowerCase()
+
+            apiBodyInfo.contentType = (apiBodyInfo.contentType || responseContentType).toLowerCase()
+
+            let responseType = apiBodyInfo.contentType
 
             responseContent[responseType] = mediaTypeObject
 
@@ -474,7 +495,7 @@ export class OpenApiGenerator {
         }
     }
 
-    private getPrimitiveTypeSchema(apiBodyInfo: ApiBodyInfo) {
+    private getPrimitiveTypeSchema(apiBodyInfo: ApiBodyInfo | ApiParam) {
         let type = apiBodyInfo.type.toLowerCase()
 
         if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
@@ -488,14 +509,23 @@ export class OpenApiGenerator {
         if (type !== "file") {
             this.logger.trace("Setting body to type: %s", type)
 
-            let schema = {
-                example: this.getPrimitiveTypeExample(apiBodyInfo.type),
+            let schema: SchemaObject = {
                 type: schemaType
             }
 
             if (schemaType === "array") {
                 this.addPrimitiveArrayInfoToSchema(schema, apiBodyInfo.type)
             }
+
+            if (schemaType === "array" || schemaType === "object") {
+                if (!apiBodyInfo.contentType ||
+                    apiBodyInfo.contentType.toLowerCase() !== "application/json") {
+                    // exclude object or array examples if content type is non-json
+                    return schema
+                }
+            }
+
+            schema.example = this.getPrimitiveTypeExample(type)
 
             return schema
         } else {
@@ -539,7 +569,7 @@ export class OpenApiGenerator {
 
     private addClassToMediaTypeObject(
         mediaTypeObject: MediaTypeObject,
-        apiBodyInfo: ApiBodyInfo,
+        apiBodyInfo: ApiBodyInfo | ApiParam,
         responseContentType: string
     ) {
         let clazz: any = apiBodyInfo.class
@@ -702,10 +732,20 @@ export class OpenApiGenerator {
                 return
             }
 
+            if (p.source === "header" &&
+                OpenApiGenerator.FORBIDDEN_HEADER_PARAMS.includes(p.name.toLowerCase())) {
+                this.logger.debug("Parameter for header %s is forbidden by the OpenAPI v3 Spec", p.name)
+                return;
+            }
+
             let paramInfo: ParameterObject = {
                 in: p.source,
                 name: p.name,
                 schema: {} // required, or breaks query parameters
+            }
+
+            if (p.apiParamInfo) {
+                this.addEndpointParameterInfo(paramInfo, p.apiParamInfo)
             }
 
             if (p.source === "path") {
@@ -717,5 +757,106 @@ export class OpenApiGenerator {
         })
 
         this.logger.trace("Setting path parameters: %j", endpointOperation.parameters)
+    }
+
+    private addEndpointParameterInfo(paramInfo: ParameterObject, apiParamInfo: ApiParam) {
+        // remove any previously written schema
+        delete paramInfo.schema
+
+        let paramContentType = apiParamInfo.contentType
+        let mediaTypeObject: MediaTypeObject = {}
+
+        if (paramContentType) {
+            // we have a content type, use it in the param info
+            paramInfo.content = {}
+            paramInfo.content[paramContentType] = mediaTypeObject
+        }
+
+        if (apiParamInfo.type) {
+            mediaTypeObject.schema = this.getPrimitiveTypeSchema(apiParamInfo)
+
+            if (apiParamInfo.type.endsWith("array")) {
+                this.setParamValueStyle(paramInfo, apiParamInfo)
+            }
+        } else if (apiParamInfo.class) {
+            this.addClassToMediaTypeObject(
+                mediaTypeObject, apiParamInfo, paramContentType
+            )
+
+            this.setParamValueStyle(paramInfo, apiParamInfo)
+        } else {
+            apiParamInfo.type = "string"
+
+            mediaTypeObject.schema = this.getPrimitiveTypeSchema(apiParamInfo)
+        }
+
+        if (apiParamInfo.example) {
+            mediaTypeObject.example = apiParamInfo.example
+        }
+
+        if (!paramInfo.content) {
+            // we don't have info in content, place schema and example inside param info
+            if (mediaTypeObject.schema) {
+                paramInfo.schema = mediaTypeObject.schema
+            }
+
+            if (mediaTypeObject.example) {
+                paramInfo.example = mediaTypeObject.example
+            }
+        }
+
+        if (typeof apiParamInfo.required === "boolean") {
+            paramInfo.required = apiParamInfo.required
+        }
+
+        if (apiParamInfo.description) {
+            paramInfo.description = apiParamInfo.description
+        }
+    }
+
+    private setParamValueStyle(paramInfo: ParameterObject, apiParamInfo: ApiParam) {
+        if (paramInfo.content) {
+            // can't set style or explode if a content type is provided
+            return
+        }
+
+        if (typeof apiParamInfo.explode === "boolean") {
+            paramInfo.explode = apiParamInfo.explode
+        }
+
+        if (!apiParamInfo.style) {
+            return
+        }
+
+        if (paramInfo.in === "header" && apiParamInfo.style !== "simple") {
+            this.logger.debug(
+                "Header parameters only support the simple style, style '%s' ignored",
+                apiParamInfo.style
+            )
+
+            return
+        }
+
+        if (paramInfo.in === "path") {
+            if (!OpenApiGenerator.VALID_PATH_PARAM_STYLES.includes(apiParamInfo.style)) {
+                this.logger.debug("'%s' is not a valid path param style", apiParamInfo.style)
+                return
+            }
+        }
+
+        if (paramInfo.in === "query") {
+            if (!apiParamInfo.class && apiParamInfo.style === "deepObject") {
+                this.logger.debug("'deepObject' style is only supported for object query string parameters")
+                return
+            }
+
+            if (apiParamInfo.class &&
+                !OpenApiGenerator.VALID_QUERY_OBJECT_PARAM_STYLES.includes(apiParamInfo.style)) {
+                this.logger.debug("'%s' is not a valid style for object query string parameters", paramInfo.style)
+                return
+            }
+        }
+
+        paramInfo.style = apiParamInfo.style
     }
 }

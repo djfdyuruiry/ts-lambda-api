@@ -1,9 +1,14 @@
+[![npm](https://img.shields.io/npm/v/ts-lambda-api.svg?style=flat-square)](https://www.npmjs.com/package/ts-lambda-api) [![downloads](https://img.shields.io/npm/dw/ts-lambda-api.svg?style=flat-square)](https://travis-ci.com/djfdyuruiry/ts-lambda-api)
+
+[![build](https://img.shields.io/travis/com/djfdyuruiry/ts-lambda-api.svg?style=flat-square)](https://travis-ci.com/djfdyuruiry/ts-lambda-api) [![dependencies](https://img.shields.io/david/djfdyuruiry/ts-lambda-api.svg?style=flat-square)](https://github.com/djfdyuruiry/ts-lambda-api/network/dependencies)
+
 # ts-lambda-api
 
 Build REST API's using Typescript & AWS Lambda.
 
-[NPM Package](https://www.npmjs.com/package/ts-lambda-api)
 [GitHub Repo](https://github.com/djfdyuruiry/ts-lambda-api/)
+
+[![NPM](https://nodei.co/npm/ts-lambda-api.png)](https://nodei.co/npm/ts-lambda-api/)
 
 Read the full `typedoc` documentation: https://djfdyuruiry.github.io/ts-lambda-api/
 
@@ -1366,22 +1371,31 @@ To further document your API endpoints you can use OpenAPI decorators.
         return person
     }
 
-    // using primitive types ("boolean", "double", "int", "number" or "string")
+    // using primitive types ("boolean", "double", "int", "number", "object" or "string")
     @POST("/plain")
-    @apiOperation({ name: "add some plain stuff", description: "go get some plain stuff"})
-    @apiRequest({type: "string"})
-    @apiResponse(200, {type: "string"})
-    public postString(@body stuff: string) {
+    @apiOperation({ name: "add some plain stuff", description: "plain stuff"})
+    @apiRequest({type: "int"})
+    @apiResponse(200, {type: "int"})
+    public postNumber(@body stuff: number) {
+        return stuff
+    }
+
+    // using array types ("array", "array-array", "boolean-array", "double-array", "int-array", "number-array", "object-array" or "string-array")
+    @POST("/array")
+    @apiOperation({ name: "add array", description: "array time"})
+    @apiRequest({type: "string-array"})
+    @apiResponse(200, {type: "string-array"})
+    public postArray(@body stuff: string[]) {
         return stuff
     }
 
     // upload/download files
     @POST("/files")
-    @apiOperation({ name: "add file", description: "upload a file"})
+    @apiOperation({ name: "add file", description: "give me a file"})
     @apiRequest({contentType: "application/octet-stream", type: "file"}) // contentType can be used in any request or response definition, inherits controller or endpoint type by default
     @apiResponse(201, {contentType: "application/octet-stream", type: "file"})
-    public postFile(@body fileContents: string) {
-        return fileContents
+    public postFile(@rawBody file: Buffer) {
+        this.response.sendFile(file)
     }
 
     // providing custom request/response body example
@@ -1455,6 +1469,58 @@ To further document your API endpoints you can use OpenAPI decorators.
 
     *This is required because object properties are not set until a value is assigned, which makes any sort of reflection impossible.*
 
+- Describe the path, query and header parameters consumed by your endpoints:
+
+    ```typescript
+    // the below uses the same options used to describe api requests and responses
+    @GET()
+    public get(
+        @queryParam("param", { description: "whatever you like", type: "int" }) param: string
+    ) {
+        // remember, defining a type does not affect the parameter type, will always be a string
+        return param
+    }
+
+    // You can mark query and header params as required or not,
+    // path parameters are always set to required.
+    @GET()
+    public getAnotherThing(
+        @header("x-param", { required: true }) param: string
+    ) {
+        // remember, defining required will not perform any validation, null/undefined will
+        // still be passed if the parameter is missing from the request
+        return param
+    }
+
+    // When expecting an object/array, you can pass in the
+    // expected formatting style.
+    //
+    // For help with the `style` field, see: https://swagger.io/docs/specification/serialization/
+    @GET()
+    public getAnotherThing(
+        @queryParam("param", { type: "int-array", style: "pipeDelimited", explode: false }) param: string
+    ) {
+        // we would expect param to be passed in the query string as 'param=1|2|3|4'
+        return param
+    }
+
+    // you can specify a content type if the string is expected to be JSON etc.
+    @GET()
+    public getHeaderTest(
+        @header("x-custom-header", { class: Person, contentType: "application/json" }) customHeader: string
+    ) {
+        let person: Person = JSON.parse(customHeader)
+
+        return person
+    }
+    ```
+
+    *Path parameters support the following styles: simple, label, matrix*
+
+    *Header parameters only support the 'simple' style*
+
+    *Note: Setting a content type for your parameter is supported, but due to an outstanding issue, these parameters will not display in Swagger UI / Editor, see: https://github.com/swagger-api/swagger-ui/issues/4442*
+
 - Add security schemes to your specification (other than Basic auth) using `apiSecurity` on your authentication filter:
 
     ```typescript
@@ -1509,25 +1575,3 @@ const app = new ApiLambdaApp(controllersPath, appConfig)
 For local dev testing and integration with functional tests see the [ts-lambda-api-local](https://www.npmjs.com/package/ts-lambda-api-local) package which enables hosting your API using express as a local HTTP server.
 
 Check out this project's dev dependencies to see what is required to test API code. The `tests` directory of this repo contains some acceptance tests which will show you how to build mock requests and invoke your application.
-
----
-
-## <a id="useful-links"></a>Useful links
-
----
-
-https://blog.risingstack.com/building-a-node-js-app-with-typescript-tutorial/
-
-https://github.com/jeremydaly/lambda-api
-
-https://codeburst.io/typescript-node-starter-simplified-60c7b7d99e27
-
-https://www.typescriptlang.org/docs/handbook/decorators.html
-
-https://medium.com/@samueleresca/inversion-of-control-and-dependency-injection-in-typescript-3040d568aabe
-
-https://github.com/inversify/InversifyJS
-
-https://www.npmjs.com/package/marky
-
-https://www.meziantou.net/2018/01/11/aspect-oriented-programming-in-typescript

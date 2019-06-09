@@ -64,10 +64,12 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
+				<p><a href="https://www.npmjs.com/package/ts-lambda-api"><img src="https://img.shields.io/npm/v/ts-lambda-api.svg?style=flat-square" alt="npm"></a> <a href="https://travis-ci.com/djfdyuruiry/ts-lambda-api"><img src="https://img.shields.io/npm/dw/ts-lambda-api.svg?style=flat-square" alt="downloads"></a></p>
+				<p><a href="https://travis-ci.com/djfdyuruiry/ts-lambda-api"><img src="https://img.shields.io/travis/com/djfdyuruiry/ts-lambda-api.svg?style=flat-square" alt="build"></a> <a href="https://github.com/djfdyuruiry/ts-lambda-api/network/dependencies"><img src="https://img.shields.io/david/djfdyuruiry/ts-lambda-api.svg?style=flat-square" alt="dependencies"></a></p>
 				<h1 id="ts-lambda-api">ts-lambda-api</h1>
 				<p>Build REST API&#39;s using Typescript &amp; AWS Lambda.</p>
-				<p><a href="https://www.npmjs.com/package/ts-lambda-api">NPM Package</a>
-				<a href="https://github.com/djfdyuruiry/ts-lambda-api/">GitHub Repo</a></p>
+				<p><a href="https://github.com/djfdyuruiry/ts-lambda-api/">GitHub Repo</a></p>
+				<p><a href="https://nodei.co/npm/ts-lambda-api/"><img src="https://nodei.co/npm/ts-lambda-api.png" alt="NPM"></a></p>
 				<p>Read the full <code>typedoc</code> documentation: <a href="https://djfdyuruiry.github.io/ts-lambda-api/">https://djfdyuruiry.github.io/ts-lambda-api/</a></p>
 				<p>Framework Features:</p>
 				<ul>
@@ -1143,22 +1145,31 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
       <span class="hljs-keyword">return</span> person
   }
 
-  <span class="hljs-comment">// using primitive types ("boolean", "double", "int", "number" or "string")</span>
+  <span class="hljs-comment">// using primitive types ("boolean", "double", "int", "number", "object" or "string")</span>
   <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/plain"</span>)
-  <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add some plain stuff"</span>, description: <span class="hljs-string">"go get some plain stuff"</span>})
-  <span class="hljs-meta">@apiRequest</span>({<span class="hljs-keyword">type</span>: <span class="hljs-string">"string"</span>})
-  <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">200</span>, {<span class="hljs-keyword">type</span>: <span class="hljs-string">"string"</span>})
-  <span class="hljs-keyword">public</span> postString(<span class="hljs-meta">@body</span> stuff: <span class="hljs-built_in">string</span>) {
+  <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add some plain stuff"</span>, description: <span class="hljs-string">"plain stuff"</span>})
+  <span class="hljs-meta">@apiRequest</span>({<span class="hljs-keyword">type</span>: <span class="hljs-string">"int"</span>})
+  <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">200</span>, {<span class="hljs-keyword">type</span>: <span class="hljs-string">"int"</span>})
+  <span class="hljs-keyword">public</span> postNumber(<span class="hljs-meta">@body</span> stuff: <span class="hljs-built_in">number</span>) {
+      <span class="hljs-keyword">return</span> stuff
+  }
+
+  <span class="hljs-comment">// using array types ("array", "array-array", "boolean-array", "double-array", "int-array", "number-array", "object-array" or "string-array")</span>
+  <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/array"</span>)
+  <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add array"</span>, description: <span class="hljs-string">"array time"</span>})
+  <span class="hljs-meta">@apiRequest</span>({<span class="hljs-keyword">type</span>: <span class="hljs-string">"string-array"</span>})
+  <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">200</span>, {<span class="hljs-keyword">type</span>: <span class="hljs-string">"string-array"</span>})
+  <span class="hljs-keyword">public</span> postArray(<span class="hljs-meta">@body</span> stuff: <span class="hljs-built_in">string</span>[]) {
       <span class="hljs-keyword">return</span> stuff
   }
 
   <span class="hljs-comment">// upload/download files</span>
   <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/files"</span>)
-  <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add file"</span>, description: <span class="hljs-string">"upload a file"</span>})
+  <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add file"</span>, description: <span class="hljs-string">"give me a file"</span>})
   <span class="hljs-meta">@apiRequest</span>({contentType: <span class="hljs-string">"application/octet-stream"</span>, <span class="hljs-keyword">type</span>: <span class="hljs-string">"file"</span>}) <span class="hljs-comment">// contentType can be used in any request or response definition, inherits controller or endpoint type by default</span>
   <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">201</span>, {contentType: <span class="hljs-string">"application/octet-stream"</span>, <span class="hljs-keyword">type</span>: <span class="hljs-string">"file"</span>})
-  <span class="hljs-keyword">public</span> postFile(<span class="hljs-meta">@body</span> fileContents: <span class="hljs-built_in">string</span>) {
-      <span class="hljs-keyword">return</span> fileContents
+  <span class="hljs-keyword">public</span> postFile(<span class="hljs-meta">@rawBody</span> file: Buffer) {
+      <span class="hljs-keyword">this</span>.response.sendFile(file)
   }
 
   <span class="hljs-comment">// providing custom request/response body example</span>
@@ -1224,6 +1235,52 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
 							</li>
 						</ol>
 					</li>
+					<li><p>Describe the path, query and header parameters consumed by your endpoints:</p>
+						<pre><code class="language-typescript">  <span class="hljs-comment">// the below uses the same options used to describe api requests and responses</span>
+  <span class="hljs-meta">@GET</span>()
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">get</span>(
+      <span class="hljs-meta">@queryParam</span>(<span class="hljs-string">"param"</span>, { description: <span class="hljs-string">"whatever you like"</span>, <span class="hljs-keyword">type</span>: <span class="hljs-string">"int"</span> }) param: <span class="hljs-built_in">string</span>
+  ) {
+      <span class="hljs-comment">// remember, defining a type does not affect the parameter type, will always be a string</span>
+      <span class="hljs-keyword">return</span> param
+  }
+
+  <span class="hljs-comment">// You can mark query and header params as required or not,</span>
+  <span class="hljs-comment">// path parameters are always set to required.</span>
+  <span class="hljs-meta">@GET</span>()
+  <span class="hljs-keyword">public</span> getAnotherThing(
+      <span class="hljs-meta">@header</span>(<span class="hljs-string">"x-param"</span>, { required: <span class="hljs-literal">true</span> }) param: <span class="hljs-built_in">string</span>
+  ) {
+      <span class="hljs-comment">// remember, defining required will not perform any validation, null/undefined will</span>
+      <span class="hljs-comment">// still be passed if the parameter is missing from the request</span>
+      <span class="hljs-keyword">return</span> param
+  }
+
+  <span class="hljs-comment">// When expecting an object/array, you can pass in the</span>
+  <span class="hljs-comment">// expected formatting style.</span>
+  <span class="hljs-comment">//</span>
+  <span class="hljs-comment">// For help with the `style` field, see: https://swagger.io/docs/specification/serialization/</span>
+  <span class="hljs-meta">@GET</span>()
+  <span class="hljs-keyword">public</span> getAnotherThing(
+      <span class="hljs-meta">@queryParam</span>(<span class="hljs-string">"param"</span>, { <span class="hljs-keyword">type</span>: <span class="hljs-string">"int-array"</span>, style: <span class="hljs-string">"pipeDelimited"</span>, explode: <span class="hljs-literal">false</span> }) param: <span class="hljs-built_in">string</span>
+  ) {
+      <span class="hljs-comment">// we would expect param to be passed in the query string as 'param=1|2|3|4'</span>
+      <span class="hljs-keyword">return</span> param
+  }
+
+  <span class="hljs-comment">// you can specify a content type if the string is expected to be JSON etc.</span>
+  <span class="hljs-meta">@GET</span>()
+  <span class="hljs-keyword">public</span> getHeaderTest(
+      <span class="hljs-meta">@header</span>(<span class="hljs-string">"x-custom-header"</span>, { <span class="hljs-keyword">class</span>: Person, contentType: <span class="hljs-string">"application/json"</span> }) customHeader: <span class="hljs-built_in">string</span>
+  ) {
+      <span class="hljs-keyword">let</span> person: Person = <span class="hljs-built_in">JSON</span>.parse(customHeader)
+
+      <span class="hljs-keyword">return</span> person
+  }</code></pre>
+						<p>  <em>Path parameters support the following styles: simple, label, matrix</em></p>
+						<p>  <em>Header parameters only support the &#39;simple&#39; style</em></p>
+						<p>  <em>Note: Setting a content type for your parameter is supported, but due to an outstanding issue, these parameters will not display in Swagger UI / Editor, see: <a href="https://github.com/swagger-api/swagger-ui/issues/4442">https://github.com/swagger-api/swagger-ui/issues/4442</a></em></p>
+					</li>
 					<li><p>Add security schemes to your specification (other than Basic auth) using <code>apiSecurity</code> on your authentication filter:</p>
 						<pre><code class="language-typescript">  <span class="hljs-keyword">import</span> { apiSecurity, IAuthFilter } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
@@ -1261,17 +1318,6 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 				<hr>
 				<p>For local dev testing and integration with functional tests see the <a href="https://www.npmjs.com/package/ts-lambda-api-local">ts-lambda-api-local</a> package which enables hosting your API using express as a local HTTP server.</p>
 				<p>Check out this project&#39;s dev dependencies to see what is required to test API code. The <code>tests</code> directory of this repo contains some acceptance tests which will show you how to build mock requests and invoke your application.</p>
-				<hr>
-				<h2 id="-a-id-useful-links-a-useful-links"><a id="useful-links"></a>Useful links</h2>
-				<hr>
-				<p><a href="https://blog.risingstack.com/building-a-node-js-app-with-typescript-tutorial/">https://blog.risingstack.com/building-a-node-js-app-with-typescript-tutorial/</a></p>
-				<p><a href="https://github.com/jeremydaly/lambda-api">https://github.com/jeremydaly/lambda-api</a></p>
-				<p><a href="https://codeburst.io/typescript-node-starter-simplified-60c7b7d99e27">https://codeburst.io/typescript-node-starter-simplified-60c7b7d99e27</a></p>
-				<p><a href="https://www.typescriptlang.org/docs/handbook/decorators.html">https://www.typescriptlang.org/docs/handbook/decorators.html</a></p>
-				<p><a href="https://medium.com/@samueleresca/inversion-of-control-and-dependency-injection-in-typescript-3040d568aabe">https://medium.com/@samueleresca/inversion-of-control-and-dependency-injection-in-typescript-3040d568aabe</a></p>
-				<p><a href="https://github.com/inversify/InversifyJS">https://github.com/inversify/InversifyJS</a></p>
-				<p><a href="https://www.npmjs.com/package/marky">https://www.npmjs.com/package/marky</a></p>
-				<p><a href="https://www.meziantou.net/2018/01/11/aspect-oriented-programming-in-typescript">https://www.meziantou.net/2018/01/11/aspect-oriented-programming-in-typescript</a></p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -1307,6 +1353,9 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/apioperationinfo.html" class="tsd-kind-icon">Api<wbr>Operation<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/apiparam.html" class="tsd-kind-icon">Api<wbr>Param</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/apirequest.html" class="tsd-kind-icon">Api<wbr>Request</a>

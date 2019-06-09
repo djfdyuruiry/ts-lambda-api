@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 49
+    private static readonly ROUTE_COUNT = 52
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup
@@ -165,6 +165,71 @@ export class OpenApiTests extends TestBase {
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_header_parameters_with_info(specFormat: string) {
+        let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/header-info-test", "get")
+        let headerParameter = pathEndpoint.parameters[0] as ParameterObject
+        let schema: SchemaObject = headerParameter.schema
+
+        Expect(headerParameter.in).toEqual("header")
+        Expect(headerParameter.name).toEqual("x-test-header")
+        Expect(headerParameter.description).toEqual("test header param")
+        Expect(schema).toEqual({
+            example: "\"a string\"",
+            type: "string"
+        })
+
+        headerParameter = pathEndpoint.parameters[1] as ParameterObject
+        schema = headerParameter.content["application/json"].schema
+
+        Expect(headerParameter.in).toEqual("header")
+        Expect(headerParameter.name).toEqual("x-test-header2")
+        Expect(headerParameter.description).toEqual("test header param 2")
+        Expect(schema.type).toEqual("object")
+        Expect(schema.properties).toEqual({
+            "name": {
+                "type": "string",
+                "example": "name"
+            },
+            "age": {
+                "type": "number",
+                "example": 18
+            },
+            "location": {
+                "type": "object",
+                "example": "{\n  \"city\": \"city\",\n  \"country\": \"country\",\n  \"localeCodes\": [\n    10,\n    20,\n    30\n  ]\n}",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "example": "city"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "country"
+                    },
+                    "localeCodes": {
+                        "type": "array",
+                        "example": "[\n  10,\n  20,\n  30\n]",
+                        "items": {
+                            "type": "number",
+                            "example": 10
+                        }
+                    }
+                }
+            },
+            "roles": {
+                "type": "array",
+                "example": "[\n  \"role1\",\n  \"role2\",\n  \"roleN\"\n]",
+                "items": {
+                    "type": "string",
+                    "example": "role1"
+                }
+            }
+        })
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
     public async when_openapi_enabled_then_openapi_spec_contains_path_parameters(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/path-test/:name/:age", "get")
         let nameParameter = pathEndpoint.parameters[0] as ParameterObject
@@ -184,6 +249,24 @@ export class OpenApiTests extends TestBase {
     @TestCase("json")
     @TestCase("yml")
     @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_path_parameters_with_info(specFormat: string) {
+        let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/path-info-test/:pathTest", "get")
+        let pathParameter = pathEndpoint.parameters[0] as ParameterObject
+        let contentSchema = pathParameter.schema
+
+        Expect(pathParameter.in).toEqual("path")
+        Expect(pathParameter.name).toEqual("pathTest")
+        Expect(pathParameter.description).toEqual("test path param")
+        Expect(pathParameter.required).toEqual(true)
+        Expect(contentSchema).toEqual({
+            example: "\"a string\"",
+            type: "string"
+        })
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
     public async when_openapi_enabled_then_openapi_spec_contains_query_parameters(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/query-test", "get")
         let queryParameter = pathEndpoint.parameters[0] as ParameterObject
@@ -191,6 +274,40 @@ export class OpenApiTests extends TestBase {
         Expect(queryParameter.in).toEqual("query")
         Expect(queryParameter.name).toEqual("magic")
         Expect(queryParameter.schema).toEqual({})
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @AsyncTest()
+    public async when_openapi_enabled_then_openapi_spec_contains_query_parameters_with_info(specFormat: string) {
+        let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/query-info-test", "get")
+        let queryParameter = pathEndpoint.parameters[0] as ParameterObject
+        let schema: SchemaObject = queryParameter.schema
+
+        Expect(queryParameter.in).toEqual("query")
+        Expect(queryParameter.name).toEqual("queryTest")
+        Expect(queryParameter.description).toEqual("test query param")
+        Expect(schema).toEqual({
+            example: "1",
+            type: "number"
+        })
+
+        queryParameter = pathEndpoint.parameters[1] as ParameterObject
+        schema = queryParameter.schema
+
+        Expect(queryParameter.in).toEqual("query")
+        Expect(queryParameter.name).toEqual("queryTest2")
+        Expect(queryParameter.description).toEqual("test query param 2")
+        Expect(queryParameter.required).toEqual(true)
+        Expect(queryParameter.style).toEqual("pipeDelimited")
+        Expect(queryParameter.explode).toEqual(false)
+        Expect(queryParameter.example).toEqual("1|2|3")
+        Expect(schema).toEqual({
+            type: "array",
+            items: {
+                type: "number"
+            }
+        })
     }
 
     @TestCase("json", {path: "/test/consumes", contentType: "text/plain"})

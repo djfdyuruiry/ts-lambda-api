@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ApiBodyInfo | ts-lambda-api</title>
+	<title>ApiParam | ts-lambda-api</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="apibodyinfo.html">ApiBodyInfo</a>
+					<a href="apiparam.html">ApiParam</a>
 				</li>
 			</ul>
-			<h1>Class ApiBodyInfo</h1>
+			<h1>Class ApiParam</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Describes the body of a HTTP request or response.</p>
+						<p>Describes a parameter in a HTTP request.</p>
 					</div>
 				</div>
 			</section>
@@ -80,7 +80,7 @@
 						<a href="apibody.html" class="tsd-signature-type">ApiBody</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">ApiBodyInfo</span>
+								<span class="target">ApiParam</span>
 							</li>
 						</ul>
 					</li>
@@ -90,26 +90,23 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="apibodyinfo.html#class" class="tsd-kind-icon">class</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="apibodyinfo.html#contenttype" class="tsd-kind-icon">content<wbr>Type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="apibodyinfo.html#description" class="tsd-kind-icon">description</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="apibodyinfo.html#example" class="tsd-kind-icon">example</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="apibodyinfo.html#type" class="tsd-kind-icon">type</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="apibodyinfo.html#mergeinfo" class="tsd-kind-icon">merge<wbr>Info</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="apiparam.html#class" class="tsd-kind-icon">class</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="apiparam.html#contenttype" class="tsd-kind-icon">content<wbr>Type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="apiparam.html#description" class="tsd-kind-icon">description</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="apiparam.html#example" class="tsd-kind-icon">example</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="apiparam.html#explode" class="tsd-kind-icon">explode</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="apiparam.html#required" class="tsd-kind-icon">required</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="apiparam.html#style" class="tsd-kind-icon">style</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="apiparam.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="class" class="tsd-anchor"></a>
@@ -180,6 +177,58 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="explode" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> explode</h3>
+					<div class="tsd-signature tsd-kind-icon">explode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/model/open-api/ApiParam.ts#L26">model/open-api/ApiParam.ts:26</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Specifies whether arrays and objects should generate
+								separate parameters for each array item or object property;
+								in other words, muiltiple parameters of the same name for array
+								values/object fields (true) or one string per parameter (false);
+							see style field.</p>
+						</div>
+						<p>See: <a href="https://swagger.io/docs/specification/serialization/">https://swagger.io/docs/specification/serialization/</a></p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="required" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> required</h3>
+					<div class="tsd-signature tsd-kind-icon">required<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/model/open-api/ApiParam.ts#L31">model/open-api/ApiParam.ts:31</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Is this parameter required in requests?</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="style" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> style</h3>
+					<div class="tsd-signature tsd-kind-icon">style<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ParameterStyle</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/model/open-api/ApiParam.ts#L15">model/open-api/ApiParam.ts:15</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Defines how array/object is delimited. Possible styles
+							depend on the parameter location.</p>
+						</div>
+						<p>See: <a href="https://swagger.io/docs/specification/serialization/">https://swagger.io/docs/specification/serialization/</a></p>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="type" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> type</h3>
@@ -213,37 +262,6 @@
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="mergeinfo" class="tsd-anchor"></a>
-					<h3>merge<wbr>Info</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">merge<wbr>Info<span class="tsd-signature-symbol">(</span>otherInstance<span class="tsd-signature-symbol">: </span><a href="apibody.html" class="tsd-signature-type">ApiBody</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/model/open-api/ApiBodyInfo.ts#L10">model/open-api/ApiBodyInfo.ts:10</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Copy any valid properties from another instance.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>otherInstance: <a href="apibody.html" class="tsd-signature-type">ApiBody</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
@@ -258,25 +276,31 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="apibodyinfo.html" class="tsd-kind-icon">Api<wbr>Body<wbr>Info</a>
+						<a href="apiparam.html" class="tsd-kind-icon">Api<wbr>Param</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="apibodyinfo.html#class" class="tsd-kind-icon">class</a>
+								<a href="apiparam.html#class" class="tsd-kind-icon">class</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="apibodyinfo.html#contenttype" class="tsd-kind-icon">content<wbr>Type</a>
+								<a href="apiparam.html#contenttype" class="tsd-kind-icon">content<wbr>Type</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="apibodyinfo.html#description" class="tsd-kind-icon">description</a>
+								<a href="apiparam.html#description" class="tsd-kind-icon">description</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="apibodyinfo.html#example" class="tsd-kind-icon">example</a>
+								<a href="apiparam.html#example" class="tsd-kind-icon">example</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="apiparam.html#explode" class="tsd-kind-icon">explode</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="apiparam.html#required" class="tsd-kind-icon">required</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="apiparam.html#style" class="tsd-kind-icon">style</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="apibodyinfo.html#type" class="tsd-kind-icon">type</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="apibodyinfo.html#mergeinfo" class="tsd-kind-icon">merge<wbr>Info</a>
+								<a href="apiparam.html#type" class="tsd-kind-icon">type</a>
 							</li>
 						</ul>
 					</li>
