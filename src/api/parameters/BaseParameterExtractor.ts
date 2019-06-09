@@ -16,7 +16,6 @@ export abstract class BaseParameterExtractor implements IParameterExtractor {
         private readonly clazz: Function,
         public readonly apiParamInfo?: ApiParam
     ) {
-
     }
 
     public setLogger(logFactory: LogFactory) {

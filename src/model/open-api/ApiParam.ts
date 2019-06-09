@@ -8,14 +8,20 @@ import { ApiBody } from "./ApiBody"
 export class ApiParam extends ApiBody {
     /**
      * Defines how array/object is delimited. Possible styles
-     * depend on the parameter location – path, query, header
-     * or cookie.
+     * depend on the parameter location.
+     *
+     * See: https://swagger.io/docs/specification/serialization/
      */
     public style?: ParameterStyle
 
     /**
      * Specifies whether arrays and objects should generate
-     * separate parameters for each array item or object property.
+     * separate parameters for each array item or object property;
+     * in other words, muiltiple parameters of the same name for array
+     * values/object fields (true) or one string per parameter (false);
+     * see style field.
+     *
+     * See: https://swagger.io/docs/specification/serialization/
      */
     public explode?: boolean
 

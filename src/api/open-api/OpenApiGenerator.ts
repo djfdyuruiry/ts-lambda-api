@@ -734,7 +734,7 @@ export class OpenApiGenerator {
 
             if (p.source === "header" &&
                 OpenApiGenerator.FORBIDDEN_HEADER_PARAMS.includes(p.name.toLowerCase())) {
-                this.logger.debug("Parameters for header %s is forbidden by the OpenAPI v3 Spec", p.name)
+                this.logger.debug("Parameter for header %s is forbidden by the OpenAPI v3 Spec", p.name)
                 return;
             }
 
@@ -812,7 +812,9 @@ export class OpenApiGenerator {
             paramInfo.required = apiParamInfo.required
         }
 
-        paramInfo.description = apiParamInfo.description || ""
+        if (apiParamInfo.description) {
+            paramInfo.description = apiParamInfo.description
+        }
     }
 
     private setParamValueStyle(paramInfo: ParameterObject, apiParamInfo: ApiParam) {
@@ -853,7 +855,7 @@ export class OpenApiGenerator {
 
             if (apiParamInfo.class &&
                 !OpenApiGenerator.VALID_QUERY_OBJECT_PARAM_STYLES.includes(apiParamInfo.style)) {
-                this.logger.debug("'deepObject' style is only supported for object query string parameters")
+                this.logger.debug("'%s' is not a valid style for object query string parameters", paramInfo.style)
                 return
             }
         }
