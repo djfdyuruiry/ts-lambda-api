@@ -1145,22 +1145,31 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
       <span class="hljs-keyword">return</span> person
   }
 
-  <span class="hljs-comment">// using primitive types ("boolean", "double", "int", "number" or "string")</span>
+  <span class="hljs-comment">// using primitive types ("boolean", "double", "int", "number", "object" or "string")</span>
   <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/plain"</span>)
-  <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add some plain stuff"</span>, description: <span class="hljs-string">"go get some plain stuff"</span>})
-  <span class="hljs-meta">@apiRequest</span>({<span class="hljs-keyword">type</span>: <span class="hljs-string">"string"</span>})
-  <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">200</span>, {<span class="hljs-keyword">type</span>: <span class="hljs-string">"string"</span>})
-  <span class="hljs-keyword">public</span> postString(<span class="hljs-meta">@body</span> stuff: <span class="hljs-built_in">string</span>) {
+  <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add some plain stuff"</span>, description: <span class="hljs-string">"plain stuff"</span>})
+  <span class="hljs-meta">@apiRequest</span>({<span class="hljs-keyword">type</span>: <span class="hljs-string">"int"</span>})
+  <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">200</span>, {<span class="hljs-keyword">type</span>: <span class="hljs-string">"int"</span>})
+  <span class="hljs-keyword">public</span> postNumber(<span class="hljs-meta">@body</span> stuff: <span class="hljs-built_in">number</span>) {
+      <span class="hljs-keyword">return</span> stuff
+  }
+
+  <span class="hljs-comment">// using array types ("array", "array-array", "boolean-array", "double-array", "int-array", "number-array", "object-array" or "string-array")</span>
+  <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/array"</span>)
+  <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add array"</span>, description: <span class="hljs-string">"array time"</span>})
+  <span class="hljs-meta">@apiRequest</span>({<span class="hljs-keyword">type</span>: <span class="hljs-string">"string-array"</span>})
+  <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">200</span>, {<span class="hljs-keyword">type</span>: <span class="hljs-string">"string-array"</span>})
+  <span class="hljs-keyword">public</span> postArray(<span class="hljs-meta">@body</span> stuff: <span class="hljs-built_in">string</span>[]) {
       <span class="hljs-keyword">return</span> stuff
   }
 
   <span class="hljs-comment">// upload/download files</span>
   <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/files"</span>)
-  <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add file"</span>, description: <span class="hljs-string">"upload a file"</span>})
+  <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">"add file"</span>, description: <span class="hljs-string">"give me a file"</span>})
   <span class="hljs-meta">@apiRequest</span>({contentType: <span class="hljs-string">"application/octet-stream"</span>, <span class="hljs-keyword">type</span>: <span class="hljs-string">"file"</span>}) <span class="hljs-comment">// contentType can be used in any request or response definition, inherits controller or endpoint type by default</span>
   <span class="hljs-meta">@apiResponse</span>(<span class="hljs-number">201</span>, {contentType: <span class="hljs-string">"application/octet-stream"</span>, <span class="hljs-keyword">type</span>: <span class="hljs-string">"file"</span>})
-  <span class="hljs-keyword">public</span> postFile(<span class="hljs-meta">@body</span> fileContents: <span class="hljs-built_in">string</span>) {
-      <span class="hljs-keyword">return</span> fileContents
+  <span class="hljs-keyword">public</span> postFile(<span class="hljs-meta">@rawBody</span> file: Buffer) {
+      <span class="hljs-keyword">this</span>.response.sendFile(file)
   }
 
   <span class="hljs-comment">// providing custom request/response body example</span>
@@ -1253,10 +1262,20 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
   <span class="hljs-comment">// For help with the `style` field, see: https://swagger.io/docs/specification/serialization/</span>
   <span class="hljs-meta">@GET</span>()
   <span class="hljs-keyword">public</span> getAnotherThing(
-      <span class="hljs-meta">@queryParam</span>(<span class="hljs-string">"param"</span>, { <span class="hljs-keyword">type</span>: <span class="hljs-string">"int-array"</span>, style: <span class="hljs-string">"pipeDelimited"</span> }) param: <span class="hljs-built_in">string</span>
+      <span class="hljs-meta">@queryParam</span>(<span class="hljs-string">"param"</span>, { <span class="hljs-keyword">type</span>: <span class="hljs-string">"int-array"</span>, style: <span class="hljs-string">"pipeDelimited"</span>, explode: <span class="hljs-literal">false</span> }) param: <span class="hljs-built_in">string</span>
   ) {
       <span class="hljs-comment">// we would expect param to be passed in the query string as 'param=1|2|3|4'</span>
       <span class="hljs-keyword">return</span> param
+  }
+
+  <span class="hljs-comment">// you can specify a content type if the string is expected to be JSON etc.</span>
+  <span class="hljs-meta">@GET</span>()
+  <span class="hljs-keyword">public</span> getHeaderTest(
+      <span class="hljs-meta">@header</span>(<span class="hljs-string">"x-custom-header"</span>, { <span class="hljs-keyword">class</span>: Person, contentType: <span class="hljs-string">"application/json"</span> }) customHeader: <span class="hljs-built_in">string</span>
+  ) {
+      <span class="hljs-keyword">let</span> person: Person = <span class="hljs-built_in">JSON</span>.parse(customHeader)
+
+      <span class="hljs-keyword">return</span> person
   }</code></pre>
 						<p>  <em>Path parameters support the following styles: simple, label, matrix</em></p>
 						<p>  <em>Header parameters only support the &#39;simple&#39; style</em></p>

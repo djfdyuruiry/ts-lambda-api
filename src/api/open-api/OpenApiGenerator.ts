@@ -803,9 +803,6 @@ export class OpenApiGenerator {
             if (mediaTypeObject.example) {
                 paramInfo.example = mediaTypeObject.example
             }
-        } else if (mediaTypeObject.example) {
-            // copy the media type example up to the top level
-            paramInfo.example = mediaTypeObject.example
         }
 
         if (typeof apiParamInfo.required === "boolean") {
