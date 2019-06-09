@@ -1248,7 +1248,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
   }
 
   <span class="hljs-comment">// When expecting an object/array, you can pass in the</span>
-  <span class="hljs-comment">// expected formatting style, defaults to 'form'.</span>
+  <span class="hljs-comment">// expected formatting style.</span>
   <span class="hljs-comment">//</span>
   <span class="hljs-comment">// For help with the `style` field, see: https://swagger.io/docs/specification/serialization/</span>
   <span class="hljs-meta">@GET</span>()
@@ -1258,6 +1258,8 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
       <span class="hljs-comment">// we would expect param to be passed in the query string as 'param=1|2|3|4'</span>
       <span class="hljs-keyword">return</span> param
   }</code></pre>
+						<p>  <em>Path parameters support the following styles: simple, label, matrix</em></p>
+						<p>  <em>Header parameters only support the &#39;simple&#39; style</em></p>
 						<p>  <em>Note: Setting a content type for your parameter is supported, but due to an outstanding issue, these parameters will not display in Swagger UI / Editor, see: <a href="https://github.com/swagger-api/swagger-ui/issues/4442">https://github.com/swagger-api/swagger-ui/issues/4442</a></em></p>
 					</li>
 					<li><p>Add security schemes to your specification (other than Basic auth) using <code>apiSecurity</code> on your authentication filter:</p>

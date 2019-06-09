@@ -91,6 +91,10 @@ export class OpenApiGenerator {
         "label",
         "matrix"
     ]
+    private static readonly VALID_QUERY_OBJECT_PARAM_STYLES: ParameterStyle[] = [
+        "form",
+        "deepObject"
+    ]
 
     private readonly logger: ILogger
 
@@ -338,6 +342,8 @@ export class OpenApiGenerator {
             requestInfo
         )
 
+        requestInfo.contentType = operationRequestType
+
         if (!requestInfo || (!requestInfo.type && !requestInfo.class)) {
             this.logger.trace("No request type info found for endpoint: %s", endpointInfo.name)
 
@@ -425,7 +431,10 @@ export class OpenApiGenerator {
             // user defined response body info
             let responseContent: ContentObject = {}
             let mediaTypeObject: MediaTypeObject = {}
-            let responseType = (apiBodyInfo.contentType || responseContentType).toLowerCase()
+
+            apiBodyInfo.contentType = (apiBodyInfo.contentType || responseContentType).toLowerCase()
+
+            let responseType = apiBodyInfo.contentType
 
             responseContent[responseType] = mediaTypeObject
 
@@ -500,14 +509,23 @@ export class OpenApiGenerator {
         if (type !== "file") {
             this.logger.trace("Setting body to type: %s", type)
 
-            let schema = {
-                example: this.getPrimitiveTypeExample(apiBodyInfo.type),
+            let schema: SchemaObject = {
                 type: schemaType
             }
 
             if (schemaType === "array") {
                 this.addPrimitiveArrayInfoToSchema(schema, apiBodyInfo.type)
             }
+
+            if (schemaType === "array" || schemaType === "object") {
+                if (!apiBodyInfo.contentType ||
+                    apiBodyInfo.contentType.toLowerCase() !== "application/json") {
+                    // exclude object or array examples if content type is non-json
+                    return schema
+                }
+            }
+
+            schema.example = this.getPrimitiveTypeExample(type)
 
             return schema
         } else {
@@ -772,6 +790,10 @@ export class OpenApiGenerator {
             mediaTypeObject.schema = this.getPrimitiveTypeSchema(apiParamInfo)
         }
 
+        if (apiParamInfo.example) {
+            mediaTypeObject.example = apiParamInfo.example
+        }
+
         if (!paramInfo.content) {
             // we don't have info in content, place schema and example inside param info
             if (mediaTypeObject.schema) {
@@ -781,6 +803,9 @@ export class OpenApiGenerator {
             if (mediaTypeObject.example) {
                 paramInfo.example = mediaTypeObject.example
             }
+        } else if (mediaTypeObject.example) {
+            // copy the media type example up to the top level
+            paramInfo.example = mediaTypeObject.example
         }
 
         if (typeof apiParamInfo.required === "boolean") {
@@ -804,7 +829,7 @@ export class OpenApiGenerator {
             return
         }
 
-        if (paramInfo.in === "header" && apiParamInfo.style) {
+        if (paramInfo.in === "header" && apiParamInfo.style !== "simple") {
             this.logger.debug(
                 "Header parameters only support the simple style, style '%s' ignored",
                 apiParamInfo.style
@@ -814,13 +839,25 @@ export class OpenApiGenerator {
         }
 
         if (paramInfo.in === "path") {
-            if (OpenApiGenerator.VALID_PATH_PARAM_STYLES.includes(apiParamInfo.style)) {
-                paramInfo.style = apiParamInfo.style
-            } else {
+            if (!OpenApiGenerator.VALID_PATH_PARAM_STYLES.includes(apiParamInfo.style)) {
                 this.logger.debug("'%s' is not a valid path param style", apiParamInfo.style)
+                return
             }
-        } else {
-            paramInfo.style = apiParamInfo.style
         }
+
+        if (paramInfo.in === "query") {
+            if (!apiParamInfo.class && apiParamInfo.style === "deepObject") {
+                this.logger.debug("'deepObject' style is only supported for object query string parameters")
+                return
+            }
+
+            if (apiParamInfo.class &&
+                !OpenApiGenerator.VALID_QUERY_OBJECT_PARAM_STYLES.includes(apiParamInfo.style)) {
+                this.logger.debug("'deepObject' style is only supported for object query string parameters")
+                return
+            }
+        }
+
+        paramInfo.style = apiParamInfo.style
     }
 }

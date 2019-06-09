@@ -1484,7 +1484,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     }
 
     // When expecting an object/array, you can pass in the
-    // expected formatting style, defaults to 'form'.
+    // expected formatting style.
     //
     // For help with the `style` field, see: https://swagger.io/docs/specification/serialization/
     @GET()
@@ -1495,6 +1495,10 @@ To further document your API endpoints you can use OpenAPI decorators.
         return param
     }
     ```
+
+    *Path parameters support the following styles: simple, label, matrix*
+
+    *Header parameters only support the 'simple' style*
 
     *Note: Setting a content type for your parameter is supported, but due to an outstanding issue, these parameters will not display in Swagger UI / Editor, see: https://github.com/swagger-api/swagger-ui/issues/4442*
 

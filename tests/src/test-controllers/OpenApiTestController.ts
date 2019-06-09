@@ -150,15 +150,7 @@ export class OpenApiTestControllerController extends Controller {
     @apiOperation({name: "query info test", description: "go get query info stuff"})
     public getQueryTest(
         @queryParam("queryTest", { description: "test query param", type: "int" }) test: string,
-        @queryParam("queryTest2", { description: "test query param 2", type: "int-array", required: true, style: "spaceDelimited" }) test2: string
-    ) {
-        this.response.status(200).send("")
-    }
-
-    @GET("/query-content-info-test")
-    @apiOperation({name: "query content info test", description: "go get query info stuff"})
-    public getQueryContentTest(
-        @queryParam("queryTest", { description: "test content param", type: "int-array", contentType: "application/json" }) test: string,
+        @queryParam("queryTest2", { description: "test query param 2", type: "int-array", required: true, style: "pipeDelimited", explode: false, example: "1|2|3" }) test2: string
     ) {
         this.response.status(200).send("")
     }
@@ -167,7 +159,7 @@ export class OpenApiTestControllerController extends Controller {
     @apiOperation({name: "header info test", description: "go get header info stuff"})
     public getHeaderTest(
         @header("x-test-header", { description: "test header param" }) test: string,
-        @header("x-test-header2", { description: "test header param 2", class: Person, explode: true }) test2: string
+        @header("x-test-header2", { description: "test header param 2", class: Person, contentType: "application/json" }) test2: string
     ) {
         this.response.status(200).send("")
     }

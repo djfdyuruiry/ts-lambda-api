@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 53
+    private static readonly ROUTE_COUNT = 52
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @AsyncSetup
@@ -179,12 +179,11 @@ export class OpenApiTests extends TestBase {
         })
 
         headerParameter = pathEndpoint.parameters[1] as ParameterObject
-        schema = headerParameter.schema
+        schema = headerParameter.content["application/json"].schema
 
         Expect(headerParameter.in).toEqual("header")
         Expect(headerParameter.name).toEqual("x-test-header2")
         Expect(headerParameter.description).toEqual("test header param 2")
-        Expect(headerParameter.explode).toEqual(true)
         Expect(schema.type).toEqual("object")
         Expect(schema.properties).toEqual({
             "name": {
@@ -300,9 +299,10 @@ export class OpenApiTests extends TestBase {
         Expect(queryParameter.name).toEqual("queryTest2")
         Expect(queryParameter.description).toEqual("test query param 2")
         Expect(queryParameter.required).toEqual(true)
-        Expect(queryParameter.style).toEqual("spaceDelimited")
+        Expect(queryParameter.style).toEqual("pipeDelimited")
+        Expect(queryParameter.explode).toEqual(false)
+        Expect(queryParameter.example).toEqual("1|2|3")
         Expect(schema).toEqual({
-            example: "[\n  1,\n  2,\n  3\n]",
             type: "array",
             items: {
                 type: "number"
