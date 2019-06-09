@@ -1489,7 +1489,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     // For help with the `style` field, see: https://swagger.io/docs/specification/serialization/
     @GET()
     public getAnotherThing(
-        @queryParam("param", { type: "int-array", style: "pipeDelimited" }) param: string
+        @queryParam("param", { type: "int-array", style: "pipeDelimited", explode: false }) param: string
     ) {
         // we would expect param to be passed in the query string as 'param=1|2|3|4'
         return param
