@@ -1371,22 +1371,31 @@ To further document your API endpoints you can use OpenAPI decorators.
         return person
     }
 
-    // using primitive types ("boolean", "double", "int", "number" or "string")
+    // using primitive types ("boolean", "double", "int", "number", "object" or "string")
     @POST("/plain")
-    @apiOperation({ name: "add some plain stuff", description: "go get some plain stuff"})
-    @apiRequest({type: "string"})
-    @apiResponse(200, {type: "string"})
-    public postString(@body stuff: string) {
+    @apiOperation({ name: "add some plain stuff", description: "plain stuff"})
+    @apiRequest({type: "int"})
+    @apiResponse(200, {type: "int"})
+    public postNumber(@body stuff: number) {
+        return stuff
+    }
+
+    // using array types ("array", "array-array", "boolean-array", "double-array", "int-array", "number-array", "object-array" or "string-array")
+    @POST("/array")
+    @apiOperation({ name: "add array", description: "array time"})
+    @apiRequest({type: "string-array"})
+    @apiResponse(200, {type: "string-array"})
+    public postArray(@body stuff: string[]) {
         return stuff
     }
 
     // upload/download files
     @POST("/files")
-    @apiOperation({ name: "add file", description: "upload a file"})
+    @apiOperation({ name: "add file", description: "give me a file"})
     @apiRequest({contentType: "application/octet-stream", type: "file"}) // contentType can be used in any request or response definition, inherits controller or endpoint type by default
     @apiResponse(201, {contentType: "application/octet-stream", type: "file"})
-    public postFile(@body fileContents: string) {
-        return fileContents
+    public postFile(@rawBody file: Buffer) {
+        this.response.sendFile(file)
     }
 
     // providing custom request/response body example
