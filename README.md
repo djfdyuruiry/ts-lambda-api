@@ -16,9 +16,10 @@ Framework Features:
 
 - Decorator based routing for API controllers and endpoint methods
 - Decorator based parameter binding for endpoint methods (from body, path & query parameters and headers)
-- Built in support for applying JSON patch operations
 - API controller dependency injection using [InversifyJS](https://github.com/inversify/InversifyJS)
 - Supports invoking your API from both `Amazon API Gateway` and `Amazon Load Balancer`
+- Out of the box OpenAPI spec (v3) generation support
+- Built in support for applying JSON patch operations
 
 This project is built on top of the wonderful [lambda-api](https://github.com/jeremydaly/lambda-api) framework.
 
@@ -85,8 +86,6 @@ This is a short guide to creating your first API using `ts-lambda-api`. It is so
 - Create a directory for your project and run `npm init` to create your `package.json`
 
 - Install required packages:
-
-**Ensure the `@types/node` package you install matches your version of Node.js**
 
 ```shell
 npm install ts-lambda-api
@@ -432,8 +431,6 @@ import { injectable } from "inversify"
 
 import { apiController, produces, GET } from "ts-lambda-api"
 
-import { Item } from "./Item"
-
 @apiController("/motd")
 @injectable()
 export class MessageOfTheDayController {
@@ -493,7 +490,7 @@ export class StoreAuthFilter extends BasicAuthFilter<StoreUser> {
     public async authenticate(basicAuth: BasicAuth): Promise<StoreUser | undefined> {
         let user = this.getUserFromDb(basicAuth.username)
 
-        if (user && this.getUserPassword(user) === basicAuth.password) {
+        if (user && this.checkUserPasswordHash(user, basicAuth.password)) {
             // returning a principal signals that the request has been authorized
             return user
         }
@@ -503,8 +500,8 @@ export class StoreAuthFilter extends BasicAuthFilter<StoreUser> {
         // get the user details from a database, if it exists, otherwise we return null/undefined
     }
 
-    private getUserPassword(user: StoreUser): string {
-        // get the user password from a database
+    private checkUserPasswordHash(user: StoreUser, password: string): boolean {
+        // get the user password hash from a database
     }
 }
 ```
@@ -588,7 +585,7 @@ import { SearchRequest } from "./SearchRequest"
 @apiController("/public")
 @controllerNoAuth
 @injectable()
-export class UserController {
+export class PublicController {
     @POST("/search/products")
     public searchProducts(@body searchRequest: SearchRequest) {
         // I can be called without authentication
@@ -600,7 +597,7 @@ export class UserController {
 
 ### <a id="custom-auth"></a>Custom Authentication
 
-If you wish to implement popular authentication mechnasims or make your own, you need to implement the `IAuthFilter` interface. It accepts two type parameters:
+If you wish to implement popular authentication mechanisms or make your own, you need to implement the `IAuthFilter` interface. It accepts two type parameters:
 
 - `T` - The model class for your authentication data
 - `U` - A principal class
@@ -674,7 +671,7 @@ export class StoreAuthorizer implements IAuthorizer<StoreUser> {
 }
 ```
 
-When a user is successfully authorized by an auth filter, this returns a principal which is passed to the configured authorizer if a resource is marked as restricted. To restrict all endpoints in a controller, use the `controllerRolesAllowed` decorator:
+When a user is successfully authenticated by an auth filter, this returns a principal which is passed to the configured authorizer if a resource is marked as restricted. To restrict all endpoints in a controller, use the `controllerRolesAllowed` decorator:
 
 ```typescript
 import { injectable } from "inversify"
@@ -710,7 +707,7 @@ export class StoreController {
 }
 ```
 
-You can combine both ther controller and endpoint decorators for roles. In this case, if endpoint roles are present, they overrides the controller roles.
+You can combine both the controller and endpoint decorators for roles. In this case, if endpoint roles are present, they override the controller role set.
 
 You register your authentication filter when setting up your application instance:
 
@@ -873,7 +870,7 @@ This library supports [JSON Patch](http://jsonpatch.com/) format for updating en
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, produces, JsonPatch, PATCH } from "ts-lambda-api"
+import { apiController, pathParam, produces, JsonPatch, PATCH } from "ts-lambda-api"
 
 import { Item } from "./Item"
 
@@ -881,7 +878,7 @@ import { Item } from "./Item"
 @injectable()
 export class StoreController extends Controller {
     @PATCH("/item/:id")
-    public modifyItem(@queryParam("id") id: string, @body jsonPatch: JsonPatch) {
+    public modifyItem(@pathParam("id") id: string, @body jsonPatch: JsonPatch) {
         let item = this.lookupItem(id)
 
         // apply the patch operation
@@ -986,7 +983,7 @@ export class FilesController extends Controller {
 
 ----
 
-Configuring the IOC container to enable dependency injection into your controllers is easy. Once you build a `ApiLambdaApp` instance you can call the `configureApp` method like below:
+Configuring the IOC container to enable dependency injection for your controllers is easy. Once you build an `ApiLambdaApp` instance you can call the `configureApp` method like below:
 
 ```typescript
 // build config and controllers path...
@@ -1010,6 +1007,8 @@ import { inject, injectable } from "inversify"
 
 import { apiController, GET } from "ts-lambda-api"
 
+import { IMyService } from "./IMyService"
+
 @apiController("/hello-world")
 @injectable()
 export class MyController {
@@ -1031,13 +1030,16 @@ See the [InversifyJS](https://github.com/inversify/InversifyJS) package document
 
 ----
 
-When building an application instance you pass a `AppConfig` instance to the constructor. If you want to provide your own application config it is recommended to extend this class .
+When building an application instance you pass an `AppConfig` instance to the constructor. If you want to provide your own application config it is recommended to extend this class .
 
 ```typescript
+import { injectable } from "inversify"
+
 import { AppConfig } from "ts-lambda-api"
 
 import { DatabaseConfig } from "./DatabaseConfig"
 
+@injectable()
 export class MyCustomConfig extends AppConfig {
     public databaseConfig: DatabaseConfig
 }
@@ -1095,6 +1097,7 @@ For a complete reference see the [AppConfig](https://djfdyuruiry.github.io/ts-la
 Configuring `lambda-api` directly can be done by calling the `configureApi` method like below:
 
 ```typescript
+import { API } from "lambda-api"
 import * as xmljs from "xml-js"
 
 // build config and controllers path...
@@ -1120,7 +1123,7 @@ See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documenta
 
 ## <a id="logging"></a>Logging
 
-A logger interface is provided that can write messages to standard out. You can configure this logger using the `serverLogging` key in the `AppConfig` class. See the [Config Reference](#config-reference) for details on options available.
+A logger interface is provided that can write messages to standard out. You can configure this logger using the `serverLogging` key in the `AppConfig` class. See the [Config Reference](#config-reference) for details on options available. This complements the existing logging provided by `lambda-api`, which can be configured using the `logger` key.
 
 By default, the logger is set to `info` and outputs messages as simple strings.
 
@@ -1172,9 +1175,8 @@ To write logs you will ned a logger instance. There are three ways to get one:
 
 ```typescript
 import { injectable } from "inversify"
-import { Response, Request } from "lambda-api"
 
-import { apiController, Controller, GET } from "../../../dist/ts-lambda-api"
+import { apiController, Controller, GET } from "ts-lambda-api"
 
 @apiController("/")
 @injectable()
@@ -1192,7 +1194,7 @@ export class TestController extends Controller {
 
 ```typescript
 import { inject, injectable } from "inversify"
-import { AppConfig, LogFactory, LogLevel } from "lambda-api"
+import { AppConfig, LogFactory } from "ts-lambda-api"
 
 @injectable()
 export class SomeServiceYouMightMake {
@@ -1211,7 +1213,7 @@ export class SomeServiceYouMightMake {
 - Use the `LogFactory` static methods to build it:
 
 ```typescript
-import { LogFactory, LogLevel } from "lambda-api"
+import { LogFactory, LogLevel } from "ts-lambda-api"
 
 export class SomeServiceYouMightMake {
     public doStuff() {
@@ -1223,7 +1225,7 @@ export class SomeServiceYouMightMake {
 }
 ```
 
-### <a id="logging-api"></a> Logger API
+### <a id="logging-api"></a> Server Logger API
 
 The logging API supports formatting of messages using the [`sprintf-js`](https://www.npmjs.com/package/sprintf-js) npm module, simply pass in your arguments and put placeholders in your message string:
 
@@ -1232,14 +1234,14 @@ logger.warn("Hello there %s, how are you?", "Roy")
 logger.debug("Task status: %s. Task data: %j", "success", {event: "run batch"})
 ```
 
-Using this will help to speed up your app if you do a lot of logging, because uneccessary work to convert values to strings and JSON for debug messages will not take place if a higher error level is set.
+Using this will help to speed up your app if you do a lot of logging, because uneccessary work to convert values to strings and the JSON serialization of debug messages will not take place if a higher error level is set.
 
 ----
 
 Below is an example of the methods available on logger instances:
 
 ```typescript
-import { LogFactory, LogLevel } from "lambda-api"
+import { LogFactory, LogLevel } from "ts-lambda-api"
 
 export class SomeServiceYouMightMake {
     public doStuff() {
@@ -1290,16 +1292,16 @@ Logging is also provided by the [lambda-api](https://github.com/jeremydaly/lambd
 
 ----
 
-The OpenAPI Specification, FKA Swagger, is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
+The OpenAPI Specification (FKA Swagger) is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
 
-**This framework only supports OpenAPI v3**
+**This framework supports only OpenAPI v3**
 
 The following features are supported:
 
 - Generating of an OpenAPI Specification, which includes:
     - All endpoints with full path and HTTP method
     - Custom names and descriptions for endpoints
-    - Group endpoints together by API
+    - Grouping of endpoints together by API
     - Endpoint query, path and header parameters (set by parameter decorators)
     - Response content type headers (set by `produces` or `controllerProduces` decorators)
     - Request and Response bodies: class types, primitive values and files
@@ -1467,7 +1469,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     }
     ```
 
-    *This is required because object properties are not set until a value is assigned, which makes any sort of reflection impossible.*
+    *This is required because object properties are not defined until a value is assigned, which makes any sort of reflection impossible.*
 
 - Describe the path, query and header parameters consumed by your endpoints:
 
@@ -1521,7 +1523,7 @@ To further document your API endpoints you can use OpenAPI decorators.
 
     *Note: Setting a content type for your parameter is supported, but due to an outstanding issue, these parameters will not display in Swagger UI / Editor, see: https://github.com/swagger-api/swagger-ui/issues/4442*
 
-- Add security schemes to your specification (other than Basic auth) using `apiSecurity` on your authentication filter:
+- Add security schemes to your specification (other than Basic auth, this is automatically detected) using an `apiSecurity` decorator on your authentication filter:
 
     ```typescript
     import { apiSecurity, IAuthFilter } from "ts-lambda-api"
@@ -1551,7 +1553,7 @@ npm install -D @types/js-yaml
 
 ### <a id="open-api-auth"></a>Authentication
 
-By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a specification, use the `useAuthentication` key in the `openApi` config:
+By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a spec, set the `useAuthentication` key in the `openApi` config:
 
 ```typescript
 // build controllers path...
@@ -1572,6 +1574,6 @@ const app = new ApiLambdaApp(controllersPath, appConfig)
 
 ---
 
-For local dev testing and integration with functional tests see the [ts-lambda-api-local](https://www.npmjs.com/package/ts-lambda-api-local) package which enables hosting your API using express as a local HTTP server.
+For local dev testing and integration with acceptance tests see the [ts-lambda-api-local](https://www.npmjs.com/package/ts-lambda-api-local) package which enables hosting your API using express as a local HTTP server.
 
-Check out this project's dev dependencies to see what is required to test API code. The `tests` directory of this repo contains some acceptance tests which will show you how to build mock requests and invoke your application.
+Check out this project's dev dependencies to see what is required to test API code. The `tests` directory of this repo contains extensive acceptance tests which will show you how to build mock requests and invoke your API endpoints programmatically.
