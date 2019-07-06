@@ -75,9 +75,10 @@
 				<ul>
 					<li>Decorator based routing for API controllers and endpoint methods</li>
 					<li>Decorator based parameter binding for endpoint methods (from body, path &amp; query parameters and headers)</li>
-					<li>Built in support for applying JSON patch operations</li>
 					<li>API controller dependency injection using <a href="https://github.com/inversify/InversifyJS">InversifyJS</a></li>
 					<li>Supports invoking your API from both <code>Amazon API Gateway</code> and <code>Amazon Load Balancer</code></li>
+					<li>Out of the box OpenAPI spec (v3) generation support</li>
+					<li>Built in support for applying JSON patch operations</li>
 				</ul>
 				<p>This project is built on top of the wonderful <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> framework.</p>
 				<hr>
@@ -156,7 +157,6 @@
 					<li><p>Install required packages:</p>
 					</li>
 				</ul>
-				<p><strong>Ensure the <code>@types/node</code> package you install matches your version of Node.js</strong></p>
 				<pre><code class="language-shell">npm install ts-lambda-api
 npm install -D typescript @types/node aws-sdk</code></pre>
 				<ul>
@@ -431,8 +431,6 @@ zip -r lambda.zip ./</code></pre>
 
 <span class="hljs-keyword">import</span> { apiController, produces, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
-<span class="hljs-keyword">import</span> { Item } <span class="hljs-keyword">from</span> <span class="hljs-string">"./Item"</span>
-
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/motd"</span>)
 <span class="hljs-meta">@injectable</span>()
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MessageOfTheDayController {
@@ -475,7 +473,7 @@ zip -r lambda.zip ./</code></pre>
     <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> authenticate(basicAuth: BasicAuth): <span class="hljs-built_in">Promise</span>&lt;StoreUser | <span class="hljs-literal">undefined</span>&gt; {
         <span class="hljs-keyword">let</span> user = <span class="hljs-keyword">this</span>.getUserFromDb(basicAuth.username)
 
-        <span class="hljs-keyword">if</span> (user &amp;&amp; <span class="hljs-keyword">this</span>.getUserPassword(user) === basicAuth.password) {
+        <span class="hljs-keyword">if</span> (user &amp;&amp; <span class="hljs-keyword">this</span>.checkUserPasswordHash(user, basicAuth.password)) {
             <span class="hljs-comment">// returning a principal signals that the request has been authorized</span>
             <span class="hljs-keyword">return</span> user
         }
@@ -485,8 +483,8 @@ zip -r lambda.zip ./</code></pre>
         <span class="hljs-comment">// get the user details from a database, if it exists, otherwise we return null/undefined</span>
     }
 
-    <span class="hljs-keyword">private</span> getUserPassword(user: StoreUser): <span class="hljs-built_in">string</span> {
-        <span class="hljs-comment">// get the user password from a database</span>
+    <span class="hljs-keyword">private</span> checkUserPasswordHash(user: StoreUser, password: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">boolean</span> {
+        <span class="hljs-comment">// get the user password hash from a database</span>
     }
 }</code></pre>
 				<p>You register your authentication filter when setting up your application instance:</p>
@@ -551,7 +549,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/public"</span>)
 <span class="hljs-meta">@controllerNoAuth</span>
 <span class="hljs-meta">@injectable</span>()
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> UserController {
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> PublicController {
     <span class="hljs-meta">@POST</span>(<span class="hljs-string">"/search/products"</span>)
     <span class="hljs-keyword">public</span> searchProducts(<span class="hljs-meta">@body</span> searchRequest: SearchRequest) {
         <span class="hljs-comment">// I can be called without authentication</span>
@@ -560,7 +558,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
     <span class="hljs-comment">// ...other declared endpoints are also be called without authentication...</span>
 }</code></pre>
 				<h3 id="-a-id-custom-auth-a-custom-authentication"><a id="custom-auth"></a>Custom Authentication</h3>
-				<p>If you wish to implement popular authentication mechnasims or make your own, you need to implement the <code>IAuthFilter</code> interface. It accepts two type parameters:</p>
+				<p>If you wish to implement popular authentication mechanisms or make your own, you need to implement the <code>IAuthFilter</code> interface. It accepts two type parameters:</p>
 				<ul>
 					<li><code>T</code> - The model class for your authentication data</li>
 					<li><code>U</code> - A principal class</li>
@@ -620,7 +618,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
         <span class="hljs-keyword">return</span> user.roles.includes(role)
     }
 }</code></pre>
-				<p>When a user is successfully authorized by an auth filter, this returns a principal which is passed to the configured authorizer if a resource is marked as restricted. To restrict all endpoints in a controller, use the <code>controllerRolesAllowed</code> decorator:</p>
+				<p>When a user is successfully authenticated by an auth filter, this returns a principal which is passed to the configured authorizer if a resource is marked as restricted. To restrict all endpoints in a controller, use the <code>controllerRolesAllowed</code> decorator:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
 <span class="hljs-keyword">import</span> { apiController, controllerRolesAllowed, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
@@ -648,7 +646,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
         <span class="hljs-comment">// this endpoint can only be accessed with principles that are authorized with the STORE_MANAGER role</span>
     }
 }</code></pre>
-				<p>You can combine both ther controller and endpoint decorators for roles. In this case, if endpoint roles are present, they overrides the controller roles.</p>
+				<p>You can combine both the controller and endpoint decorators for roles. In this case, if endpoint roles are present, they override the controller role set.</p>
 				<p>You register your authentication filter when setting up your application instance:</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// build config and controllers path...</span>
 <span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> ApiLambdaApp(controllersPath, appConfig)
@@ -762,7 +760,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 				<p>This library supports <a href="http://jsonpatch.com/">JSON Patch</a> format for updating entities without having to upload the entire entity. To use it in your endpoints, ensure your controller extends the <code>Controller</code> class, an example is below:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
-<span class="hljs-keyword">import</span> { apiController, produces, JsonPatch, PATCH } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, pathParam, produces, JsonPatch, PATCH } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { Item } <span class="hljs-keyword">from</span> <span class="hljs-string">"./Item"</span>
 
@@ -770,7 +768,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 <span class="hljs-meta">@injectable</span>()
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> StoreController <span class="hljs-keyword">extends</span> Controller {
     <span class="hljs-meta">@PATCH</span>(<span class="hljs-string">"/item/:id"</span>)
-    <span class="hljs-keyword">public</span> modifyItem(<span class="hljs-meta">@queryParam</span>(<span class="hljs-string">"id"</span>) id: <span class="hljs-built_in">string</span>, <span class="hljs-meta">@body</span> jsonPatch: JsonPatch) {
+    <span class="hljs-keyword">public</span> modifyItem(<span class="hljs-meta">@pathParam</span>(<span class="hljs-string">"id"</span>) id: <span class="hljs-built_in">string</span>, <span class="hljs-meta">@body</span> jsonPatch: JsonPatch) {
         <span class="hljs-keyword">let</span> item = <span class="hljs-keyword">this</span>.lookupItem(id)
 
         <span class="hljs-comment">// apply the patch operation</span>
@@ -849,7 +847,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 				<hr>
 				<h2 id="-a-id-di-a-dependency-injection"><a id="di"></a> Dependency Injection</h2>
 				<hr>
-				<p>Configuring the IOC container to enable dependency injection into your controllers is easy. Once you build a <code>ApiLambdaApp</code> instance you can call the <code>configureApp</code> method like below:</p>
+				<p>Configuring the IOC container to enable dependency injection for your controllers is easy. Once you build an <code>ApiLambdaApp</code> instance you can call the <code>configureApp</code> method like below:</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// build config and controllers path...</span>
 <span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> ApiLambdaApp(controllersPath, appConfig)
 
@@ -866,6 +864,8 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
 
 <span class="hljs-keyword">import</span> { apiController, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
+<span class="hljs-keyword">import</span> { IMyService } <span class="hljs-keyword">from</span> <span class="hljs-string">"./IMyService"</span>
+
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/hello-world"</span>)
 <span class="hljs-meta">@injectable</span>()
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyController {
@@ -881,11 +881,14 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
 				<hr>
 				<h2 id="-a-id-config-a-configuration"><a id="config"></a>Configuration</h2>
 				<hr>
-				<p>When building an application instance you pass a <code>AppConfig</code> instance to the constructor. If you want to provide your own application config it is recommended to extend this class .</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { AppConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
+				<p>When building an application instance you pass an <code>AppConfig</code> instance to the constructor. If you want to provide your own application config it is recommended to extend this class .</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
+
+<span class="hljs-keyword">import</span> { AppConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">import</span> { DatabaseConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">"./DatabaseConfig"</span>
 
+<span class="hljs-meta">@injectable</span>()
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyCustomConfig <span class="hljs-keyword">extends</span> AppConfig {
     <span class="hljs-keyword">public</span> databaseConfig: DatabaseConfig
 }</code></pre>
@@ -927,7 +930,8 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
 				<p>For a complete reference see the <a href="https://djfdyuruiry.github.io/ts-lambda-api/classes/appconfig.html">AppConfig</a> docs.</p>
 				<h3 id="-a-id-lambda-api-config-a-lambda-api"><a id="lambda-api-config"></a>lambda-api</h3>
 				<p>Configuring <code>lambda-api</code> directly can be done by calling the <code>configureApi</code> method like below:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> xmljs <span class="hljs-keyword">from</span> <span class="hljs-string">"xml-js"</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { API } <span class="hljs-keyword">from</span> <span class="hljs-string">"lambda-api"</span>
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> xmljs <span class="hljs-keyword">from</span> <span class="hljs-string">"xml-js"</span>
 
 <span class="hljs-comment">// build config and controllers path...</span>
 <span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> ApiLambdaApp(controllersPath, appConfig)
@@ -947,7 +951,7 @@ app.configureApi(api: <span class="hljs-function"><span class="hljs-params">API<
 				<p><strong>Note: any middleware handlers and manual routes will not apply auth filters, authorizers or error interceptors</strong></p>
 				<p>See the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package documentation for guidance how to use the <code>API</code> class.</p>
 				<h2 id="-a-id-logging-a-logging"><a id="logging"></a>Logging</h2>
-				<p>A logger interface is provided that can write messages to standard out. You can configure this logger using the <code>serverLogging</code> key in the <code>AppConfig</code> class. See the <a href="#config-reference">Config Reference</a> for details on options available.</p>
+				<p>A logger interface is provided that can write messages to standard out. You can configure this logger using the <code>serverLogging</code> key in the <code>AppConfig</code> class. See the <a href="#config-reference">Config Reference</a> for details on options available. This complements the existing logging provided by <code>lambda-api</code>, which can be configured using the <code>logger</code> key.</p>
 				<p>By default, the logger is set to <code>info</code> and outputs messages as simple strings.</p>
 				<p>The format of the messages written out is:</p>
 				<pre><code><span class="hljs-keyword">level</span>  <span class="hljs-keyword">class</span>                   message
@@ -980,9 +984,8 @@ ERROR Endpoint - [GET] /test - Error processing endpoint request
 					<li>Extend the <code>Controller</code> class in your controller:</li>
 				</ul>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
-<span class="hljs-keyword">import</span> { Response, Request } <span class="hljs-keyword">from</span> <span class="hljs-string">"lambda-api"</span>
 
-<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"../../../dist/ts-lambda-api"</span>
+<span class="hljs-keyword">import</span> { apiController, Controller, GET } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@apiController</span>(<span class="hljs-string">"/"</span>)
 <span class="hljs-meta">@injectable</span>()
@@ -998,7 +1001,7 @@ ERROR Endpoint - [GET] /test - Error processing endpoint request
 					<li>Use a <code>LogFactory</code> instance to build it:</li>
 				</ul>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { inject, injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
-<span class="hljs-keyword">import</span> { AppConfig, LogFactory, LogLevel } <span class="hljs-keyword">from</span> <span class="hljs-string">"lambda-api"</span>
+<span class="hljs-keyword">import</span> { AppConfig, LogFactory } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-meta">@injectable</span>()
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> SomeServiceYouMightMake {
@@ -1015,7 +1018,7 @@ ERROR Endpoint - [GET] /test - Error processing endpoint request
 				<ul>
 					<li>Use the <code>LogFactory</code> static methods to build it:</li>
 				</ul>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { LogFactory, LogLevel } <span class="hljs-keyword">from</span> <span class="hljs-string">"lambda-api"</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { LogFactory, LogLevel } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> SomeServiceYouMightMake {
     <span class="hljs-keyword">public</span> doStuff() {
@@ -1025,14 +1028,14 @@ ERROR Endpoint - [GET] /test - Error processing endpoint request
         logger.debug(<span class="hljs-string">"Inside doStuff!"</span>)
     }
 }</code></pre>
-				<h3 id="-a-id-logging-api-a-logger-api"><a id="logging-api"></a> Logger API</h3>
+				<h3 id="-a-id-logging-api-a-server-logger-api"><a id="logging-api"></a> Server Logger API</h3>
 				<p>The logging API supports formatting of messages using the <a href="https://www.npmjs.com/package/sprintf-js"><code>sprintf-js</code></a> npm module, simply pass in your arguments and put placeholders in your message string:</p>
 				<pre><code class="language-typescript">logger.warn(<span class="hljs-string">"Hello there %s, how are you?"</span>, <span class="hljs-string">"Roy"</span>)
 logger.debug(<span class="hljs-string">"Task status: %s. Task data: %j"</span>, <span class="hljs-string">"success"</span>, {event: <span class="hljs-string">"run batch"</span>})</code></pre>
-				<p>Using this will help to speed up your app if you do a lot of logging, because uneccessary work to convert values to strings and JSON for debug messages will not take place if a higher error level is set.</p>
+				<p>Using this will help to speed up your app if you do a lot of logging, because uneccessary work to convert values to strings and the JSON serialization of debug messages will not take place if a higher error level is set.</p>
 				<hr>
 				<p>Below is an example of the methods available on logger instances:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { LogFactory, LogLevel } <span class="hljs-keyword">from</span> <span class="hljs-string">"lambda-api"</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { LogFactory, LogLevel } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> SomeServiceYouMightMake {
     <span class="hljs-keyword">public</span> doStuff() {
@@ -1076,14 +1079,14 @@ logger.debug(<span class="hljs-string">"Task status: %s. Task data: %j"</span>, 
 				<hr>
 				<h2 id="-a-id-open-api-a-openapi-swagger-"><a id="open-api"></a>OpenAPI (Swagger)</h2>
 				<hr>
-				<p>The OpenAPI Specification, FKA Swagger, is supported out of the box. If you are not familar with it, check out <a href="https://github.com/OAI/OpenAPI-Specification">https://github.com/OAI/OpenAPI-Specification</a></p>
-				<p><strong>This framework only supports OpenAPI v3</strong></p>
+				<p>The OpenAPI Specification (FKA Swagger) is supported out of the box. If you are not familar with it, check out <a href="https://github.com/OAI/OpenAPI-Specification">https://github.com/OAI/OpenAPI-Specification</a></p>
+				<p><strong>This framework supports only OpenAPI v3</strong></p>
 				<p>The following features are supported:</p>
 				<ul>
 					<li>Generating of an OpenAPI Specification, which includes:<ul>
 							<li>All endpoints with full path and HTTP method</li>
 							<li>Custom names and descriptions for endpoints</li>
-							<li>Group endpoints together by API</li>
+							<li>Grouping of endpoints together by API</li>
 							<li>Endpoint query, path and header parameters (set by parameter decorators)</li>
 							<li>Response content type headers (set by <code>produces</code> or <code>controllerProduces</code> decorators)</li>
 							<li>Request and Response bodies: class types, primitive values and files</li>
@@ -1231,7 +1234,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
      <span class="hljs-keyword">this</span>.roles = []
  }
 }</code></pre>
-								<p><em>This is required because object properties are not set until a value is assigned, which makes any sort of reflection impossible.</em></p>
+								<p><em>This is required because object properties are not defined until a value is assigned, which makes any sort of reflection impossible.</em></p>
 							</li>
 						</ol>
 					</li>
@@ -1281,7 +1284,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
 						<p>  <em>Header parameters only support the &#39;simple&#39; style</em></p>
 						<p>  <em>Note: Setting a content type for your parameter is supported, but due to an outstanding issue, these parameters will not display in Swagger UI / Editor, see: <a href="https://github.com/swagger-api/swagger-ui/issues/4442">https://github.com/swagger-api/swagger-ui/issues/4442</a></em></p>
 					</li>
-					<li><p>Add security schemes to your specification (other than Basic auth) using <code>apiSecurity</code> on your authentication filter:</p>
+					<li><p>Add security schemes to your specification (other than Basic auth, this is automatically detected) using an <code>apiSecurity</code> decorator on your authentication filter:</p>
 						<pre><code class="language-typescript">  <span class="hljs-keyword">import</span> { apiSecurity, IAuthFilter } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
   <span class="hljs-keyword">import</span> { User } <span class="hljs-keyword">from</span> <span class="hljs-string">"./User"</span>
@@ -1302,7 +1305,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
 				<pre><code class="language-bash">npm install js-yaml
 npm install -D @types/js-yaml</code></pre>
 				<h3 id="-a-id-open-api-auth-a-authentication"><a id="open-api-auth"></a>Authentication</h3>
-				<p>By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a specification, use the <code>useAuthentication</code> key in the <code>openApi</code> config:</p>
+				<p>By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a spec, set the <code>useAuthentication</code> key in the <code>openApi</code> config:</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// build controllers path...</span>
 <span class="hljs-keyword">const</span> appConfig = <span class="hljs-keyword">new</span> AppConfig()
 
@@ -1316,8 +1319,8 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 				<hr>
 				<h2 id="-a-id-testing-a-testing"><a id="testing"></a>Testing</h2>
 				<hr>
-				<p>For local dev testing and integration with functional tests see the <a href="https://www.npmjs.com/package/ts-lambda-api-local">ts-lambda-api-local</a> package which enables hosting your API using express as a local HTTP server.</p>
-				<p>Check out this project&#39;s dev dependencies to see what is required to test API code. The <code>tests</code> directory of this repo contains some acceptance tests which will show you how to build mock requests and invoke your application.</p>
+				<p>For local dev testing and integration with acceptance tests see the <a href="https://www.npmjs.com/package/ts-lambda-api-local">ts-lambda-api-local</a> package which enables hosting your API using express as a local HTTP server.</p>
+				<p>Check out this project&#39;s dev dependencies to see what is required to test API code. The <code>tests</code> directory of this repo contains extensive acceptance tests which will show you how to build mock requests and invoke your API endpoints programmatically.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
