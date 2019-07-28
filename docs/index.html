@@ -66,7 +66,9 @@
 			<div class="tsd-panel tsd-typography">
 				<p><a href="https://www.npmjs.com/package/ts-lambda-api"><img src="https://img.shields.io/npm/v/ts-lambda-api.svg?style=flat-square" alt="npm"></a> <a href="https://travis-ci.com/djfdyuruiry/ts-lambda-api"><img src="https://img.shields.io/npm/dw/ts-lambda-api.svg?style=flat-square" alt="downloads"></a></p>
 				<p><a href="https://travis-ci.com/djfdyuruiry/ts-lambda-api"><img src="https://img.shields.io/travis/com/djfdyuruiry/ts-lambda-api.svg?style=flat-square" alt="build"></a> <a href="https://github.com/djfdyuruiry/ts-lambda-api/network/dependencies"><img src="https://img.shields.io/david/djfdyuruiry/ts-lambda-api.svg?style=flat-square" alt="dependencies"></a></p>
-				<h1 id="ts-lambda-api">ts-lambda-api</h1>
+				<a href="#ts-lambda-api" id="ts-lambda-api" style="color: inherit; text-decoration: none;">
+					<h1>ts-lambda-api</h1>
+				</a>
 				<p>Build REST API&#39;s using Typescript &amp; AWS Lambda.</p>
 				<p><a href="https://github.com/djfdyuruiry/ts-lambda-api/">GitHub Repo</a></p>
 				<p><a href="https://nodei.co/npm/ts-lambda-api/"><img src="https://nodei.co/npm/ts-lambda-api.png" alt="NPM"></a></p>
@@ -92,15 +94,19 @@
 				</ul>
 				<p><strong>Docs</strong></p>
 				<ul>
-					<li><a href="#routing">Routing</a><ul>
+					<li><p><a href="#routing">Routing</a></p>
+						<ul>
 							<li><a href="#controller-routes">Controller Routes</a></li>
 							<li><a href="#endpoint-routes">Endpoint Routes</a></li>
 							<li><a href="#path-params">Path Parameters</a></li>
 						</ul>
 					</li>
-					<li><a href="#request-binding">Request Parameter Binding</a></li>
-					<li><a href="#responses">Responses</a></li>
-					<li><a href="#auth-authorization">Authentication &amp; Authorization</a><ul>
+					<li><p><a href="#request-binding">Request Parameter Binding</a></p>
+					</li>
+					<li><p><a href="#responses">Responses</a></p>
+					</li>
+					<li><p><a href="#auth-authorization">Authentication &amp; Authorization</a></p>
+						<ul>
 							<li><a href="#auth-princ">Authentication and Principals</a></li>
 							<li><a href="#basic-auth">Basic Authentication</a></li>
 							<li><a href="#endpoint-princip">Access Principal Context</a></li>
@@ -109,33 +115,40 @@
 							<li><a href="#authorization">Authorization</a></li>
 						</ul>
 					</li>
-					<li><a href="#errors">Error Handling</a><ul>
+					<li><p><a href="#errors">Error Handling</a></p>
+						<ul>
 							<li><a href="#error-interceptors">Error Interceptors</a></li>
 							<li><a href="#manual-error-interceptors">Manual Error Interceptors</a></li>
 							<li><a href="#catching-errors">Catching Errors</a></li>
 							<li><a href="#framework-errors">Framework Error Handling</a></li>
 						</ul>
 					</li>
-					<li><a href="#json-patch">JSON Patch Requests</a></li>
-					<li><a href="#req-res-context">Request / Response Context</a><ul>
+					<li><p><a href="#json-patch">JSON Patch Requests</a></p>
+					</li>
+					<li><p><a href="#req-res-context">Request / Response Context</a></p>
+						<ul>
 							<li><a href="#extend-controller">Extending Controller Class</a></li>
 							<li><a href="#use-decorators">Using Decorators</a></li>
 							<li><a href="#send-files">Returning Files in a Response</a></li>
 						</ul>
 					</li>
-					<li><a href="#di">Dependency Injection</a></li>
-					<li><a href="#config">Configuration</a><ul>
+					<li><p><a href="#di">Dependency Injection</a></p>
+					</li>
+					<li><p><a href="#config">Configuration</a></p>
+						<ul>
 							<li><a href="#lambda-api-config">lambda-api</a></li>
 							<li><a href="#config-reference">Reference</a></li>
 						</ul>
 					</li>
-					<li><a href="#logging">Logging</a><ul>
+					<li><p><a href="#logging">Logging</a></p>
+						<ul>
 							<li><a href="#logging-writing">Writing Logs</a></li>
 							<li><a href="#logging-api">API</a></li>
 							<li><a href="#lambda-api-logging">lambda-api</a></li>
 						</ul>
 					</li>
-					<li><a href="#open-api">OpenAPI (Swagger)</a><ul>
+					<li><p><a href="#open-api">OpenAPI (Swagger)</a></p>
+						<ul>
 							<li><a href="#open-api-decorators">Decorators</a></li>
 							<li><a href="#open-api-yaml">YAML Support</a></li>
 							<li><a href="#open-api-auth">Authentication</a></li>
@@ -147,7 +160,9 @@
 					</li>
 				</ul>
 				<hr>
-				<h2 id="-a-id-create-api-a-creating-a-new-api"><a id="create-api"></a>Creating a new API</h2>
+				<a href="#a-idcreate-apiacreating-a-new-api" id="a-idcreate-apiacreating-a-new-api" style="color: inherit; text-decoration: none;">
+					<h2><a id="create-api"></a>Creating a new API</h2>
+				</a>
 				<hr>
 				<p>This is a short guide to creating your first API using <code>ts-lambda-api</code>. It is somewhat opinionated about project structure, but most of this can be easily customised.</p>
 				<p><strong>Note: Node.js v10.x &amp; Typescript v3.x are recommended. Other versions may work perfectly fine, but have not been tested.</strong></p>
@@ -249,7 +264,9 @@ appConfig.version = <span class="hljs-string">"v1"</span>
 					<li>Compile the application by running:</li>
 				</ul>
 				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> tsc</span></code></pre><hr>
-				<h2 id="-a-id-aws-deploy-a-deploy-to-aws-lambda"><a id="aws-deploy"></a>Deploy to AWS Lambda</h2>
+				<a href="#a-idaws-deployadeploy-to-aws-lambda" id="a-idaws-deployadeploy-to-aws-lambda" style="color: inherit; text-decoration: none;">
+					<h2><a id="aws-deploy"></a>Deploy to AWS Lambda</h2>
+				</a>
 				<hr>
 				<p><strong>*Note</strong>: AWS supplies the <code>aws-sdk</code> package at runtime when running your Lambda applications, so there is no need to include this in your deployment package.*</p>
 				<ul>
@@ -270,7 +287,9 @@ zip -r lambda.zip ./</code></pre>
 					<li>Upload your lambda using the <code>dist/lambda.zip</code> file. Specify <code>app.handler</code> as the function handler. See: <a href="https://docs.aws.amazon.com/lambda/latest/dg/nodejs-create-deployment-pkg.html">https://docs.aws.amazon.com/lambda/latest/dg/nodejs-create-deployment-pkg.html</a></li>
 				</ul>
 				<hr>
-				<h3 id="-a-id-invoke-lambda-a-invoke-lambda"><a id="invoke-lambda"></a>Invoke Lambda</h3>
+				<a href="#a-idinvoke-lambdaainvoke-lambda" id="a-idinvoke-lambdaainvoke-lambda" style="color: inherit; text-decoration: none;">
+					<h3><a id="invoke-lambda"></a>Invoke Lambda</h3>
+				</a>
 				<hr>
 				<ul>
 					<li><p>Create an AWS Load Balancer and point it to your new API Lambda. See: <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html">https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html</a></p>
@@ -284,10 +303,14 @@ zip -r lambda.zip ./</code></pre>
 				</ul>
 				<pre><code class="language-json">{<span class="hljs-attr">"hello"</span>:<span class="hljs-string">"world"</span>}</code></pre>
 				<hr>
-				<h2 id="-a-id-routing-a-routing"><a id="routing"></a>Routing</h2>
+				<a href="#a-idroutingarouting" id="a-idroutingarouting" style="color: inherit; text-decoration: none;">
+					<h2><a id="routing"></a>Routing</h2>
+				</a>
 				<hr>
 				<p>Routing is configured using decorators on both controller classes and endpoint methods. You can also define a global base path (e.x. <code>/api/v1</code>) for your API by configuring the <code>base</code> property when passing your app configuration to the <code>ApiLambdaApp</code> class. (See the <code>Creating a new API</code> section)</p>
-				<h3 id="-a-id-controller-routes-a-controller-routes"><a id="controller-routes"></a>Controller Routes</h3>
+				<a href="#a-idcontroller-routesacontroller-routes" id="a-idcontroller-routesacontroller-routes" style="color: inherit; text-decoration: none;">
+					<h3><a id="controller-routes"></a>Controller Routes</h3>
+				</a>
 				<p>You can declare a root path for all methods in a controller using the <code>apiController</code> decorator.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
@@ -306,7 +329,9 @@ zip -r lambda.zip ./</code></pre>
         <span class="hljs-comment">// handle post /hello-world requests</span>
     }
 }</code></pre>
-				<h3 id="-a-id-endpoint-routes-a-endpoint-routes"><a id="endpoint-routes"></a>Endpoint Routes</h3>
+				<a href="#a-idendpoint-routesaendpoint-routes" id="a-idendpoint-routesaendpoint-routes" style="color: inherit; text-decoration: none;">
+					<h3><a id="endpoint-routes"></a>Endpoint Routes</h3>
+				</a>
 				<p>You can declare a path for any given method in a controller when using the endpoint decorators. The <code>apiController</code> decorator is not required on the class to use this form of routing.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
@@ -321,7 +346,9 @@ zip -r lambda.zip ./</code></pre>
     }
 }</code></pre>
 				<hr>
-				<h3 id="-a-id-path-params-a-path-parameters"><a id="path-params"></a>Path Parameters</h3>
+				<a href="#a-idpath-paramsapath-parameters" id="a-idpath-paramsapath-parameters" style="color: inherit; text-decoration: none;">
+					<h3><a id="path-params"></a>Path Parameters</h3>
+				</a>
 				<p>You can include parameters as part of your routes, when you need to capture parts of the URL.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
@@ -352,7 +379,9 @@ zip -r lambda.zip ./</code></pre>
 }</code></pre>
 				<p><strong>Note all path parameters are passed in as strings, you will need to cast these if required</strong></p>
 				<hr>
-				<h2 id="-a-id-request-binding-a-request-parameter-binding"><a id="request-binding"></a>Request Parameter Binding</h2>
+				<a href="#a-idrequest-bindingarequest-parameter-binding" id="a-idrequest-bindingarequest-parameter-binding" style="color: inherit; text-decoration: none;">
+					<h2><a id="request-binding"></a>Request Parameter Binding</h2>
+				</a>
 				<hr>
 				<p>Different parts of the HTTP request can be bound to endpoint method parameters using decorators.</p>
 				<ul>
@@ -391,7 +420,9 @@ zip -r lambda.zip ./</code></pre>
     }
 }</code></pre>
 				<hr>
-				<h2 id="-a-id-responses-a-responses"><a id="responses"></a>Responses</h2>
+				<a href="#a-idresponsesaresponses" id="a-idresponsesaresponses" style="color: inherit; text-decoration: none;">
+					<h2><a id="responses"></a>Responses</h2>
+				</a>
 				<hr>
 				<p>There are two ways to respond to requests:</p>
 				<ul>
@@ -441,11 +472,15 @@ zip -r lambda.zip ./</code></pre>
     }
 }</code></pre>
 				<hr>
-				<h2 id="-a-id-auth-authorization-a-authentication-authorization"><a id="auth-authorization"></a>Authentication &amp; Authorization</h2>
+				<a href="#a-idauth-authorizationaauthentication-amp-authorization" id="a-idauth-authorizationaauthentication-amp-authorization" style="color: inherit; text-decoration: none;">
+					<h2><a id="auth-authorization"></a>Authentication &amp; Authorization</h2>
+				</a>
 				<hr>
 				<p>This framework supports authenticating requests and authorization for controllers and endpoints. It can be used to configure HTTP authentication, token based auth and role based access control (ACLs).</p>
 				<p>Implementation is heavily inspired by the Dropwizard framework for Java.</p>
-				<h3 id="-a-id-auth-princ-a-authentication-and-principals"><a id="auth-princ"></a>Authentication and Principals</h3>
+				<a href="#a-idauth-princaauthentication-and-principals" id="a-idauth-princaauthentication-and-principals" style="color: inherit; text-decoration: none;">
+					<h3><a id="auth-princ"></a>Authentication and Principals</h3>
+				</a>
 				<p>Authentication is preformed by filter classes that are executed before invoking an endpoint; all filter classes implement the <code>IAuthFilter</code> interface.</p>
 				<p>Filters use information from the HTTP request to authenticate the request. If authentication is successful, a filter will return a principal. A principal is a simple class that contains information about the current user/entity that has been granted access to the endpoint.</p>
 				<p>To use authentication you must implement your own principal by extending the <code>Principal</code> class:</p>
@@ -461,7 +496,9 @@ zip -r lambda.zip ./</code></pre>
         <span class="hljs-keyword">super</span>(name)
     }
 }</code></pre>
-				<h3 id="-a-id-basic-auth-a-basic-authentication"><a id="basic-auth"></a>Basic Authentication</h3>
+				<a href="#a-idbasic-authabasic-authentication" id="a-idbasic-authabasic-authentication" style="color: inherit; text-decoration: none;">
+					<h3><a id="basic-auth"></a>Basic Authentication</h3>
+				</a>
 				<p>HTTP Basic authentication is supported out of the box by the <code>BasicAuthFilter</code> filter abstract class. You extend this class to implement your authentication logic:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { BasicAuthFilter } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
@@ -495,7 +532,9 @@ zip -r lambda.zip ./</code></pre>
 <span class="hljs-comment">// this will protect your endpoints using the auth filter to authenticate requests</span>
 app.middlewareRegistry.addAuthFilter(authFilter)
 <span class="hljs-comment">// export handler</span></code></pre>
-				<h3 id="-a-id-endpoint-princip-a-access-principal-context"><a id="endpoint-princip"></a>Access Principal Context</h3>
+				<a href="#a-idendpoint-principaaccess-principal-context" id="a-idendpoint-principaaccess-principal-context" style="color: inherit; text-decoration: none;">
+					<h3><a id="endpoint-princip"></a>Access Principal Context</h3>
+				</a>
 				<p>Once a user has been authenticated you can pass the principal instance into the target endpoint. You can do this by adding a <code>principal</code> parameter decorator to your endpoint method.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
@@ -509,7 +548,9 @@ app.middlewareRegistry.addAuthFilter(authFilter)
         <span class="hljs-comment">// do something with the user context</span>
     }
 }</code></pre>
-				<h3 id="-a-id-no-auth-endpoints-a-unauthenticated-endpoints"><a id="no-auth-endpoints"></a>Unauthenticated Endpoints</h3>
+				<a href="#a-idno-auth-endpointsaunauthenticated-endpoints" id="a-idno-auth-endpointsaunauthenticated-endpoints" style="color: inherit; text-decoration: none;">
+					<h3><a id="no-auth-endpoints"></a>Unauthenticated Endpoints</h3>
+				</a>
 				<p>There are several situations where you might want to disable authentication for a specific endpoint:</p>
 				<ul>
 					<li>Healthcheck / Status endpoint</li>
@@ -557,7 +598,9 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 
     <span class="hljs-comment">// ...other declared endpoints are also be called without authentication...</span>
 }</code></pre>
-				<h3 id="-a-id-custom-auth-a-custom-authentication"><a id="custom-auth"></a>Custom Authentication</h3>
+				<a href="#a-idcustom-authacustom-authentication" id="a-idcustom-authacustom-authentication" style="color: inherit; text-decoration: none;">
+					<h3><a id="custom-auth"></a>Custom Authentication</h3>
+				</a>
 				<p>If you wish to implement popular authentication mechanisms or make your own, you need to implement the <code>IAuthFilter</code> interface. It accepts two type parameters:</p>
 				<ul>
 					<li><code>T</code> - The model class for your authentication data</li>
@@ -605,7 +648,9 @@ app.middlewareRegistry.addAuthFilter(authFilter)
     }
 }</code></pre>
 				<p>Tip: You can make your class abstract and then make the <code>authenticate</code> method abstract to enable your custom auth filter to be re-usable. This way, you simply extend your custom fiter and implement the authentication logic for your application.</p>
-				<h3 id="-a-id-authorization-a-authorization"><a id="authorization"></a>Authorization</h3>
+				<a href="#a-idauthorizationaauthorization" id="a-idauthorizationaauthorization" style="color: inherit; text-decoration: none;">
+					<h3><a id="authorization"></a>Authorization</h3>
+				</a>
 				<p>To implement role based authorization you implement the <code>IAuthorizer</code> interface.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { IAuthorizer } <span class="hljs-keyword">from</span> <span class="hljs-string">"ts-lambda-api"</span>
 
@@ -656,7 +701,9 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 app.middlewareRegistry.addAuthorizer(authorizer)
 <span class="hljs-comment">// export handler</span></code></pre>
 				<hr>
-				<h2 id="-a-id-errors-a-error-handling"><a id="errors"></a>Error Handling</h2>
+				<a href="#a-iderrorsaerror-handling" id="a-iderrorsaerror-handling" style="color: inherit; text-decoration: none;">
+					<h2><a id="errors"></a>Error Handling</h2>
+				</a>
 				<hr>
 				<p>When an unexpected error is thrown in one of your endpoints, you can choose how to handle this. There are three general techniques:</p>
 				<ol>
@@ -664,7 +711,9 @@ app.middlewareRegistry.addAuthorizer(authorizer)
 					<li>Catch the error in your endpoint logic</li>
 					<li>Let the framework handle the error</li>
 				</ol>
-				<h3 id="-a-id-error-interceptors-a-error-interceptors"><a id="error-interceptors"></a>Error Interceptors</h3>
+				<a href="#a-iderror-interceptorsaerror-interceptors" id="a-iderror-interceptorsaerror-interceptors" style="color: inherit; text-decoration: none;">
+					<h3><a id="error-interceptors"></a>Error Interceptors</h3>
+				</a>
 				<p>Error interceptors are classes that can be configured to be invoked when an error occurs when calling a given controller or endpoint. Interceptors extend the <code>ErrorInterceptor</code> class and provide an implementation for an <code>intercept</code> method.</p>
 				<p>Interceptor instances are built using the InversifyJS app container, so you can add any dependencies as constructor parameters if you configure the container correctly.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>;
@@ -705,7 +754,9 @@ app.middlewareRegistry.addAuthorizer(authorizer)
     }
 }</code></pre>
 				<p>You can also use the <code>errorInterceptor</code> decorator on individual endpoints for more fine grained error control. Endpoint interceptors will override controller interceptors.</p>
-				<h3 id="-a-id-manual-error-interceptors-a-manual-error-interceptors"><a id="manual-error-interceptors"></a>Manual Error Interceptors</h3>
+				<a href="#a-idmanual-error-interceptorsamanual-error-interceptors" id="a-idmanual-error-interceptorsamanual-error-interceptors" style="color: inherit; text-decoration: none;">
+					<h3><a id="manual-error-interceptors"></a>Manual Error Interceptors</h3>
+				</a>
 				<p>You can manually register interceptors when setting up your application instance:</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// build config and controllers path...</span>
 <span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> ApiLambdaApp(controllersPath, appConfig)
@@ -721,7 +772,9 @@ errorInterceptor.endpointTarget = <span class="hljs-string">"StoreController::ge
 				<pre><code class="language-typescript"><span class="hljs-comment">// controllers are identified by class name</span>
 errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"</span></code></pre>
 				<p><strong>Note: using this type of interceptor is overridden if the target controller or endpoint has an interceptor configured</strong></p>
-				<h3 id="-a-id-catching-errors-a-catching-errors"><a id="catching-errors"></a>Catching Errors</h3>
+				<a href="#a-idcatching-errorsacatching-errors" id="a-idcatching-errorsacatching-errors" style="color: inherit; text-decoration: none;">
+					<h3><a id="catching-errors"></a>Catching Errors</h3>
+				</a>
 				<p>You can use a try/catch block and the <code>Response</code> class to handle errors:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
@@ -749,13 +802,17 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
     }
 }</code></pre>
 				<p><em>Note: this can also be done by injecting the <code>Response</code> class instance using the <code>response</code> parameter decorator, instead of extending <code>Controller</code>.</em></p>
-				<h3 id="-a-id-framework-errors-a-framework-error-handling"><a id="framework-errors"></a>Framework Error Handling</h3>
+				<a href="#a-idframework-errorsaframework-error-handling" id="a-idframework-errorsaframework-error-handling" style="color: inherit; text-decoration: none;">
+					<h3><a id="framework-errors"></a>Framework Error Handling</h3>
+				</a>
 				<p>If you simply preform your logic in your endpoint method without catching any errors yourself, the framework will catch the error and return a HTTP 500 response with error details. Below is a JSON snippet showing an example.</p>
 				<pre><code class="language-json">{
     <span class="hljs-attr">"error"</span>: <span class="hljs-string">"...some error that the framework caught when calling an endpoint...."</span>
 }</code></pre>
 				<hr>
-				<h2 id="-a-id-json-patch-a-json-patch-requests"><a id="json-patch"></a>JSON Patch Requests</h2>
+				<a href="#a-idjson-patchajson-patch-requests" id="a-idjson-patchajson-patch-requests" style="color: inherit; text-decoration: none;">
+					<h2><a id="json-patch"></a>JSON Patch Requests</h2>
+				</a>
 				<hr>
 				<p>This library supports <a href="http://jsonpatch.com/">JSON Patch</a> format for updating entities without having to upload the entire entity. To use it in your endpoints, ensure your controller extends the <code>Controller</code> class, an example is below:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
@@ -783,10 +840,14 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 }</code></pre>
 				<p><strong>Under the hood, the API uses the <a href="https://www.npmjs.com/package/fast-json-patch">fast-json-patch</a> package</strong></p>
 				<hr>
-				<h2 id="-a-id-req-res-context-a-request-response-context"><a id="req-res-context"></a>Request / Response Context</h2>
+				<a href="#a-idreq-res-contextarequest--response-context" id="a-idreq-res-contextarequest--response-context" style="color: inherit; text-decoration: none;">
+					<h2><a id="req-res-context"></a>Request / Response Context</h2>
+				</a>
 				<hr>
 				<p>If you want to read request bodies or write to the response, there are several supported approaches.</p>
-				<h3 id="-a-id-extend-controller-a-extending-controller-class"><a id="extend-controller"></a>Extending Controller Class</h3>
+				<a href="#a-idextend-controlleraextending-controller-class" id="a-idextend-controlleraextending-controller-class" style="color: inherit; text-decoration: none;">
+					<h3><a id="extend-controller"></a>Extending Controller Class</h3>
+				</a>
 				<p>If you extend the controller class, you get access to the request and response context.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
@@ -804,7 +865,9 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
         <span class="hljs-keyword">this</span>.response.html(<span class="hljs-string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>);
     }
 }</code></pre>
-				<h3 id="-a-id-use-decorators-a-using-decorators"><a id="use-decorators"></a>Using Decorators</h3>
+				<a href="#a-iduse-decoratorsausing-decorators" id="a-iduse-decoratorsausing-decorators" style="color: inherit; text-decoration: none;">
+					<h3><a id="use-decorators"></a>Using Decorators</h3>
+				</a>
 				<p>You can use parameter decorators to inject the request and response context.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 <span class="hljs-keyword">import</span> { Request, Response } <span class="hljs-keyword">from</span> <span class="hljs-string">"lambda-api"</span>
@@ -823,7 +886,9 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
         response.html(<span class="hljs-string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>);
     }
 }</code></pre>
-				<h3 id="-a-id-send-files-a-returning-files-in-a-response"><a id="send-files"></a>Returning Files in a Response</h3>
+				<a href="#a-idsend-filesareturning-files-in-a-response" id="a-idsend-filesareturning-files-in-a-response" style="color: inherit; text-decoration: none;">
+					<h3><a id="send-files"></a>Returning Files in a Response</h3>
+				</a>
 				<p>You can return files by using the <code>sendFile</code> method in the response context.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
 
@@ -845,7 +910,9 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 }</code></pre>
 				<p><strong>The <code>Request</code> and <code>Response</code> classes are documented in the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package.</strong></p>
 				<hr>
-				<h2 id="-a-id-di-a-dependency-injection"><a id="di"></a> Dependency Injection</h2>
+				<a href="#a-iddia-dependency-injection" id="a-iddia-dependency-injection" style="color: inherit; text-decoration: none;">
+					<h2><a id="di"></a> Dependency Injection</h2>
+				</a>
 				<hr>
 				<p>Configuring the IOC container to enable dependency injection for your controllers is easy. Once you build an <code>ApiLambdaApp</code> instance you can call the <code>configureApp</code> method like below:</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// build config and controllers path...</span>
@@ -879,7 +946,9 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
 }</code></pre>
 				<p>See the <a href="https://github.com/inversify/InversifyJS">InversifyJS</a> package documentation for full guidance how to use the <code>Container</code> class to manage dependencies.</p>
 				<hr>
-				<h2 id="-a-id-config-a-configuration"><a id="config"></a>Configuration</h2>
+				<a href="#a-idconfigaconfiguration" id="a-idconfigaconfiguration" style="color: inherit; text-decoration: none;">
+					<h2><a id="config"></a>Configuration</h2>
+				</a>
 				<hr>
 				<p>When building an application instance you pass an <code>AppConfig</code> instance to the constructor. If you want to provide your own application config it is recommended to extend this class .</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">"inversify"</span>
@@ -926,9 +995,13 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
     }
 }</code></pre>
 				<p><strong>Note: The <code>AppConfig</code> class supports all the configuration fields documented in the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package.</strong></p>
-				<h3 id="-a-id-config-reference-a-reference"><a id="config-reference"></a>Reference</h3>
+				<a href="#a-idconfig-referenceareference" id="a-idconfig-referenceareference" style="color: inherit; text-decoration: none;">
+					<h3><a id="config-reference"></a>Reference</h3>
+				</a>
 				<p>For a complete reference see the <a href="https://djfdyuruiry.github.io/ts-lambda-api/classes/appconfig.html">AppConfig</a> docs.</p>
-				<h3 id="-a-id-lambda-api-config-a-lambda-api"><a id="lambda-api-config"></a>lambda-api</h3>
+				<a href="#a-idlambda-api-configalambda-api" id="a-idlambda-api-configalambda-api" style="color: inherit; text-decoration: none;">
+					<h3><a id="lambda-api-config"></a>lambda-api</h3>
+				</a>
 				<p>Configuring <code>lambda-api</code> directly can be done by calling the <code>configureApi</code> method like below:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { API } <span class="hljs-keyword">from</span> <span class="hljs-string">"lambda-api"</span>
 <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> xmljs <span class="hljs-keyword">from</span> <span class="hljs-string">"xml-js"</span>
@@ -950,7 +1023,9 @@ app.configureApi(api: <span class="hljs-function"><span class="hljs-params">API<
 <span class="hljs-comment">// export handler</span></code></pre>
 				<p><strong>Note: any middleware handlers and manual routes will not apply auth filters, authorizers or error interceptors</strong></p>
 				<p>See the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package documentation for guidance how to use the <code>API</code> class.</p>
-				<h2 id="-a-id-logging-a-logging"><a id="logging"></a>Logging</h2>
+				<a href="#a-idloggingalogging" id="a-idloggingalogging" style="color: inherit; text-decoration: none;">
+					<h2><a id="logging"></a>Logging</h2>
+				</a>
 				<p>A logger interface is provided that can write messages to standard out. You can configure this logger using the <code>serverLogging</code> key in the <code>AppConfig</code> class. See the <a href="#config-reference">Config Reference</a> for details on options available. This complements the existing logging provided by <code>lambda-api</code>, which can be configured using the <code>logger</code> key.</p>
 				<p>By default, the logger is set to <code>info</code> and outputs messages as simple strings.</p>
 				<p>The format of the messages written out is:</p>
@@ -978,7 +1053,9 @@ ERROR Endpoint - [GET] /test - Error processing endpoint request
     <span class="hljs-attr">"time"</span>: <span class="hljs-number">1555865906882</span> // milliseconds since epoch
 }</code></pre>
 				<p>This format matches the keys used by the <code>lambda-api</code> framework in it&#39;s output.</p>
-				<h3 id="-a-id-logging-writing-a-writing-logs"><a id="logging-writing"></a>Writing Logs</h3>
+				<a href="#a-idlogging-writingawriting-logs" id="a-idlogging-writingawriting-logs" style="color: inherit; text-decoration: none;">
+					<h3><a id="logging-writing"></a>Writing Logs</h3>
+				</a>
 				<p>To write logs you will ned a logger instance. There are three ways to get one:</p>
 				<ul>
 					<li>Extend the <code>Controller</code> class in your controller:</li>
@@ -1028,7 +1105,9 @@ ERROR Endpoint - [GET] /test - Error processing endpoint request
         logger.debug(<span class="hljs-string">"Inside doStuff!"</span>)
     }
 }</code></pre>
-				<h3 id="-a-id-logging-api-a-server-logger-api"><a id="logging-api"></a> Server Logger API</h3>
+				<a href="#a-idlogging-apia-server-logger-api" id="a-idlogging-apia-server-logger-api" style="color: inherit; text-decoration: none;">
+					<h3><a id="logging-api"></a> Server Logger API</h3>
+				</a>
 				<p>The logging API supports formatting of messages using the <a href="https://www.npmjs.com/package/sprintf-js"><code>sprintf-js</code></a> npm module, simply pass in your arguments and put placeholders in your message string:</p>
 				<pre><code class="language-typescript">logger.warn(<span class="hljs-string">"Hello there %s, how are you?"</span>, <span class="hljs-string">"Roy"</span>)
 logger.debug(<span class="hljs-string">"Task status: %s. Task data: %j"</span>, <span class="hljs-string">"success"</span>, {event: <span class="hljs-string">"run batch"</span>})</code></pre>
@@ -1074,10 +1153,14 @@ logger.debug(<span class="hljs-string">"Task status: %s. Task data: %j"</span>, 
         }
     }
 }</code></pre>
-				<h3 id="-a-id-lambda-api-logging-a-lambda-api"><a id="lambda-api-logging"></a>lambda-api</h3>
+				<a href="#a-idlambda-api-loggingalambda-api" id="a-idlambda-api-loggingalambda-api" style="color: inherit; text-decoration: none;">
+					<h3><a id="lambda-api-logging"></a>lambda-api</h3>
+				</a>
 				<p>Logging is also provided by the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package, use the <code>AppConfig</code> instance passed to <code>ApiLambdaApp</code> to configure logging using the <code>logger</code> key. See the <a href="#config-reference">Config Reference</a> for details on options available.</p>
 				<hr>
-				<h2 id="-a-id-open-api-a-openapi-swagger-"><a id="open-api"></a>OpenAPI (Swagger)</h2>
+				<a href="#a-idopen-apiaopenapi-swagger" id="a-idopen-apiaopenapi-swagger" style="color: inherit; text-decoration: none;">
+					<h2><a id="open-api"></a>OpenAPI (Swagger)</h2>
+				</a>
 				<hr>
 				<p>The OpenAPI Specification (FKA Swagger) is supported out of the box. If you are not familar with it, check out <a href="https://github.com/OAI/OpenAPI-Specification">https://github.com/OAI/OpenAPI-Specification</a></p>
 				<p><strong>This framework supports only OpenAPI v3</strong></p>
@@ -1112,7 +1195,9 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
 					<li><code>/api/v1/open-api.json</code> - JSON format</li>
 					<li><code>/api/v1/open-api.yml</code> - YAML format</li>
 				</ul>
-				<h3 id="-a-id-open-api-decorators-a-decorators"><a id="open-api-decorators"></a>Decorators</h3>
+				<a href="#a-idopen-api-decoratorsadecorators" id="a-idopen-api-decoratorsadecorators" style="color: inherit; text-decoration: none;">
+					<h3><a id="open-api-decorators"></a>Decorators</h3>
+				</a>
 				<p>To further document your API endpoints you can use OpenAPI decorators.</p>
 				<ul>
 					<li><p>Customize the names of APIs and endpoints using <code>api</code>:</p>
@@ -1220,8 +1305,10 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
      <span class="hljs-keyword">return</span> person
  }
 }</code></pre>
-								<p>-OR-</p>
 							</li>
+						</ol>
+						<p>  -OR-</p>
+						<ol start="2">
 							<li><p>Populate your instance in it&#39;s constructor with some non null/undefined values.</p>
 								<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> Person {
  <span class="hljs-keyword">public</span> name: <span class="hljs-built_in">string</span>
@@ -1234,9 +1321,9 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
      <span class="hljs-keyword">this</span>.roles = []
  }
 }</code></pre>
-								<p><em>This is required because object properties are not defined until a value is assigned, which makes any sort of reflection impossible.</em></p>
 							</li>
 						</ol>
+						<p>  <em>This is required because object properties are not defined until a value is assigned, which makes any sort of reflection impossible.</em></p>
 					</li>
 					<li><p>Describe the path, query and header parameters consumed by your endpoints:</p>
 						<pre><code class="language-typescript">  <span class="hljs-comment">// the below uses the same options used to describe api requests and responses</span>
@@ -1300,11 +1387,15 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
 						<p>  This decorator uses the <code>SecuritySchemeObject</code> class from the <code>openapi3-ts</code> library to describe the security scheme in place. See the source for more information on using this class: <a href="https://github.com/metadevpro/openapi3-ts/blob/ab997f12a63fa215e3b0c08cc293429b97ce0a44/src/model/OpenApi.ts#L314">SecuritySchemeObject source</a></p>
 					</li>
 				</ul>
-				<h3 id="-a-id-open-api-yaml-a-yaml-support"><a id="open-api-yaml"></a>YAML Support</h3>
+				<a href="#a-idopen-api-yamlayaml-support" id="a-idopen-api-yamlayaml-support" style="color: inherit; text-decoration: none;">
+					<h3><a id="open-api-yaml"></a>YAML Support</h3>
+				</a>
 				<p>For <code>YAML</code> specification support, you need to install the following packages in your project:</p>
 				<pre><code class="language-bash">npm install js-yaml
 npm install -D @types/js-yaml</code></pre>
-				<h3 id="-a-id-open-api-auth-a-authentication"><a id="open-api-auth"></a>Authentication</h3>
+				<a href="#a-idopen-api-authaauthentication" id="a-idopen-api-authaauthentication" style="color: inherit; text-decoration: none;">
+					<h3><a id="open-api-auth"></a>Authentication</h3>
+				</a>
 				<p>By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a spec, set the <code>useAuthentication</code> key in the <code>openApi</code> config:</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// build controllers path...</span>
 <span class="hljs-keyword">const</span> appConfig = <span class="hljs-keyword">new</span> AppConfig()
@@ -1317,7 +1408,9 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 <span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> ApiLambdaApp(controllersPath, appConfig)
 <span class="hljs-comment">// export handler</span></code></pre>
 				<hr>
-				<h2 id="-a-id-testing-a-testing"><a id="testing"></a>Testing</h2>
+				<a href="#a-idtestingatesting" id="a-idtestingatesting" style="color: inherit; text-decoration: none;">
+					<h2><a id="testing"></a>Testing</h2>
+				</a>
 				<hr>
 				<p>For local dev testing and integration with acceptance tests see the <a href="https://www.npmjs.com/package/ts-lambda-api-local">ts-lambda-api-local</a> package which enables hosting your API using express as a local HTTP server.</p>
 				<p>Check out this project&#39;s dev dependencies to see what is required to test API code. The <code>tests</code> directory of this repo contains extensive acceptance tests which will show you how to build mock requests and invoke your API endpoints programmatically.</p>
@@ -1608,6 +1701,7 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
@@ -1656,7 +1750,7 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>
