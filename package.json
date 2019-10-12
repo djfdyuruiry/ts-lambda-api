@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@types/aws-lambda": "^8.10.31",
-    "fast-json-patch": "^2.0.7",
+    "fast-json-patch": "^3.0.0-1",
     "inversify": "^5.0.1",
     "lambda-api": "^0.10.1",
     "marky": "^1.2.1",
@@ -53,7 +53,7 @@
     "@types/node": "^12.6.8",
     "@types/sprintf-js": "^1.1.2",
     "@types/temp": "^0.8.34",
-    "alsatian": "^2.3.0",
+    "alsatian": "^3.0.1",
     "aws-sdk": "^2.501.0",
     "improved-yarn-audit": "^1.0.1",
     "js-yaml": "^3.12.2",
