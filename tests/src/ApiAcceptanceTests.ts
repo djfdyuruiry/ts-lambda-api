@@ -1,5 +1,5 @@
 import { AsyncTest, Expect, Test, TestCase, TestFixture } from "alsatian"
-import { ReplaceOperation } from "fast-json-patch/lib/core"
+import { ReplaceOperation } from "fast-json-patch"
 import { readFileSync, statSync as statFileSync, writeFileSync } from "fs"
 import { METHODS } from "lambda-api"
 import { sync as calculateFileMd5Sync } from "md5-file"

@@ -40,7 +40,7 @@ determineExitCode() {
     exitCodes="$1"
     nonZeroExitCodes=${exitCodes//0/}
 
-    if ! [ -z "${nonZeroExitCodes}" ]; then
+    if [ -n "${nonZeroExitCodes}" ]; then
         exitCode=1
     fi
 }
