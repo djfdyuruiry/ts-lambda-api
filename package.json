@@ -1,7 +1,7 @@
 {
   "name": "ts-lambda-api",
   "description": "Build REST API's using Typescript & AWS Lambda. Support for decorator based routing and dependecy injection using InversifyJS. This project is built on top of the wonderful lambda-api package.",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/djfdyuruiry/ts-lambda-api.git"
@@ -11,7 +11,7 @@
     "build-all": "yarn install && yarn build && yarn build-tests",
     "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
     "clean-install": "rm -rf node_modules && yarn install && yarn improved-audit",
-    "docs": "rm -rf ./docs && typedoc --mode file --excludePrivate --sourcefile-url-prefix https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ --out ./docs",
+    "docs": "rm -rf ./docs && typedoc --mode file --excludePrivate --sourcefile-link-prefix https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ --out ./docs",
     "improved-audit": "improved-yarn-audit -e $(cat .audit-exceptions)",
     "lint": "tslint 'src/**/*.ts'",
     "shell": "$SHELL",
@@ -64,8 +64,8 @@
     "tap-spec": "^5.0.0",
     "temp": "^0.9.1",
     "tslint": "^6.0.0",
-    "typedoc": "^0.16.9",
-    "typedoc-plugin-sourcefile-url": "^1.0.4",
+    "typedoc": "^0.15.8",
+    "typedoc-plugin-sourcefile-link": "^1.0.3",
     "typescript": "^3.7.5"
   }
 }
