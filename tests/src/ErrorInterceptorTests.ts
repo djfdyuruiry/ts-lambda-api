@@ -1,4 +1,4 @@
-import { AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
+import { Expect, Test, TestCase, TestFixture } from "alsatian"
 
 import { ErrorInterceptor, RequestBuilder } from "../../dist/ts-lambda-api"
 
@@ -10,7 +10,7 @@ import { TestErrorInterceptor } from "./test-components/TestErrorInterceptor"
 export class ErrorInterceptorTests extends TestBase {
     @TestCase(null)
     @TestCase(undefined)
-    @AsyncTest()
+    @Test()
     public async when_invalid_api_error_interceptor_is_passed_to_app_then_throws_an_error(invalidErrorInterceptor: ErrorInterceptor) {
         Expect(() => this.app.middlewareRegistry.addErrorInterceptor(invalidErrorInterceptor))
             .toThrow()
@@ -18,7 +18,7 @@ export class ErrorInterceptorTests extends TestBase {
 
     @TestCase({ controller: "TestController" })
     @TestCase({ endpoint: "TestController::raiseError" })
-    @AsyncTest()
+    @Test()
     public async when_api_error_interceptor_is_configured_and_it_throws_an_error_then_interceptor_is_invoked(testCase: any) {
         let errorInterceptor = new TestErrorInterceptor(testCase.endpoint, testCase.controller)
 
@@ -31,7 +31,7 @@ export class ErrorInterceptorTests extends TestBase {
         Expect(errorInterceptor.wasInvoked).toBeTruthy()
     }
 
-    @AsyncTest()
+    @Test()
     public async when_api_controller_decorator_error_interceptor_is_present_and_it_throws_an_error_then_interceptor_is_invoked() {
         TestDecoratorErrorInterceptor.wasInvoked = false
 
@@ -42,7 +42,7 @@ export class ErrorInterceptorTests extends TestBase {
         Expect(TestDecoratorErrorInterceptor.wasInvoked).toBeTruthy()
     }
 
-    @AsyncTest()
+    @Test()
     public async when_api_endpoint_decorator_error_interceptor_is_present_and_it_throws_an_error_then_interceptor_is_invoked() {
         TestDecoratorErrorInterceptor.wasInvoked = false
 
@@ -53,7 +53,7 @@ export class ErrorInterceptorTests extends TestBase {
         Expect(TestDecoratorErrorInterceptor.wasInvoked).toBeTruthy()
     }
 
-    @AsyncTest()
+    @Test()
     public async when_api_error_interceptor_is_configured_and_no_error_is_thrown_then_interceptor_is_not_invoked() {
         let errorInterceptor = new TestErrorInterceptor(null, "TestController")
 
@@ -66,7 +66,7 @@ export class ErrorInterceptorTests extends TestBase {
         Expect(errorInterceptor.wasInvoked).toBe(false)
     }
 
-    @AsyncTest()
+    @Test()
     public async when_api_error_interceptor_is_invoked_and_no_response_is_returned_by_interceptor_then_original_error_is_returned() {
         this.app.middlewareRegistry.addErrorInterceptor(
             new TestErrorInterceptor("TestController::raiseError")
@@ -80,7 +80,7 @@ export class ErrorInterceptorTests extends TestBase {
         Expect(response.body).toEqual("{\"error\":\"all I do is throw an error\"}")
     }
 
-    @AsyncTest()
+    @Test()
     public async when_api_error_interceptor_is_invoked_and_response_is_returned_by_interceptor_then_interceptor_response_is_returned() {
         this.app.middlewareRegistry.addErrorInterceptor(
             new TestErrorInterceptor("TestController::raiseError", null, true)
@@ -96,7 +96,7 @@ export class ErrorInterceptorTests extends TestBase {
 
     @TestCase("/test/raise-error")
     @TestCase("/test/methods/raise-error")
-    @AsyncTest()
+    @Test()
     public async when_global_api_error_interceptor_is_invoked_and_error_is_thrown_in_any_endpoint_then_interceptor_is_invoked(path: string) {
         let errorInterceptor = new TestErrorInterceptor("*", null)
 
