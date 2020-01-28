@@ -1,13 +1,13 @@
-import { AsyncTest, Expect, TestFixture } from "alsatian"
+import { Expect, Test, TestFixture } from "alsatian"
 import { Container } from "inversify"
 
-import { AppConfig, ApiLambdaApp, RequestBuilder } from "../../dist/ts-lambda-api"
+import { ApiLambdaApp, RequestBuilder } from "../../dist/ts-lambda-api"
 
 import { TestBase } from "./TestBase"
 
 @TestFixture()
 export class ApiLambdaAppTests extends TestBase {
-    @AsyncTest()
+    @Test()
     public async when_custom_config_passed_to_app_then_it_is_respected() {
         this.appConfig.base = "api/v1/"
 
@@ -26,7 +26,7 @@ export class ApiLambdaAppTests extends TestBase {
         Expect(response.statusCode).toEqual(200)
     }
 
-    @AsyncTest()
+    @Test()
     public async when_custom_container_passed_to_app_then_it_is_available_for_configuration() {
         let container = new Container({ autoBindInjectable: true })
 
@@ -39,7 +39,7 @@ export class ApiLambdaAppTests extends TestBase {
         app.configureApp(c => Expect(c).toBe(container))
     }
 
-    @AsyncTest()
+    @Test()
     public async when_api_is_configured_using_app_then_configuration_is_respected() {
         this.app.configureApi(a => a.get("/manual-endpoint", (_, res) => {
             res.send("OK")

@@ -1,4 +1,4 @@
-import { AsyncSetup, AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
+import { Expect, Setup, Test, TestCase, TestFixture } from "alsatian"
 import { safeLoad } from "js-yaml"
 import { OpenAPIObject, SecuritySchemeObject, PathItemObject, ParameterObject, ResponseObject, RequestBodyObject, OperationObject, MediaTypeObject, SchemaObject } from "openapi3-ts"
 
@@ -14,7 +14,7 @@ export class OpenApiTests extends TestBase {
     private static readonly ROUTE_COUNT = 52
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
-    @AsyncSetup
+    @Setup
     public async setup() {
         super.setup({
             name: "Test API",
@@ -29,7 +29,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_request_to_openapi_spec_returns_200_ok(specFormat: string) {
         let response = await this.requestOpenApiSpec(specFormat)
 
@@ -38,7 +38,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_api_info(specFormat: string) {
         let response = await this.requestParsedOpenApiSpec(specFormat)
 
@@ -48,7 +48,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_and_base_url_defined_then_openapi_spec_contains_server_with_base_url(specFormat: string) {
         super.setup({
             name: "Test API",
@@ -69,7 +69,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_all_declared_endpoints(specFormat: string) {
         let response = await this.requestParsedOpenApiSpec(specFormat)
         let paths = response.value.paths
@@ -96,7 +96,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_operation_name(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
 
@@ -105,7 +105,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_operation_description(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
 
@@ -114,7 +114,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_api_name(specFormat: string) {
         let response = await this.requestParsedOpenApiSpec(specFormat)
         let tag = response.value.tags.find(t => t.name === "Open API Test")
@@ -124,7 +124,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_api_description(specFormat: string) {
         let response = await this.requestParsedOpenApiSpec(specFormat)
         let tag = response.value.tags.find(t => t.name === "Open API Test")
@@ -134,7 +134,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_parameters(specFormat: string) {
         let pathEndpoint = await this.getOpenApiEndpoint(specFormat, "/test/path-test/:name/:age", "get")
 
@@ -143,7 +143,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_multiple_parameters(specFormat: string) {
         let pathEndpoint = await this.getOpenApiEndpoint(specFormat, "/test/path-test/:name/:age", "get")
 
@@ -152,7 +152,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_header_parameters(specFormat: string) {
         let headerEndpoint = await this.getOpenApiEndpoint(specFormat, "/test/header-test", "get")
         let headerParameter = headerEndpoint.parameters[0] as ParameterObject
@@ -164,7 +164,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_header_parameters_with_info(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/header-info-test", "get")
         let headerParameter = pathEndpoint.parameters[0] as ParameterObject
@@ -229,7 +229,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_path_parameters(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/path-test/:name/:age", "get")
         let nameParameter = pathEndpoint.parameters[0] as ParameterObject
@@ -248,7 +248,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_path_parameters_with_info(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/path-info-test/:pathTest", "get")
         let pathParameter = pathEndpoint.parameters[0] as ParameterObject
@@ -266,7 +266,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_query_parameters(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/query-test", "get")
         let queryParameter = pathEndpoint.parameters[0] as ParameterObject
@@ -278,7 +278,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_query_parameters_with_info(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/query-info-test", "get")
         let queryParameter = pathEndpoint.parameters[0] as ParameterObject
@@ -316,7 +316,7 @@ export class OpenApiTests extends TestBase {
     @TestCase("yml", {path: "/test/consumes", contentType: "text/plain"})
     @TestCase("yml", {path: "/test/consumes/xml", contentType: "application/xml"})
     @TestCase("yml", {path: "/test/open-api", contentType: "application/json"})
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_request_content_type(specFormat: string, params: any) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, params.path, "post")
         let requestBody = endpoint.requestBody as RequestBodyObject
@@ -328,7 +328,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_request_content(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
         let request = endpoint.requestBody as RequestBodyObject
@@ -338,7 +338,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_request_example(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
         let request = endpoint.requestBody as RequestBodyObject
@@ -366,7 +366,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_request_schema(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
         let request = endpoint.requestBody as RequestBodyObject
@@ -418,7 +418,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_request_example_for_primitive_types(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/plain", "post")
         let request = endpoint.requestBody as RequestBodyObject
@@ -429,7 +429,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_request_schema_for_primitive_types(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/plain", "post")
         let request = endpoint.requestBody as RequestBodyObject
@@ -442,7 +442,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_custom_request_examples(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
         let request = endpoint.requestBody as RequestBodyObject
@@ -453,7 +453,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_custom_request_descriptions(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
         let request = endpoint.requestBody as RequestBodyObject
@@ -463,7 +463,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_request_schema_for_files(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/files", "post")
         let request = endpoint.requestBody as RequestBodyObject
@@ -482,7 +482,7 @@ export class OpenApiTests extends TestBase {
     @TestCase("yml", {path: "/test/ei-decorator", contentType: "application/json"})
     @TestCase("yml", {path: "/test/open-api", contentType: "application/json"})
     @TestCase("yml", {path: "/test/produces", contentType: "application/json"})
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_response_content_type(specFormat: string, params: any) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, params.path, "get")
         let defaultResponse = endpoint.responses.default as ResponseObject
@@ -494,7 +494,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_response_per_status_code(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
 
@@ -505,7 +505,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_response_content_per_status_code(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
 
@@ -516,7 +516,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_response_example(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
         let response_201: ResponseObject = endpoint.responses["201"]
@@ -552,7 +552,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_response_schema(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
         let response_201: ResponseObject = endpoint.responses["201"]
@@ -620,7 +620,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_response_example_for_primitive_types(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
         let response: ResponseObject = endpoint.responses["200"]
@@ -631,7 +631,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_response_schema_for_primitive_types(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
         let response: ResponseObject = endpoint.responses["200"]
@@ -644,7 +644,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_response_schema_for_primitive_class_examples(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/primitive-class-example", "get")
         let response: ResponseObject = endpoint.responses["200"]
@@ -659,7 +659,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_response_schema_for_primitive_class_array_examples(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/primitive-array-class-example", "get")
         let response: ResponseObject = endpoint.responses["200"]
@@ -685,7 +685,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_custom_response_examples(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
         let response_201: ResponseObject = endpoint.responses["201"]
@@ -701,7 +701,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_custom_response_descriptions(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/custom-info", "post")
         let response_201: ResponseObject = endpoint.responses["201"]
@@ -715,7 +715,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_schemas_for_files(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/files", "post")
         let response = endpoint.responses["201"] as ResponseObject
@@ -728,7 +728,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_schemas_for_constructor_only_types(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/constructor", "get")
         let response = endpoint.responses["200"] as ResponseObject
@@ -746,7 +746,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_schemas_without_unsupported_array_types(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/edge-case", "get")
         let response = endpoint.responses["200"] as ResponseObject
@@ -759,7 +759,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_schemas_with_object_array_types(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/edge-case", "get")
         let response = endpoint.responses["200"] as ResponseObject
@@ -798,7 +798,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_schemas_with_array_array_types(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/edge-case", "get")
         let response = endpoint.responses["200"] as ResponseObject
@@ -823,7 +823,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_schemas_with_example_object_array_types_at_root(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/example-array-objects", "get")
         let response = endpoint.responses["200"] as ResponseObject
@@ -845,7 +845,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_schemas_with_object_array_types_at_root(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/array-objects", "get")
         let response = endpoint.responses["200"] as ResponseObject
@@ -976,7 +976,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_empty_security_for_no_auth_endpoints(specFormat: string) {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/no-auth", "get")
 
@@ -986,7 +986,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_and_basic_auth_filter_defined_then_openapi_spec_contains_security_scheme(specFormat: string) {
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
@@ -999,7 +999,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_and_basic_auth_filter_defined_then_openapi_spec_contains_http_basic_security_scheme(specFileFormat: string) {
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
 
@@ -1014,7 +1014,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_and_custom_auth_filter_defined_then_openapi_spec_contains_security_scheme(specFileFormat: string) {
         this.app.middlewareRegistry.addAuthFilter(new TestCustomAuthFilter("luke"))
 
@@ -1026,7 +1026,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_and_custom_auth_filter_defined_then_openapi_spec_contains_custom_security_scheme(specFileFormat: string) {
         this.app.middlewareRegistry.addAuthFilter(new TestCustomAuthFilter("luke"))
 
@@ -1042,7 +1042,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_and_basic_auth_filter_and_custom_auth_filter_defined_then_openapi_spec_contains_both_security_scheme(specFormat: string) {
         this.app.middlewareRegistry.addAuthFilter(new TestAuthFilter("luke", "vaderismydad"))
         this.app.middlewareRegistry.addAuthFilter(new TestCustomAuthFilter("luke"))
@@ -1058,7 +1058,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_unauthorized_then_openapi_spec_request_returns_401_unauthroized(specFileFormat: string) {
         this.appConfig.openApi = {
             enabled: true,
@@ -1076,7 +1076,7 @@ export class OpenApiTests extends TestBase {
 
     @TestCase("json")
     @TestCase("yml")
-    @AsyncTest()
+    @Test()
     public async when_openapi_enabled_with_auth_and_basic_auth_filter_defined_and_request_is_authorized_then_openapi_spec_request_returns_200_ok(specFileFormat: string) {
         this.appConfig.openApi = {
             enabled: true,

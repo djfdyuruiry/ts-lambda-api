@@ -57,3 +57,4 @@ LICENSE
 !nyc/**/*
 !typedoc-default-themes/**/*
 !xunit-viewer/**/*
+!istanbul-reports/**/*

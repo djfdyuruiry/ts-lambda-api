@@ -1,4 +1,4 @@
-import { AsyncTest, Expect, Test, TestCase, TestFixture } from "alsatian"
+import { Expect, Test, TestCase, TestFixture } from "alsatian"
 import { ReplaceOperation } from "fast-json-patch"
 import { readFileSync, statSync as statFileSync, writeFileSync } from "fs"
 import { METHODS } from "lambda-api"
@@ -21,7 +21,7 @@ export class ApiAcceptanceTests extends TestBase {
     @TestCase("/test/no-root-path")
     @TestCase("/test/response-model")
     @TestCase("/test/injected-response-model")
-    @AsyncTest()
+    @Test()
     public async when_request_made_for_decorator_route_then_app_returns_http_status_200_ok(path: string) {
         let response = await this.sendRequest(
             RequestBuilder.get(path).build()
@@ -33,7 +33,7 @@ export class ApiAcceptanceTests extends TestBase {
     @TestCase("POST", "/test/methods/post")
     @TestCase("POST", "/test/methods/post-raw")
     @TestCase("PUT", "/test/methods/put")
-    @AsyncTest()
+    @Test()
     public async when_request_with_body_made_for_decorator_route_then_app_passes_body_to_endpoint_and_returns_http_status_200_ok(
         method: METHODS,
         path: string
@@ -60,7 +60,7 @@ export class ApiAcceptanceTests extends TestBase {
         Expect(JSON.parse(body)).toEqual(requestBody)
     }
 
-    @AsyncTest()
+    @Test()
     public async when_request_with_binary_body_made_for_decorator_route_then_app_passes_raw_body_to_endpoint_and_returns_http_status_200_ok() {
         let response: ApiResponse
         let fileContent = readFileSync(ApiAcceptanceTests.TEST_FILE_PATH)
@@ -92,7 +92,7 @@ export class ApiAcceptanceTests extends TestBase {
     }
 
 
-    @AsyncTest()
+    @Test()
     public async when_delete_request_made_then_app_returns_http_status_204_no_content() {
         let response = await this.sendRequest(
             RequestBuilder.delete("/test/methods/delete").build()
@@ -101,7 +101,7 @@ export class ApiAcceptanceTests extends TestBase {
         Expect(response.statusCode).toEqual(204)
     }
 
-    @AsyncTest()
+    @Test()
     public async when_patch_request_made_then_app_endpoint_applies_json_patch() {
         let replaceOp: ReplaceOperation<string> = {
             op: "replace",
@@ -123,7 +123,7 @@ export class ApiAcceptanceTests extends TestBase {
         })
     }
 
-    @AsyncTest()
+    @Test()
     public async when_request_made_for_endpoint_that_does_not_return_response_then_app_returns_http_status_500(path: string) {
         let response = await this.sendRequest(
             RequestBuilder.get("/test/no-return").build()
@@ -134,7 +134,7 @@ export class ApiAcceptanceTests extends TestBase {
 
     @TestCase("/test/path-test")
     @TestCase("/test/injected-path-test")
-    @AsyncTest()
+    @Test()
     public async when_request_made_with_path_param_then_app_passes_value_to_endpoint(path: string) {
         let response = await this.sendRequest(
             RequestBuilder.get(`${path}/steve/37`).build()
@@ -145,7 +145,7 @@ export class ApiAcceptanceTests extends TestBase {
 
     @TestCase("/test/query-test")
     @TestCase("/test/injected-query-test")
-    @AsyncTest()
+    @Test()
     public async when_request_made_with_query_param_then_app_passes_value_to_endpoint(path: string) {
         let response = await this.sendRequest(
             RequestBuilder.get(path)
@@ -158,7 +158,7 @@ export class ApiAcceptanceTests extends TestBase {
 
     @TestCase("/test/header-test")
     @TestCase("/test/injected-header-test")
-    @AsyncTest()
+    @Test()
     public async when_request_made_with_header_then_app_passes_value_to_endpoint(path: string) {
         let response = await this.sendRequest(
             RequestBuilder.get(path)
@@ -169,7 +169,7 @@ export class ApiAcceptanceTests extends TestBase {
         Expect(response.body).toEqual("Header: header_value")
     }
 
-    @AsyncTest()
+    @Test()
     public async when_controller_produces_decorator_present_then_response_content_type_header_is_correct() {
         let response = await this.sendRequest(
             RequestBuilder.get("/test").build()
@@ -178,7 +178,7 @@ export class ApiAcceptanceTests extends TestBase {
         Expect(response.headers["content-type"]).toEqual("text/plain")
     }
 
-    @AsyncTest()
+    @Test()
     public async when_controller_produces_decorator_present_then_response_body_is_correct() {
         let response = await this.sendRequest(
             RequestBuilder.get("/test").build()
@@ -187,7 +187,7 @@ export class ApiAcceptanceTests extends TestBase {
         Expect(response.body).toEqual("OK")
     }
 
-    @AsyncTest()
+    @Test()
     public async when_endpoint_produces_decorator_present_then_response_content_type_header_is_correct() {
         let response = await this.sendRequest(
             RequestBuilder.get("/test/produces").build()
@@ -196,7 +196,7 @@ export class ApiAcceptanceTests extends TestBase {
         Expect(response.headers["content-type"]).toEqual("application/json")
     }
 
-    @AsyncTest()
+    @Test()
     public async when_endpoint_produces_decorator_present_then_response_body_is_correct() {
         let response = await this.sendRequest(
             RequestBuilder.get("/test/produces").build()
@@ -216,7 +216,7 @@ export class ApiAcceptanceTests extends TestBase {
         Expect(() => new ApiLambdaApp(controllerPath) ).toThrow()
     }
 
-    @AsyncTest()
+    @Test()
     public async when_app_built_with_missing_controller_path_then_error_is_thrown() {
         await Expect(async () =>
             await (new ApiLambdaApp("/some/fake/path")).initialiseControllers()

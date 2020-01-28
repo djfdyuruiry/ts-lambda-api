@@ -1,4 +1,4 @@
-import { AsyncTest, Expect, TestCase, TestFixture } from "alsatian"
+import { Expect, Test, TestCase, TestFixture } from "alsatian"
 
 import { RequestBuilder } from "../../dist/ts-lambda-api"
 
@@ -8,16 +8,16 @@ import { TestAuthorizer } from "./test-components/TestAuthorizer"
 
 @TestFixture()
 export class AuthorizerTests extends TestBase {
-    @AsyncTest()
+    @Test()
     @TestCase(null)
     @TestCase(undefined)
-    @AsyncTest()
+    @Test()
     public async when_invalid_api_authorizer_is_passed_to_app_then_throws_an_error(invalidAuthorizer: TestAuthorizer) {
         Expect(() => this.app.middlewareRegistry.addAuthorizer(invalidAuthorizer))
             .toThrow()
     }
 
-    @AsyncTest()
+    @Test()
     public async when_api_authorizer_configured_and_no_roles_declared_then_unprotected_resource_returns_200_ok() {
         this.app.middlewareRegistry.addAuthorizer(new TestAuthorizer())
 
@@ -31,7 +31,7 @@ export class AuthorizerTests extends TestBase {
 
     @TestCase("/test/restricted")
     @TestCase("/test-restricted")
-    @AsyncTest()
+    @Test()
     public async when_api_authorizer_not_configured_and_roles_declared_then_protected_resource_returns_500_server_error(path: string) {
         let response = await this.sendRequest(
             RequestBuilder.get(path)
@@ -44,7 +44,7 @@ export class AuthorizerTests extends TestBase {
     @TestCase({ path: "/test/restricted", userRoles: ["SPECIAL_USER"] })
     @TestCase({ path: "/test-restricted", userRoles: ["SPECIAL_USER"] })
     @TestCase({ path: "/test-restricted", userRoles: ["SUPER_SPECIAL_USER"] })
-    @AsyncTest()
+    @Test()
     public async when_api_authorizer_configured_with_roles_declared_and_user_is_authorized_then_valid_request_returns_200_ok(testCase: any) {
         this.app.middlewareRegistry.addAuthFilter(
             new TestAuthFilter("stoat", "ihavenoideawhatiam", false, testCase.userRoles)
@@ -63,7 +63,7 @@ export class AuthorizerTests extends TestBase {
     @TestCase({ path: "/test/restricted", userRoles: ["SPECIAL_USER"] })
     @TestCase({ path: "/test-restricted", userRoles: ["SPECIAL_USER"] })
     @TestCase({ path: "/test-restricted", userRoles: ["SUPER_SPECIAL_USER"] })
-    @AsyncTest()
+    @Test()
     public async when_api_authorizer_configured_with_roles_declared_and_user_is_authorized_and_authorizer_throws_error_then_valid_request_returns_500_server_error(testCase: any) {
         this.app.middlewareRegistry.addAuthFilter(
             new TestAuthFilter("stoat", "ihavenoideawhatiam", false, testCase.userRoles)
@@ -81,7 +81,7 @@ export class AuthorizerTests extends TestBase {
 
     @TestCase("/test/restricted")
     @TestCase("/test-restricted")
-    @AsyncTest()
+    @Test()
     public async when_api_authorizer_configured_with_roles_declared_and_user_is_not_authorized_then_valid_request_returns_403_forbidden(path: string) {
         this.app.middlewareRegistry.addAuthFilter(
             new TestAuthFilter("stoat", "ihavenoideawhatiam", false, ["ANOTHER_THING"])
@@ -99,7 +99,7 @@ export class AuthorizerTests extends TestBase {
 
     @TestCase("/test/restricted")
     @TestCase("/test-restricted")
-    @AsyncTest()
+    @Test()
     public async when_api_authorizer_configured_and_role_declared_then_principle_and_role_are_passed_to_authorizer(path: string) {
         let authorizer = new TestAuthorizer()
 
@@ -120,7 +120,7 @@ export class AuthorizerTests extends TestBase {
 
     @TestCase("/test-no-auth")
     @TestCase("/test/no-auth")
-    @AsyncTest()
+    @Test()
     public async when_api_authorizer_configured_then_valid_no_auth_endpoint_request_does_not_invoke_authorizer_and_responds_with_200_ok(path: string) {
         let authorizer = new TestAuthorizer()
 
