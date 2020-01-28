@@ -81,7 +81,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 
 This is a short guide to creating your first API using `ts-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customised.
 
-**Note: Node.js v10.x & Typescript v3.x are recommended. Other versions may work perfectly fine, but have not been tested.**
+**Note: Node.js v12.x & Typescript v3.x are recommended. Other versions may work perfectly fine, but have not been tested.**
 
 - Create a directory for your project and run `npm init` to create your `package.json`
 
