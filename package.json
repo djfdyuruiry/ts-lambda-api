@@ -11,7 +11,7 @@
     "build-all": "yarn install && yarn build && yarn build-tests",
     "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
     "clean-install": "rm -rf node_modules && yarn install && yarn improved-audit",
-    "docs": "rm -rf ./docs && typedoc --mode file --excludePrivate --includeVersion --sourcefile-link-prefix https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ --out ./docs",
+    "docs": "rm -rf ./docs && typedoc --mode file --excludePrivate --includeVersion --gitRevision master --sourcefile-link-prefix https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ --out ./docs",
     "improved-audit": "improved-yarn-audit -e $(cat .audit-exceptions)",
     "lint": "tslint 'src/**/*.ts'",
     "shell": "$SHELL",
