@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ts-lambda-api - v0.8.0</title>
-	<meta name="description" content="">
+	<title>ts-lambda-api - v1.0.0</title>
+	<meta name="description" content="Documentation for ts-lambda-api - v1.0.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 </head>
@@ -13,7 +13,7 @@
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">ts-lambda-api - v0.8.0</a>
+					<a href="index.html" class="title">ts-lambda-api - v1.0.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -56,7 +56,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> ts-lambda-api - v0.8.0</h1>
+			<h1>ts-lambda-api - v1.0.0</h1>
 		</div>
 	</div>
 </header>
@@ -160,7 +160,7 @@
 					</li>
 				</ul>
 				<hr>
-				<a href="#a-idcreate-apiacreating-a-new-api" id="a-idcreate-apiacreating-a-new-api" style="color: inherit; text-decoration: none;">
+				<a href="#creating-a-new-api" id="creating-a-new-api" style="color: inherit; text-decoration: none;">
 					<h2><a id="create-api"></a>Creating a new API</h2>
 				</a>
 				<hr>
@@ -264,7 +264,7 @@ appConfig.version = <span class="hljs-string">"v1"</span>
 					<li>Compile the application by running:</li>
 				</ul>
 				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> tsc</span></code></pre><hr>
-				<a href="#a-idaws-deployadeploy-to-aws-lambda" id="a-idaws-deployadeploy-to-aws-lambda" style="color: inherit; text-decoration: none;">
+				<a href="#deploy-to-aws-lambda" id="deploy-to-aws-lambda" style="color: inherit; text-decoration: none;">
 					<h2><a id="aws-deploy"></a>Deploy to AWS Lambda</h2>
 				</a>
 				<hr>
@@ -287,7 +287,7 @@ zip -r lambda.zip ./</code></pre>
 					<li>Upload your lambda using the <code>dist/lambda.zip</code> file. Specify <code>app.handler</code> as the function handler. See: <a href="https://docs.aws.amazon.com/lambda/latest/dg/nodejs-create-deployment-pkg.html">https://docs.aws.amazon.com/lambda/latest/dg/nodejs-create-deployment-pkg.html</a></li>
 				</ul>
 				<hr>
-				<a href="#a-idinvoke-lambdaainvoke-lambda" id="a-idinvoke-lambdaainvoke-lambda" style="color: inherit; text-decoration: none;">
+				<a href="#invoke-lambda" id="invoke-lambda" style="color: inherit; text-decoration: none;">
 					<h3><a id="invoke-lambda"></a>Invoke Lambda</h3>
 				</a>
 				<hr>
@@ -303,12 +303,12 @@ zip -r lambda.zip ./</code></pre>
 				</ul>
 				<pre><code class="language-json">{<span class="hljs-attr">"hello"</span>:<span class="hljs-string">"world"</span>}</code></pre>
 				<hr>
-				<a href="#a-idroutingarouting" id="a-idroutingarouting" style="color: inherit; text-decoration: none;">
+				<a href="#routing" id="routing" style="color: inherit; text-decoration: none;">
 					<h2><a id="routing"></a>Routing</h2>
 				</a>
 				<hr>
 				<p>Routing is configured using decorators on both controller classes and endpoint methods. You can also define a global base path (e.x. <code>/api/v1</code>) for your API by configuring the <code>base</code> property when passing your app configuration to the <code>ApiLambdaApp</code> class. (See the <code>Creating a new API</code> section)</p>
-				<a href="#a-idcontroller-routesacontroller-routes" id="a-idcontroller-routesacontroller-routes" style="color: inherit; text-decoration: none;">
+				<a href="#controller-routes" id="controller-routes" style="color: inherit; text-decoration: none;">
 					<h3><a id="controller-routes"></a>Controller Routes</h3>
 				</a>
 				<p>You can declare a root path for all methods in a controller using the <code>apiController</code> decorator.</p>
@@ -329,7 +329,7 @@ zip -r lambda.zip ./</code></pre>
         <span class="hljs-comment">// handle post /hello-world requests</span>
     }
 }</code></pre>
-				<a href="#a-idendpoint-routesaendpoint-routes" id="a-idendpoint-routesaendpoint-routes" style="color: inherit; text-decoration: none;">
+				<a href="#endpoint-routes" id="endpoint-routes" style="color: inherit; text-decoration: none;">
 					<h3><a id="endpoint-routes"></a>Endpoint Routes</h3>
 				</a>
 				<p>You can declare a path for any given method in a controller when using the endpoint decorators. The <code>apiController</code> decorator is not required on the class to use this form of routing.</p>
@@ -346,7 +346,7 @@ zip -r lambda.zip ./</code></pre>
     }
 }</code></pre>
 				<hr>
-				<a href="#a-idpath-paramsapath-parameters" id="a-idpath-paramsapath-parameters" style="color: inherit; text-decoration: none;">
+				<a href="#path-parameters" id="path-parameters" style="color: inherit; text-decoration: none;">
 					<h3><a id="path-params"></a>Path Parameters</h3>
 				</a>
 				<p>You can include parameters as part of your routes, when you need to capture parts of the URL.</p>
@@ -379,7 +379,7 @@ zip -r lambda.zip ./</code></pre>
 }</code></pre>
 				<p><strong>Note all path parameters are passed in as strings, you will need to cast these if required</strong></p>
 				<hr>
-				<a href="#a-idrequest-bindingarequest-parameter-binding" id="a-idrequest-bindingarequest-parameter-binding" style="color: inherit; text-decoration: none;">
+				<a href="#request-parameter-binding" id="request-parameter-binding" style="color: inherit; text-decoration: none;">
 					<h2><a id="request-binding"></a>Request Parameter Binding</h2>
 				</a>
 				<hr>
@@ -420,7 +420,7 @@ zip -r lambda.zip ./</code></pre>
     }
 }</code></pre>
 				<hr>
-				<a href="#a-idresponsesaresponses" id="a-idresponsesaresponses" style="color: inherit; text-decoration: none;">
+				<a href="#responses" id="responses" style="color: inherit; text-decoration: none;">
 					<h2><a id="responses"></a>Responses</h2>
 				</a>
 				<hr>
@@ -472,13 +472,13 @@ zip -r lambda.zip ./</code></pre>
     }
 }</code></pre>
 				<hr>
-				<a href="#a-idauth-authorizationaauthentication-amp-authorization" id="a-idauth-authorizationaauthentication-amp-authorization" style="color: inherit; text-decoration: none;">
+				<a href="#authentication-amp-authorization" id="authentication-amp-authorization" style="color: inherit; text-decoration: none;">
 					<h2><a id="auth-authorization"></a>Authentication &amp; Authorization</h2>
 				</a>
 				<hr>
 				<p>This framework supports authenticating requests and authorization for controllers and endpoints. It can be used to configure HTTP authentication, token based auth and role based access control (ACLs).</p>
 				<p>Implementation is heavily inspired by the Dropwizard framework for Java.</p>
-				<a href="#a-idauth-princaauthentication-and-principals" id="a-idauth-princaauthentication-and-principals" style="color: inherit; text-decoration: none;">
+				<a href="#authentication-and-principals" id="authentication-and-principals" style="color: inherit; text-decoration: none;">
 					<h3><a id="auth-princ"></a>Authentication and Principals</h3>
 				</a>
 				<p>Authentication is preformed by filter classes that are executed before invoking an endpoint; all filter classes implement the <code>IAuthFilter</code> interface.</p>
@@ -496,7 +496,7 @@ zip -r lambda.zip ./</code></pre>
         <span class="hljs-keyword">super</span>(name)
     }
 }</code></pre>
-				<a href="#a-idbasic-authabasic-authentication" id="a-idbasic-authabasic-authentication" style="color: inherit; text-decoration: none;">
+				<a href="#basic-authentication" id="basic-authentication" style="color: inherit; text-decoration: none;">
 					<h3><a id="basic-auth"></a>Basic Authentication</h3>
 				</a>
 				<p>HTTP Basic authentication is supported out of the box by the <code>BasicAuthFilter</code> filter abstract class. You extend this class to implement your authentication logic:</p>
@@ -532,7 +532,7 @@ zip -r lambda.zip ./</code></pre>
 <span class="hljs-comment">// this will protect your endpoints using the auth filter to authenticate requests</span>
 app.middlewareRegistry.addAuthFilter(authFilter)
 <span class="hljs-comment">// export handler</span></code></pre>
-				<a href="#a-idendpoint-principaaccess-principal-context" id="a-idendpoint-principaaccess-principal-context" style="color: inherit; text-decoration: none;">
+				<a href="#access-principal-context" id="access-principal-context" style="color: inherit; text-decoration: none;">
 					<h3><a id="endpoint-princip"></a>Access Principal Context</h3>
 				</a>
 				<p>Once a user has been authenticated you can pass the principal instance into the target endpoint. You can do this by adding a <code>principal</code> parameter decorator to your endpoint method.</p>
@@ -548,7 +548,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
         <span class="hljs-comment">// do something with the user context</span>
     }
 }</code></pre>
-				<a href="#a-idno-auth-endpointsaunauthenticated-endpoints" id="a-idno-auth-endpointsaunauthenticated-endpoints" style="color: inherit; text-decoration: none;">
+				<a href="#unauthenticated-endpoints" id="unauthenticated-endpoints" style="color: inherit; text-decoration: none;">
 					<h3><a id="no-auth-endpoints"></a>Unauthenticated Endpoints</h3>
 				</a>
 				<p>There are several situations where you might want to disable authentication for a specific endpoint:</p>
@@ -598,7 +598,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 
     <span class="hljs-comment">// ...other declared endpoints are also be called without authentication...</span>
 }</code></pre>
-				<a href="#a-idcustom-authacustom-authentication" id="a-idcustom-authacustom-authentication" style="color: inherit; text-decoration: none;">
+				<a href="#custom-authentication" id="custom-authentication" style="color: inherit; text-decoration: none;">
 					<h3><a id="custom-auth"></a>Custom Authentication</h3>
 				</a>
 				<p>If you wish to implement popular authentication mechanisms or make your own, you need to implement the <code>IAuthFilter</code> interface. It accepts two type parameters:</p>
@@ -648,7 +648,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
     }
 }</code></pre>
 				<p>Tip: You can make your class abstract and then make the <code>authenticate</code> method abstract to enable your custom auth filter to be re-usable. This way, you simply extend your custom fiter and implement the authentication logic for your application.</p>
-				<a href="#a-idauthorizationaauthorization" id="a-idauthorizationaauthorization" style="color: inherit; text-decoration: none;">
+				<a href="#authorization" id="authorization" style="color: inherit; text-decoration: none;">
 					<h3><a id="authorization"></a>Authorization</h3>
 				</a>
 				<p>To implement role based authorization you implement the <code>IAuthorizer</code> interface.</p>
@@ -701,7 +701,7 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 app.middlewareRegistry.addAuthorizer(authorizer)
 <span class="hljs-comment">// export handler</span></code></pre>
 				<hr>
-				<a href="#a-iderrorsaerror-handling" id="a-iderrorsaerror-handling" style="color: inherit; text-decoration: none;">
+				<a href="#error-handling" id="error-handling" style="color: inherit; text-decoration: none;">
 					<h2><a id="errors"></a>Error Handling</h2>
 				</a>
 				<hr>
@@ -711,7 +711,7 @@ app.middlewareRegistry.addAuthorizer(authorizer)
 					<li>Catch the error in your endpoint logic</li>
 					<li>Let the framework handle the error</li>
 				</ol>
-				<a href="#a-iderror-interceptorsaerror-interceptors" id="a-iderror-interceptorsaerror-interceptors" style="color: inherit; text-decoration: none;">
+				<a href="#error-interceptors" id="error-interceptors" style="color: inherit; text-decoration: none;">
 					<h3><a id="error-interceptors"></a>Error Interceptors</h3>
 				</a>
 				<p>Error interceptors are classes that can be configured to be invoked when an error occurs when calling a given controller or endpoint. Interceptors extend the <code>ErrorInterceptor</code> class and provide an implementation for an <code>intercept</code> method.</p>
@@ -754,7 +754,7 @@ app.middlewareRegistry.addAuthorizer(authorizer)
     }
 }</code></pre>
 				<p>You can also use the <code>errorInterceptor</code> decorator on individual endpoints for more fine grained error control. Endpoint interceptors will override controller interceptors.</p>
-				<a href="#a-idmanual-error-interceptorsamanual-error-interceptors" id="a-idmanual-error-interceptorsamanual-error-interceptors" style="color: inherit; text-decoration: none;">
+				<a href="#manual-error-interceptors" id="manual-error-interceptors" style="color: inherit; text-decoration: none;">
 					<h3><a id="manual-error-interceptors"></a>Manual Error Interceptors</h3>
 				</a>
 				<p>You can manually register interceptors when setting up your application instance:</p>
@@ -772,7 +772,7 @@ errorInterceptor.endpointTarget = <span class="hljs-string">"StoreController::ge
 				<pre><code class="language-typescript"><span class="hljs-comment">// controllers are identified by class name</span>
 errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"</span></code></pre>
 				<p><strong>Note: using this type of interceptor is overridden if the target controller or endpoint has an interceptor configured</strong></p>
-				<a href="#a-idcatching-errorsacatching-errors" id="a-idcatching-errorsacatching-errors" style="color: inherit; text-decoration: none;">
+				<a href="#catching-errors" id="catching-errors" style="color: inherit; text-decoration: none;">
 					<h3><a id="catching-errors"></a>Catching Errors</h3>
 				</a>
 				<p>You can use a try/catch block and the <code>Response</code> class to handle errors:</p>
@@ -802,7 +802,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
     }
 }</code></pre>
 				<p><em>Note: this can also be done by injecting the <code>Response</code> class instance using the <code>response</code> parameter decorator, instead of extending <code>Controller</code>.</em></p>
-				<a href="#a-idframework-errorsaframework-error-handling" id="a-idframework-errorsaframework-error-handling" style="color: inherit; text-decoration: none;">
+				<a href="#framework-error-handling" id="framework-error-handling" style="color: inherit; text-decoration: none;">
 					<h3><a id="framework-errors"></a>Framework Error Handling</h3>
 				</a>
 				<p>If you simply preform your logic in your endpoint method without catching any errors yourself, the framework will catch the error and return a HTTP 500 response with error details. Below is a JSON snippet showing an example.</p>
@@ -810,7 +810,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
     <span class="hljs-attr">"error"</span>: <span class="hljs-string">"...some error that the framework caught when calling an endpoint...."</span>
 }</code></pre>
 				<hr>
-				<a href="#a-idjson-patchajson-patch-requests" id="a-idjson-patchajson-patch-requests" style="color: inherit; text-decoration: none;">
+				<a href="#json-patch-requests" id="json-patch-requests" style="color: inherit; text-decoration: none;">
 					<h2><a id="json-patch"></a>JSON Patch Requests</h2>
 				</a>
 				<hr>
@@ -840,12 +840,12 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 }</code></pre>
 				<p><strong>Under the hood, the API uses the <a href="https://www.npmjs.com/package/fast-json-patch">fast-json-patch</a> package</strong></p>
 				<hr>
-				<a href="#a-idreq-res-contextarequest--response-context" id="a-idreq-res-contextarequest--response-context" style="color: inherit; text-decoration: none;">
+				<a href="#request--response-context" id="request--response-context" style="color: inherit; text-decoration: none;">
 					<h2><a id="req-res-context"></a>Request / Response Context</h2>
 				</a>
 				<hr>
 				<p>If you want to read request bodies or write to the response, there are several supported approaches.</p>
-				<a href="#a-idextend-controlleraextending-controller-class" id="a-idextend-controlleraextending-controller-class" style="color: inherit; text-decoration: none;">
+				<a href="#extending-controller-class" id="extending-controller-class" style="color: inherit; text-decoration: none;">
 					<h3><a id="extend-controller"></a>Extending Controller Class</h3>
 				</a>
 				<p>If you extend the controller class, you get access to the request and response context.</p>
@@ -865,7 +865,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
         <span class="hljs-keyword">this</span>.response.html(<span class="hljs-string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>);
     }
 }</code></pre>
-				<a href="#a-iduse-decoratorsausing-decorators" id="a-iduse-decoratorsausing-decorators" style="color: inherit; text-decoration: none;">
+				<a href="#using-decorators" id="using-decorators" style="color: inherit; text-decoration: none;">
 					<h3><a id="use-decorators"></a>Using Decorators</h3>
 				</a>
 				<p>You can use parameter decorators to inject the request and response context.</p>
@@ -886,7 +886,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
         response.html(<span class="hljs-string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>);
     }
 }</code></pre>
-				<a href="#a-idsend-filesareturning-files-in-a-response" id="a-idsend-filesareturning-files-in-a-response" style="color: inherit; text-decoration: none;">
+				<a href="#returning-files-in-a-response" id="returning-files-in-a-response" style="color: inherit; text-decoration: none;">
 					<h3><a id="send-files"></a>Returning Files in a Response</h3>
 				</a>
 				<p>You can return files by using the <code>sendFile</code> method in the response context.</p>
@@ -910,7 +910,7 @@ errorInterceptor.controllerTarget = <span class="hljs-string">"StoreController"<
 }</code></pre>
 				<p><strong>The <code>Request</code> and <code>Response</code> classes are documented in the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package.</strong></p>
 				<hr>
-				<a href="#a-iddia-dependency-injection" id="a-iddia-dependency-injection" style="color: inherit; text-decoration: none;">
+				<a href="#-dependency-injection" id="-dependency-injection" style="color: inherit; text-decoration: none;">
 					<h2><a id="di"></a> Dependency Injection</h2>
 				</a>
 				<hr>
@@ -946,7 +946,7 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
 }</code></pre>
 				<p>See the <a href="https://github.com/inversify/InversifyJS">InversifyJS</a> package documentation for full guidance how to use the <code>Container</code> class to manage dependencies.</p>
 				<hr>
-				<a href="#a-idconfigaconfiguration" id="a-idconfigaconfiguration" style="color: inherit; text-decoration: none;">
+				<a href="#configuration" id="configuration" style="color: inherit; text-decoration: none;">
 					<h2><a id="config"></a>Configuration</h2>
 				</a>
 				<hr>
@@ -995,11 +995,11 @@ app.configureApp(<span class="hljs-function"><span class="hljs-params">container
     }
 }</code></pre>
 				<p><strong>Note: The <code>AppConfig</code> class supports all the configuration fields documented in the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package.</strong></p>
-				<a href="#a-idconfig-referenceareference" id="a-idconfig-referenceareference" style="color: inherit; text-decoration: none;">
+				<a href="#reference" id="reference" style="color: inherit; text-decoration: none;">
 					<h3><a id="config-reference"></a>Reference</h3>
 				</a>
 				<p>For a complete reference see the <a href="https://djfdyuruiry.github.io/ts-lambda-api/classes/appconfig.html">AppConfig</a> docs.</p>
-				<a href="#a-idlambda-api-configalambda-api" id="a-idlambda-api-configalambda-api" style="color: inherit; text-decoration: none;">
+				<a href="#lambda-api" id="lambda-api" style="color: inherit; text-decoration: none;">
 					<h3><a id="lambda-api-config"></a>lambda-api</h3>
 				</a>
 				<p>Configuring <code>lambda-api</code> directly can be done by calling the <code>configureApi</code> method like below:</p>
@@ -1023,7 +1023,7 @@ app.configureApi(api: <span class="hljs-function"><span class="hljs-params">API<
 <span class="hljs-comment">// export handler</span></code></pre>
 				<p><strong>Note: any middleware handlers and manual routes will not apply auth filters, authorizers or error interceptors</strong></p>
 				<p>See the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package documentation for guidance how to use the <code>API</code> class.</p>
-				<a href="#a-idloggingalogging" id="a-idloggingalogging" style="color: inherit; text-decoration: none;">
+				<a href="#logging" id="logging" style="color: inherit; text-decoration: none;">
 					<h2><a id="logging"></a>Logging</h2>
 				</a>
 				<p>A logger interface is provided that can write messages to standard out. You can configure this logger using the <code>serverLogging</code> key in the <code>AppConfig</code> class. See the <a href="#config-reference">Config Reference</a> for details on options available. This complements the existing logging provided by <code>lambda-api</code>, which can be configured using the <code>logger</code> key.</p>
@@ -1033,27 +1033,27 @@ app.configureApi(api: <span class="hljs-function"><span class="hljs-params">API<
 vvvvv vvvvvvvv   vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 <span class="hljs-keyword">INFO</span>  Endpoint - Invoking endpoint: [<span class="hljs-keyword">GET</span>] /<span class="hljs-keyword">open</span>-api.yml</code></pre><p>Below is some example output, include a stack trace from an <code>Error</code> instance:</p>
 				<pre><code>INFO ApiLambdaApp - Received event, initialising controllers and processing event
-INFO Server - Processing API request event <span class="hljs-keyword">for</span> <span class="hljs-string">path:</span> <span class="hljs-regexp">/test/</span>
+INFO Server - Processing API request event <span class="hljs-keyword">for</span> path: <span class="hljs-regexp">/test/</span>
 INFO Endpoint - [GET] /test - Authenticating request
 ERROR Endpoint - [GET] /test - Error processing endpoint request
-<span class="hljs-string">Error:</span> authenticate failed
-    at TestAuthFilter.authenticate (<span class="hljs-regexp">/home/</span>matthew<span class="hljs-regexp">/src/</span>ts<span class="hljs-regexp">/ts-lambda-api/</span>tests<span class="hljs-regexp">/src/</span>test-components/TestAuthFilter.<span class="hljs-string">ts:</span><span class="hljs-number">25</span>:<span class="hljs-number">19</span>)
-    at Endpoint.authenticateRequest (<span class="hljs-regexp">/home/</span>matthew<span class="hljs-regexp">/src/</span>ts<span class="hljs-regexp">/ts-lambda-api/</span>dist<span class="hljs-regexp">/api/</span>Endpoint.<span class="hljs-string">js:</span><span class="hljs-number">15</span>:<span class="hljs-number">2640</span>)
-    at processTicksAndRejections (internal<span class="hljs-regexp">/process/</span>task_queues.<span class="hljs-string">js:</span><span class="hljs-number">86</span>:<span class="hljs-number">5</span>)
-    at process.runNextTicks [<span class="hljs-keyword">as</span> _tickCallback] (internal<span class="hljs-regexp">/process/</span>task_queues.<span class="hljs-string">js:</span><span class="hljs-number">56</span>:<span class="hljs-number">3</span>)
-    at Function.Module.runMain (internal<span class="hljs-regexp">/modules/</span>cjs/loader.<span class="hljs-string">js:</span><span class="hljs-number">880</span>:<span class="hljs-number">11</span>)
-    at runMain (<span class="hljs-regexp">/home/</span>matthew<span class="hljs-regexp">/.node-spawn-wrap-13541-13c0098ec456/</span><span class="hljs-string">node:</span><span class="hljs-number">68</span>:<span class="hljs-number">10</span>)
-    at Function.&lt;anonymous&gt; (<span class="hljs-regexp">/home/</span>matthew<span class="hljs-regexp">/.node-spawn-wrap-13541-13c0098ec456/</span><span class="hljs-string">node:</span><span class="hljs-number">171</span>:<span class="hljs-number">5</span>)
-    at Object.&lt;anonymous&gt; (<span class="hljs-regexp">/home/</span>matthew<span class="hljs-regexp">/src/</span>ts<span class="hljs-regexp">/ts-lambda-api/</span>node_modules<span class="hljs-regexp">/nyc/</span>bin/wrap.<span class="hljs-string">js:</span><span class="hljs-number">23</span>:<span class="hljs-number">4</span>)
-    at Module._compile (internal<span class="hljs-regexp">/modules/</span>cjs/loader.<span class="hljs-string">js:</span><span class="hljs-number">816</span>:<span class="hljs-number">30</span>)
-    at Object.Module._extensions..js (internal<span class="hljs-regexp">/modules/</span>cjs/loader.<span class="hljs-string">js:</span><span class="hljs-number">827</span>:<span class="hljs-number">10</span>)</code></pre><p>If you set the <code>format</code> to <code>json</code> the log messages will look like this:</p>
+Error: authenticate failed
+    at TestAuthFilter.authenticate (<span class="hljs-regexp">/home/m</span>atthew<span class="hljs-regexp">/src/</span>ts<span class="hljs-regexp">/ts-lambda-api/</span>tests<span class="hljs-regexp">/src/</span>test-components/TestAuthFilter.ts:<span class="hljs-number">25</span>:<span class="hljs-number">19</span>)
+    at Endpoint.authenticateRequest (<span class="hljs-regexp">/home/m</span>atthew<span class="hljs-regexp">/src/</span>ts<span class="hljs-regexp">/ts-lambda-api/</span>dist<span class="hljs-regexp">/api/</span>Endpoint.js:<span class="hljs-number">15</span>:<span class="hljs-number">2640</span>)
+    at processTicksAndRejections (internal<span class="hljs-regexp">/process/</span>task_queues.js:<span class="hljs-number">86</span>:<span class="hljs-number">5</span>)
+    at process.runNextTicks [as _tickCallback] (internal<span class="hljs-regexp">/process/</span>task_queues.js:<span class="hljs-number">56</span>:<span class="hljs-number">3</span>)
+    at Function.Module.runMain (internal<span class="hljs-regexp">/modules/</span>cjs/loader.js:<span class="hljs-number">880</span>:<span class="hljs-number">11</span>)
+    at runMain (<span class="hljs-regexp">/home/m</span>atthew<span class="hljs-regexp">/.node-spawn-wrap-13541-13c0098ec456/</span>node:<span class="hljs-number">68</span>:<span class="hljs-number">10</span>)
+    at Function.&lt;anonymous&gt; (<span class="hljs-regexp">/home/m</span>atthew<span class="hljs-regexp">/.node-spawn-wrap-13541-13c0098ec456/</span>node:<span class="hljs-number">171</span>:<span class="hljs-number">5</span>)
+    at Object.&lt;anonymous&gt; (<span class="hljs-regexp">/home/m</span>atthew<span class="hljs-regexp">/src/</span>ts<span class="hljs-regexp">/ts-lambda-api/</span>node_modules<span class="hljs-regexp">/nyc/</span>bin/wrap.js:<span class="hljs-number">23</span>:<span class="hljs-number">4</span>)
+    at Module._compile (internal<span class="hljs-regexp">/modules/</span>cjs/loader.js:<span class="hljs-number">816</span>:<span class="hljs-number">30</span>)
+    at Object.Module._extensions..js (internal<span class="hljs-regexp">/modules/</span>cjs/loader.js:<span class="hljs-number">827</span>:<span class="hljs-number">10</span>)</code></pre><p>If you set the <code>format</code> to <code>json</code> the log messages will look like this:</p>
 				<pre><code class="language-json"> {
     <span class="hljs-attr">"level"</span>: <span class="hljs-string">"INFO"</span>,
     <span class="hljs-attr">"msg"</span>: <span class="hljs-string">"Endpoint - Invoking endpoint: [GET] /open-api.yml"</span>,
     <span class="hljs-attr">"time"</span>: <span class="hljs-number">1555865906882</span> <span class="hljs-comment">// milliseconds since epoch</span>
 }</code></pre>
 				<p>This format matches the keys used by the <code>lambda-api</code> framework in it&#39;s output.</p>
-				<a href="#a-idlogging-writingawriting-logs" id="a-idlogging-writingawriting-logs" style="color: inherit; text-decoration: none;">
+				<a href="#writing-logs" id="writing-logs" style="color: inherit; text-decoration: none;">
 					<h3><a id="logging-writing"></a>Writing Logs</h3>
 				</a>
 				<p>To write logs you will ned a logger instance. There are three ways to get one:</p>
@@ -1105,7 +1105,7 @@ ERROR Endpoint - [GET] /test - Error processing endpoint request
         logger.debug(<span class="hljs-string">"Inside doStuff!"</span>)
     }
 }</code></pre>
-				<a href="#a-idlogging-apia-server-logger-api" id="a-idlogging-apia-server-logger-api" style="color: inherit; text-decoration: none;">
+				<a href="#-server-logger-api" id="-server-logger-api" style="color: inherit; text-decoration: none;">
 					<h3><a id="logging-api"></a> Server Logger API</h3>
 				</a>
 				<p>The logging API supports formatting of messages using the <a href="https://www.npmjs.com/package/sprintf-js"><code>sprintf-js</code></a> npm module, simply pass in your arguments and put placeholders in your message string:</p>
@@ -1153,12 +1153,12 @@ logger.debug(<span class="hljs-string">"Task status: %s. Task data: %j"</span>, 
         }
     }
 }</code></pre>
-				<a href="#a-idlambda-api-loggingalambda-api" id="a-idlambda-api-loggingalambda-api" style="color: inherit; text-decoration: none;">
+				<a href="#lambda-api-1" id="lambda-api-1" style="color: inherit; text-decoration: none;">
 					<h3><a id="lambda-api-logging"></a>lambda-api</h3>
 				</a>
 				<p>Logging is also provided by the <a href="https://github.com/jeremydaly/lambda-api">lambda-api</a> package, use the <code>AppConfig</code> instance passed to <code>ApiLambdaApp</code> to configure logging using the <code>logger</code> key. See the <a href="#config-reference">Config Reference</a> for details on options available.</p>
 				<hr>
-				<a href="#a-idopen-apiaopenapi-swagger" id="a-idopen-apiaopenapi-swagger" style="color: inherit; text-decoration: none;">
+				<a href="#openapi-swagger" id="openapi-swagger" style="color: inherit; text-decoration: none;">
 					<h2><a id="open-api"></a>OpenAPI (Swagger)</h2>
 				</a>
 				<hr>
@@ -1195,7 +1195,7 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
 					<li><code>/api/v1/open-api.json</code> - JSON format</li>
 					<li><code>/api/v1/open-api.yml</code> - YAML format</li>
 				</ul>
-				<a href="#a-idopen-api-decoratorsadecorators" id="a-idopen-api-decoratorsadecorators" style="color: inherit; text-decoration: none;">
+				<a href="#decorators" id="decorators" style="color: inherit; text-decoration: none;">
 					<h3><a id="open-api-decorators"></a>Decorators</h3>
 				</a>
 				<p>To further document your API endpoints you can use OpenAPI decorators.</p>
@@ -1387,13 +1387,13 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
 						<p>  This decorator uses the <code>SecuritySchemeObject</code> class from the <code>openapi3-ts</code> library to describe the security scheme in place. See the source for more information on using this class: <a href="https://github.com/metadevpro/openapi3-ts/blob/ab997f12a63fa215e3b0c08cc293429b97ce0a44/src/model/OpenApi.ts#L314">SecuritySchemeObject source</a></p>
 					</li>
 				</ul>
-				<a href="#a-idopen-api-yamlayaml-support" id="a-idopen-api-yamlayaml-support" style="color: inherit; text-decoration: none;">
+				<a href="#yaml-support" id="yaml-support" style="color: inherit; text-decoration: none;">
 					<h3><a id="open-api-yaml"></a>YAML Support</h3>
 				</a>
 				<p>For <code>YAML</code> specification support, you need to install the following packages in your project:</p>
 				<pre><code class="language-bash">npm install js-yaml
 npm install -D @types/js-yaml</code></pre>
-				<a href="#a-idopen-api-authaauthentication" id="a-idopen-api-authaauthentication" style="color: inherit; text-decoration: none;">
+				<a href="#authentication" id="authentication" style="color: inherit; text-decoration: none;">
 					<h3><a id="open-api-auth"></a>Authentication</h3>
 				</a>
 				<p>By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a spec, set the <code>useAuthentication</code> key in the <code>openApi</code> config:</p>
@@ -1408,7 +1408,7 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 <span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> ApiLambdaApp(controllersPath, appConfig)
 <span class="hljs-comment">// export handler</span></code></pre>
 				<hr>
-				<a href="#a-idtestingatesting" id="a-idtestingatesting" style="color: inherit; text-decoration: none;">
+				<a href="#testing" id="testing" style="color: inherit; text-decoration: none;">
 					<h2><a id="testing"></a>Testing</h2>
 				</a>
 				<hr>
@@ -1666,7 +1666,7 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#rawbody" class="tsd-kind-icon">raw<wbr>Body</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-not-exported">
+					<li class=" tsd-kind-function">
 						<a href="globals.html#registerapiendpoint" class="tsd-kind-icon">register<wbr>Api<wbr>Endpoint</a>
 					</li>
 					<li class=" tsd-kind-function">
@@ -1694,57 +1694,24 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
 			</ul>
 		</div>
 	</div>
