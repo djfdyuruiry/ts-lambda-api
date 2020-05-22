@@ -36,18 +36,22 @@ export abstract class ApiApp {
     /**
      * Create a new app.
      *
-     * @param controllersPath Path to a directory containing `js` files containing that declare controllers.
+     * @param controllersPath (Optional) Path to a directory containing `js` files that declare
+     *                        controllers. Required if the default `Container` is used, or the provided
+     *                        `Container` instance has its `autoBindInjectable` flag set to `true`.
+     *                        Ignored if the provided `Container` instance has its `autoBindInjectable`
+     *                        flag set to `false`.
      * @param appConfig (Optional) Application config to pass to `lambda-api`, defaults to new `AppConfig`.
      * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can
      *                     build controllers and error interceptors, defaults to new `Container` with
-     *                     `autoBindInjectable` flag set to `true.
+     *                     `autoBindInjectable` flag set to `true`.
      */
     public constructor(
-        protected readonly controllersPath: string,
+        protected readonly controllersPath?: string,
         protected appConfig: AppConfig = new AppConfig(),
         protected appContainer: Container = new Container({ autoBindInjectable: true })
     ) {
-        if (!controllersPath || controllersPath.trim() === "") {
+        if (appContainer.options.autoBindInjectable && (!controllersPath || controllersPath.trim() === "")) {
             throw new Error("Null, empty or whitespace controllersPath passed to ApiApp")
         }
         appContainer.bind(AppConfig).toConstantValue(this.appConfig)
