@@ -21,7 +21,7 @@ export class ApiLambdaApp extends ApiApp {
      * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can build
      *                     controllers and error interceptors.
      */
-    public constructor(controllersPath: string, appConfig?: AppConfig, appContainer?: Container) {
+    public constructor(controllersPath: string[], appConfig?: AppConfig, appContainer?: Container) {
         super(controllersPath, appConfig, appContainer)
 
         this.logger = this.logFactory.getLogger(ApiLambdaApp)

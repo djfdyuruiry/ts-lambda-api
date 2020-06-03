@@ -43,11 +43,11 @@ export abstract class ApiApp {
      *                     `autoBindInjectable` flag set to `true.
      */
     public constructor(
-        protected readonly controllersPath: string,
+        protected readonly controllersPath: string[],
         protected appConfig: AppConfig = new AppConfig(),
         protected appContainer: Container = new Container({ autoBindInjectable: true })
     ) {
-        if (!controllersPath || controllersPath.trim() === "") {
+        if (!controllersPath || controllersPath.length === 0) {
             throw new Error("Null, empty or whitespace controllersPath passed to ApiApp")
         }
         appContainer.bind(AppConfig).toConstantValue(this.appConfig)

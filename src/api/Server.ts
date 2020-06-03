@@ -81,11 +81,11 @@ export class Server {
      * @param controllersPath Path to the directory containing controller `js` files.
      */
     @timed
-    public async discoverAndBuildRoutes(controllersPath: string) {
+    public async discoverAndBuildRoutes(controllersPath: string[]) {
         this.logger.debug("Loading controllers from path: %s", controllersPath)
-
-        await ControllerLoader.loadControllers(controllersPath, this.logFactory)
-
+        for(let path of controllersPath){
+            await ControllerLoader.loadControllers(path, this.logFactory)
+        }
         if (this.openApiGenerator) {
             this.registerOpenApiEndpoints()
         }
