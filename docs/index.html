@@ -224,7 +224,7 @@ npm install -D typescript @types/node aws-sdk</code></pre>
 appConfig.base = <span class="hljs-string">"/api/v1"</span>
 appConfig.version = <span class="hljs-string">"v1"</span>
 
-<span class="hljs-keyword">const</span> controllersPath = path.join(__dirname, <span class="hljs-string">"controllers"</span>)
+<span class="hljs-keyword">const</span> controllersPath = [path.join(__dirname, <span class="hljs-string">"controllers"</span>)]
 <span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> ApiLambdaApp(controllersPath, appConfig)
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handler</span>(<span class="hljs-params">event, context</span>) </span>{
