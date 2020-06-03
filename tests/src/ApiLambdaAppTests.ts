@@ -42,7 +42,7 @@ export class ApiLambdaAppTests extends TestBase {
     @Test()
     public async when_default_app_container_then_contoller_path_must_be_valid() {
          Expect(() => new ApiLambdaApp(
-            "  ",
+           ["  "],
             this.appConfig
         )).toThrow()
     }
@@ -60,7 +60,7 @@ export class ApiLambdaAppTests extends TestBase {
         let container = new Container({ autoBindInjectable: true })
 
         Expect(() => new ApiLambdaApp(
-            "  ",
+            ["  "],
             this.appConfig,
             container
         )).toThrow()
@@ -71,7 +71,7 @@ export class ApiLambdaAppTests extends TestBase {
         let container = new Container({ autoBindInjectable: true })
 
         Expect(() => new ApiLambdaApp(
-            undefined,
+           undefined,
             this.appConfig,
             container
         )).toThrow()
@@ -95,7 +95,7 @@ export class ApiLambdaAppTests extends TestBase {
         let container = new Container({ autoBindInjectable: false })
 
         let app = new ApiLambdaApp(
-            " ",
+            [" "],
             this.appConfig,
             container
         )

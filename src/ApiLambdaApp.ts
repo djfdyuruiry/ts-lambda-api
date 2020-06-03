@@ -16,7 +16,7 @@ export class ApiLambdaApp extends ApiApp {
     /**
      * Create a new lambda app.
      *
-     * @param controllersPath (Optional) Path to the directory containing controller `js` files.
+     * @param controllersPath (Optional) Paths to the directories that contain controller `js` files.
      *                        Required if the default `Container` is used, or the provided
      *                        `Container` instance has its `autoBindInjectable` flag set to `true`.
      *                        Ignored if the provided `Container` instance has its `autoBindInjectable`
@@ -25,7 +25,7 @@ export class ApiLambdaApp extends ApiApp {
      * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can build
      *                     controllers and error interceptors.
      */
-    public constructor(controllersPath?: string, appConfig?: AppConfig, appContainer?: Container) {
+    public constructor(controllersPath?: string[], appConfig?: AppConfig, appContainer?: Container) {
         super(controllersPath, appConfig, appContainer)
 
         this.logger = this.logFactory.getLogger(ApiLambdaApp)

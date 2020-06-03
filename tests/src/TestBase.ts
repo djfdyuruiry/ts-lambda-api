@@ -5,7 +5,7 @@ import { Setup } from "alsatian"
 import { AppConfig, ApiLambdaApp, ApiRequest, ApiResponse, LogLevel } from "../../dist/ts-lambda-api"
 
 export class TestBase {
-    protected static readonly CONTROLLERS_PATH: string = path.join(__dirname, "test-controllers")
+    protected static readonly CONTROLLERS_PATH: string[] = [path.join(__dirname, "test-controllers")]
 
     protected appConfig: AppConfig
     protected app: ApiLambdaApp
