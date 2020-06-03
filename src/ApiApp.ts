@@ -51,9 +51,23 @@ export abstract class ApiApp {
         protected appConfig: AppConfig = new AppConfig(),
         protected appContainer: Container = new Container({ autoBindInjectable: true })
     ) {
-        if (appContainer.options.autoBindInjectable && (!controllersPath || controllersPath.length === 0)) {
-            throw new Error("Null, empty or whitespace controllersPath passed to ApiApp")
+        let autoInjectionEnabled = typeof(appContainer.options) === "object"
+            && appContainer.options.autoBindInjectable === true
+
+        if (autoInjectionEnabled) {
+            if (!Array.isArray(controllersPath) || controllersPath.length < 1) {
+                throw new Error("controllersPath passed to ApiApp was not an array")
+            }
+
+            if (controllersPath.length < 1) {
+                throw new Error("controllersPath passed to ApiApp was empty")
+            }
+
+            if (controllersPath.findIndex(p => typeof p !== "string" || p.trim() === "") > -1) {
+                throw new Error("One or more paths in controllersPaths passed to ApiApp was null, empty or whitespace")
+            }
         }
+
         appContainer.bind(AppConfig).toConstantValue(this.appConfig)
 
         this.apiServer = new Server(appContainer, this.appConfig)
