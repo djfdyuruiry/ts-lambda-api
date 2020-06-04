@@ -38,7 +38,6 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
     - [Controller Routes](#controller-routes)
     - [Endpoint Routes](#endpoint-routes)
     - [Path Parameters](#path-params)
-    - [Manually Loading Controllers](#loading-controllers)
 - [Request Parameter Binding](#request-binding)
 - [Responses](#responses)
 - [Authentication & Authorization](#auth-authorization)
@@ -334,45 +333,6 @@ export class StoreController {
 ```
 
 **Note all path parameters are passed in as strings, you will need to cast these if required**
-
----
-
-### <a id="loading-controllers"></a>Manually Loading Controllers
-
----
-
-The default IOC app `Container` enables the `autoBindInjectable` option. Controllers decorated with
-`@injectable` are dynamicallly loaded from the required `controllersPath` directory during 
-initialisation. However, controllers can be explicity specified instead of relying on the `@injectable` 
-decoration to dynamically load the controllers from a directory.
-
-Create an IOC `Container` with the `autoBindInjectable` option disabled. Bind the desired controller 
-classes to the container and pass the instance into the `ApiLambdaApp` constructor. The `controllersPath`
-parameter is ignored when the custom container's `autoBindInjectable` option disabled.
-
-```typescript
-import { Container } from 'inversify';
-import { ApiLambdaApp, ApiRequest, AppConfig } from 'ts-lambda-api';
-import { AppController } from './controllers/AppController';
-
-const appConfig = new AppConfig();
-appConfig.base = '/api/v1';
-appConfig.version = 'v1';
-
-// Bind the controllers to a container instance with @injectable disabled
-const appContainer = new Container({ autoBindInjectable: false });
-const appController = new AppController();
-appContainer.bind(AppController).toConstantValue(appController);
-
-// Pass the customer container into the app - controllersPath is ignored
-const app = new ApiLambdaApp(undefined, appConfig, appContainer);
-
-export const lambdaHandler = async (event: ApiRequest, context: any) => {
-	return await app.run(event, context);
-};
-```
-
-**Note you do not need to decorate controller classes with @injectable when autoBindInjectable is disabled**
 
 ----
 

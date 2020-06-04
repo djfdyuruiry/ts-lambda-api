@@ -135,7 +135,7 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Api<wbr>Lambda<wbr>App<span class="tsd-signature-symbol">(</span>controllersPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, appConfig<span class="tsd-signature-symbol">?: </span><a href="appconfig.html" class="tsd-signature-type">AppConfig</a>, appContainer<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="apilambdaapp.html" class="tsd-signature-type">ApiLambdaApp</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Api<wbr>Lambda<wbr>App<span class="tsd-signature-symbol">(</span>controllersPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, appConfig<span class="tsd-signature-symbol">?: </span><a href="appconfig.html" class="tsd-signature-type">AppConfig</a>, appContainer<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="apilambdaapp.html" class="tsd-signature-type">ApiLambdaApp</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -153,14 +153,10 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> controllersPath: <span class="tsd-signature-type">string</span></h5>
+									<h5>controllersPath: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>(Optional) Path to the directory containing controller <code>js</code> files.
-												Required if the default <code>Container</code> is used, or the provided
-												<code>Container</code> instance has its <code>autoBindInjectable</code> flag set to <code>true</code>.
-												Ignored if the provided <code>Container</code> instance has its <code>autoBindInjectable</code>
-											flag set to <code>false</code>.</p>
+											<p>Path to the directory containing controller <code>js</code> files.</p>
 										</div>
 									</div>
 								</li>
@@ -207,7 +203,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#appconfig">appConfig</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L51">ApiApp.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L47">ApiApp.ts:47</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -223,34 +219,30 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#appcontainer">appContainer</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L52">ApiApp.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L48">ApiApp.ts:48</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>(Optional) <code>InversifyJS</code> IOC <code>Container</code> instance which can
 								build controllers and error interceptors, defaults to new <code>Container</code> with
-							<code>autoBindInjectable</code> flag set to <code>true</code>.</p>
+							<code>autoBindInjectable</code> flag set to `true.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="controllerspath" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagOptional">Optional</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> controllers<wbr>Path</h3>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> controllers<wbr>Path</h3>
 					<div class="tsd-signature tsd-kind-icon">controllers<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#controllerspath">controllersPath</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L50">ApiApp.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L46">ApiApp.ts:46</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>(Optional) Path to a directory containing <code>js</code> files that declare
-								controllers. Required if the default <code>Container</code> is used, or the provided
-								<code>Container</code> instance has its <code>autoBindInjectable</code> flag set to <code>true</code>.
-								Ignored if the provided <code>Container</code> instance has its <code>autoBindInjectable</code>
-							flag set to <code>false</code>.</p>
+							<p>Path to a directory containing <code>js</code> files containing that declare controllers.</p>
 						</div>
 					</div>
 				</section>
@@ -322,7 +314,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#configureapi">configureApi</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L80">ApiApp.ts:80</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L76">ApiApp.ts:76</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -372,7 +364,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#configureapp">configureApp</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L71">ApiApp.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L67">ApiApp.ts:67</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -425,7 +417,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#initialisecontrollers">initialiseControllers</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L97">ApiApp.ts:97</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L93">ApiApp.ts:93</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -448,7 +440,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#run">run</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiLambdaApp.ts#L42">ApiLambdaApp.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiLambdaApp.ts#L38">ApiLambdaApp.ts:38</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
