@@ -36,38 +36,20 @@ export abstract class ApiApp {
     /**
      * Create a new app.
      *
-     * @param controllersPath (Optional) Paths to the directories that contain controller `js` files that
-     *                        declare controllers. Required if the default `Container` is used, or the
-     *                        provided `Container` instance has its `autoBindInjectable` flag set to `true`.
-     *                        Ignored if the provided `Container` instance has its `autoBindInjectable`
-     *                        flag set to `false`.
+     * @param controllersPath Path to a directory containing `js` files containing that declare controllers.
      * @param appConfig (Optional) Application config to pass to `lambda-api`, defaults to new `AppConfig`.
      * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can
      *                     build controllers and error interceptors, defaults to new `Container` with
-     *                     `autoBindInjectable` flag set to `true`.
+     *                     `autoBindInjectable` flag set to `true.
      */
     public constructor(
-        protected readonly controllersPath?: string[],
+        protected readonly controllersPath: string,
         protected appConfig: AppConfig = new AppConfig(),
         protected appContainer: Container = new Container({ autoBindInjectable: true })
     ) {
-        let autoInjectionEnabled = typeof(appContainer.options) === "object"
-            && appContainer.options.autoBindInjectable === true
-
-        if (autoInjectionEnabled) {
-            if (!Array.isArray(controllersPath) || controllersPath.length < 1) {
-                throw new Error("controllersPath passed to ApiApp was not an array")
-            }
-
-            if (controllersPath.length < 1) {
-                throw new Error("controllersPath passed to ApiApp was empty")
-            }
-
-            if (controllersPath.findIndex(p => typeof p !== "string" || p.trim() === "") > -1) {
-                throw new Error("One or more paths in controllersPaths passed to ApiApp was null, empty or whitespace")
-            }
+        if (!controllersPath || controllersPath.trim() === "") {
+            throw new Error("Null, empty or whitespace controllersPath passed to ApiApp")
         }
-
         appContainer.bind(AppConfig).toConstantValue(this.appConfig)
 
         this.apiServer = new Server(appContainer, this.appConfig)

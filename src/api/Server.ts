@@ -78,21 +78,13 @@ export class Server {
      *
      * This method must be called before invoking the `processEvent` method.
      *
-     * @param controllersPath (Optional) Paths to the directories that contain controller `js` files.
-     *                        Dynamic loading of `injectable` controllers is disabled if undefined
-     *                        or the app `Container` instance has its `autoBindInjectable`
-     *                        flag set to `false`.
+     * @param controllersPath Path to the directory containing controller `js` files.
      */
     @timed
-    public async discoverAndBuildRoutes(controllersPath?: string[]) {
-        if (this.appContainer.options.autoBindInjectable && controllersPath) {
-            for (let path of controllersPath){
-                this.logger.debug("Loading controllers from path: %s", path)
-                await ControllerLoader.loadControllers(path, this.logFactory)
-            }
-        } else {
-            this.logger.debug("Dynamic loading of injectable controllers disabled")
-        }
+    public async discoverAndBuildRoutes(controllersPath: string) {
+        this.logger.debug("Loading controllers from path: %s", controllersPath)
+
+        await ControllerLoader.loadControllers(controllersPath, this.logFactory)
 
         if (this.openApiGenerator) {
             this.registerOpenApiEndpoints()

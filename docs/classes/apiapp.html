@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ApiApp | ts-lambda-api - v1.1.0</title>
-	<meta name="description" content="Documentation for ts-lambda-api - v1.1.0">
+	<title>ApiApp | ts-lambda-api - v1.2.0</title>
+	<meta name="description" content="Documentation for ts-lambda-api - v1.2.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">ts-lambda-api - v1.1.0</a>
+					<a href="../index.html" class="title">ts-lambda-api - v1.2.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -139,7 +139,7 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Api<wbr>App<span class="tsd-signature-symbol">(</span>controllersPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, appConfig<span class="tsd-signature-symbol">?: </span><a href="appconfig.html" class="tsd-signature-type">AppConfig</a>, appContainer<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="apiapp.html" class="tsd-signature-type">ApiApp</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Api<wbr>App<span class="tsd-signature-symbol">(</span>controllersPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, appConfig<span class="tsd-signature-symbol">?: </span><a href="appconfig.html" class="tsd-signature-type">AppConfig</a>, appContainer<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="apiapp.html" class="tsd-signature-type">ApiApp</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -156,14 +156,10 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> controllersPath: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>controllersPath: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>(Optional) Paths to the directories that contain controller <code>js</code> files that
-												declare controllers. Required if the default <code>Container</code> is used, or the
-												provided <code>Container</code> instance has its <code>autoBindInjectable</code> flag set to <code>true</code>.
-												Ignored if the provided <code>Container</code> instance has its <code>autoBindInjectable</code>
-											flag set to <code>false</code>.</p>
+											<p>Path to a directory containing <code>js</code> files containing that declare controllers.</p>
 										</div>
 									</div>
 								</li>
@@ -181,7 +177,7 @@
 										<div class="lead">
 											<p>(Optional) <code>InversifyJS</code> IOC <code>Container</code> instance which can
 												build controllers and error interceptors, defaults to new <code>Container</code> with
-											<code>autoBindInjectable</code> flag set to <code>true</code>.</p>
+											<code>autoBindInjectable</code> flag set to `true.</p>
 										</div>
 									</div>
 								</li>
@@ -209,7 +205,7 @@
 					<div class="tsd-signature tsd-kind-icon">app<wbr>Config<span class="tsd-signature-symbol">:</span> <a href="appconfig.html" class="tsd-signature-type">AppConfig</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L51">ApiApp.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L47">ApiApp.ts:47</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -224,33 +220,29 @@
 					<div class="tsd-signature tsd-kind-icon">app<wbr>Container<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Container</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L52">ApiApp.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L48">ApiApp.ts:48</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>(Optional) <code>InversifyJS</code> IOC <code>Container</code> instance which can
 								build controllers and error interceptors, defaults to new <code>Container</code> with
-							<code>autoBindInjectable</code> flag set to <code>true</code>.</p>
+							<code>autoBindInjectable</code> flag set to `true.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="controllerspath" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagOptional">Optional</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> controllers<wbr>Path</h3>
-					<div class="tsd-signature tsd-kind-icon">controllers<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> controllers<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">controllers<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L50">ApiApp.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L46">ApiApp.ts:46</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>(Optional) Paths to the directories that contain controller <code>js</code> files that
-								declare controllers. Required if the default <code>Container</code> is used, or the
-								provided <code>Container</code> instance has its <code>autoBindInjectable</code> flag set to <code>true</code>.
-								Ignored if the provided <code>Container</code> instance has its <code>autoBindInjectable</code>
-							flag set to <code>false</code>.</p>
+							<p>Path to a directory containing <code>js</code> files containing that declare controllers.</p>
 						</div>
 					</div>
 				</section>
@@ -317,7 +309,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L94">ApiApp.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L76">ApiApp.ts:76</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -366,7 +358,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L85">ApiApp.ts:85</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L67">ApiApp.ts:67</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -418,7 +410,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L111">ApiApp.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L93">ApiApp.ts:93</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -440,7 +432,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L106">ApiApp.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L88">ApiApp.ts:88</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
