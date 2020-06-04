@@ -207,19 +207,19 @@ export class ApiAcceptanceTests extends TestBase {
         })
     }
 
-    @TestCase([""])
-    @TestCase(["   "])
+    @TestCase("")
+    @TestCase("   ")
     @TestCase(null)
     @TestCase(undefined)
     @Test()
-    public when_app_built_with_invalid_controller_path_then_error_is_thrown(controllerPath: string[]) {
+    public when_app_built_with_invalid_controller_path_then_error_is_thrown(controllerPath: string) {
         Expect(() => new ApiLambdaApp(controllerPath) ).toThrow()
     }
 
     @Test()
     public async when_app_built_with_missing_controller_path_then_error_is_thrown() {
         await Expect(async () =>
-            await (new ApiLambdaApp(["/some/fake/path"])).initialiseControllers()
+            await (new ApiLambdaApp("/some/fake/path")).initialiseControllers()
         ).toThrowAsync()
     }
 }

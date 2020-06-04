@@ -99,7 +99,6 @@
 							<li><a href="#controller-routes">Controller Routes</a></li>
 							<li><a href="#endpoint-routes">Endpoint Routes</a></li>
 							<li><a href="#path-params">Path Parameters</a></li>
-							<li><a href="#loading-controllers">Manually Loading Controllers</a></li>
 						</ul>
 					</li>
 					<li><p><a href="#request-binding">Request Parameter Binding</a></p>
@@ -225,7 +224,7 @@ npm install -D typescript @types/node aws-sdk</code></pre>
 appConfig.base = <span class="hljs-string">"/api/v1"</span>
 appConfig.version = <span class="hljs-string">"v1"</span>
 
-<span class="hljs-keyword">const</span> controllersPath = [path.join(__dirname, <span class="hljs-string">"controllers"</span>)]
+<span class="hljs-keyword">const</span> controllersPath = path.join(__dirname, <span class="hljs-string">"controllers"</span>)
 <span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> ApiLambdaApp(controllersPath, appConfig)
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handler</span>(<span class="hljs-params">event, context</span>) </span>{
@@ -379,38 +378,6 @@ zip -r lambda.zip ./</code></pre>
     }
 }</code></pre>
 				<p><strong>Note all path parameters are passed in as strings, you will need to cast these if required</strong></p>
-				<hr>
-				<a href="#manually-loading-controllers" id="manually-loading-controllers" style="color: inherit; text-decoration: none;">
-					<h3><a id="loading-controllers"></a>Manually Loading Controllers</h3>
-				</a>
-				<hr>
-				<p>The default IOC app <code>Container</code> enables the <code>autoBindInjectable</code> option. Controllers decorated with
-					<code>@injectable</code> are dynamicallly loaded from the required <code>controllersPath</code> directory during
-					initialisation. However, controllers can be explicity specified instead of relying on the <code>@injectable</code>
-				decoration to dynamically load the controllers from a directory.</p>
-				<p>Create an IOC <code>Container</code> with the <code>autoBindInjectable</code> option disabled. Bind the desired controller
-					classes to the container and pass the instance into the <code>ApiLambdaApp</code> constructor. The <code>controllersPath</code>
-				parameter is ignored when the custom container&#39;s <code>autoBindInjectable</code> option disabled.</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Container } <span class="hljs-keyword">from</span> <span class="hljs-string">'inversify'</span>;
-<span class="hljs-keyword">import</span> { ApiLambdaApp, ApiRequest, AppConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">'ts-lambda-api'</span>;
-<span class="hljs-keyword">import</span> { AppController } <span class="hljs-keyword">from</span> <span class="hljs-string">'./controllers/AppController'</span>;
-
-<span class="hljs-keyword">const</span> appConfig = <span class="hljs-keyword">new</span> AppConfig();
-appConfig.base = <span class="hljs-string">'/api/v1'</span>;
-appConfig.version = <span class="hljs-string">'v1'</span>;
-
-<span class="hljs-comment">// Bind the controllers to a container instance with @injectable disabled</span>
-<span class="hljs-keyword">const</span> appContainer = <span class="hljs-keyword">new</span> Container({ autoBindInjectable: <span class="hljs-literal">false</span> });
-<span class="hljs-keyword">const</span> appController = <span class="hljs-keyword">new</span> AppController();
-appContainer.bind(AppController).toConstantValue(appController);
-
-<span class="hljs-comment">// Pass the customer container into the app - controllersPath is ignored</span>
-<span class="hljs-keyword">const</span> app = <span class="hljs-keyword">new</span> ApiLambdaApp(<span class="hljs-literal">undefined</span>, appConfig, appContainer);
-
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> lambdaHandler = <span class="hljs-keyword">async</span> (event: ApiRequest, context: <span class="hljs-built_in">any</span>) =&gt; {
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> app.run(event, context);
-};</code></pre>
-				<p><strong>Note you do not need to decorate controller classes with @injectable when autoBindInjectable is disabled</strong></p>
 				<hr>
 				<a href="#request-parameter-binding" id="request-parameter-binding" style="color: inherit; text-decoration: none;">
 					<h2><a id="request-binding"></a>Request Parameter Binding</h2>
