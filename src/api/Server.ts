@@ -86,7 +86,7 @@ export class Server {
     @timed
     public async discoverAndBuildRoutes(controllersPath?: string[]) {
         if (this.appContainer.options.autoBindInjectable && controllersPath) {
-            for (let path of controllersPath){
+            for(let path of controllersPath){
                 this.logger.debug("Loading controllers from path: %s", path)
                 await ControllerLoader.loadControllers(path, this.logFactory)
             }
