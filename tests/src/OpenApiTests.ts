@@ -1109,7 +1109,7 @@ export class OpenApiTests extends TestBase {
             if (specFileFormat === "json") {
                 response.value = JSON.parse(response.body)
             } else {
-                response.value = safeLoad(response.body)
+                response.value = safeLoad(response.body) as any
             }
         }
 
