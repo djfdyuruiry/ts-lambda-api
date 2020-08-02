@@ -7,7 +7,7 @@
         "experimentalDecorators": true,
         "declaration": true,
         "sourceMap": true,
-        "baseUrl": ".",
+        "baseUrl": "src",
         "outDir": "dist",
         "paths": {
             "*": [

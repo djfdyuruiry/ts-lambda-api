@@ -1,5 +1,6 @@
 {
     "extends": "../tsconfig.json",
+    "baseUrl": ".",
     "compilerOptions": {
         "outDir": "js"
     },
