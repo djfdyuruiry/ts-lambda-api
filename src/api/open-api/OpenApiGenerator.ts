@@ -227,7 +227,9 @@ export class OpenApiGenerator {
                 this.addTagIfPresent(tags, endpointInfo.controller)
             }
 
-            this.addEndpoint(paths, endpointInfo)
+            if (!endpointInfo.apiIgnore && (endpointInfo.controller && !endpointInfo.controller.apiIgnore)) {
+              this.addEndpoint(paths, endpointInfo)
+            }
         }
     }
 

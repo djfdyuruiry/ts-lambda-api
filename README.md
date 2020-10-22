@@ -1469,6 +1469,27 @@ To further document your API endpoints you can use OpenAPI decorators.
     }
     ```
 
+- Hide controllers or individual endpoints from the documentation with `apiIgnoreController` and `apiIgnore`:
+
+    ```typescript
+    import { injectable } from "inversify"
+    import { api, apiController } from "ts-lambda-api"
+
+    @apiController("/private")
+    @api("Private API", "You can still annotate these")
+    @apiIgnoreController()
+    @injectable()
+    export class PrivateController {
+    
+      @GET()
+      @apiOperation({ name: "get stuff", description: "go get some stuff"})
+      @apiIgnore() // if you didn't want to ignore the whole controller
+      public get() {
+          return "OK"
+      }
+    }
+    ```
+
     The class `Person` is set as the request and response in several of the examples above. To help the framework provide meaningful request and response examples automatically, you must either:
 
     1. Provide a public static `example` method in your class, which will be called if found when generating an API spec. (recommended)

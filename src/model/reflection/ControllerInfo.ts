@@ -10,6 +10,7 @@ export class ControllerInfo {
 
     public apiName?: string
     public apiDescription?: string
+    public apiIgnore?: boolean
     public path?: string
     public consumes?: string
     public apiRequestInfo?: ApiBodyInfo

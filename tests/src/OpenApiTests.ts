@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 52
+    private static readonly ROUTE_COUNT = 53
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @Setup
@@ -130,6 +130,27 @@ export class OpenApiTests extends TestBase {
         let tag = response.value.tags.find(t => t.name === "Open API Test")
 
         Expect(tag.description).toBe("Endpoints with OpenAPI decorators")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @Test()
+    public async when_open_api_enabled_and_controller_is_marked_ignored_then_openapi_spec_does_not_contain_api(specFormat: string) {
+      let response = await this.requestParsedOpenApiSpec(specFormat)
+      let paths = Object.keys(response.value.paths);
+
+      Expect(paths).not.toContain('/test/internal/header')
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @Test()
+    public async when_open_api_enabled_and_endpoint_is_marked_ignored_then_openapi_spec_does_not_contain_endpoint(specFormat: string) {
+      let response = await this.requestParsedOpenApiSpec(specFormat)
+      let paths = Object.keys(response.value.paths);
+
+      Expect(paths).toContain('/test/part-internal/public')
+      Expect(paths).not.toContain('/test/part-internal/private')
     }
 
     @TestCase("json")

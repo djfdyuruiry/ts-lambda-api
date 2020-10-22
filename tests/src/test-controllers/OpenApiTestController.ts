@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { api, apiController, apiOperation, apiRequest, apiResponse, body, header, pathParam, queryParam, rawBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/ts-lambda-api"
+import { api, apiController, apiIgnoreController, apiOperation, apiRequest, apiResponse, body, header, pathParam, queryParam, rawBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/ts-lambda-api"
 
 import { ApiError } from "../test-components/model/ApiError"
 import { ArrayofPrimitivesExample } from '../test-components/model/ArrayOfPrimitivesExample'
