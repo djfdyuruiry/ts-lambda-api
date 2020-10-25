@@ -18,6 +18,7 @@ export class EndpointInfo {
     public rolesAllowed?: string[]
     public errorInterceptor?: interfaces.ServiceIdentifier<ErrorInterceptor>
     public apiOperationInfo?: ApiOperationInfo
+    public apiIgnore?: boolean;
 
     public get fullPath() {
         let rootPath = this.getControllerPropOrDefault(c => c.path) || ""

@@ -22,6 +22,8 @@ export { response } from "./api/decorator/context/parameters/response"
 export { principal } from "./api/decorator/context/parameters/principal"
 
 export { api } from "./api/decorator/open-api/api"
+export { apiIgnoreController } from "./api/decorator/open-api/apiIgnoreController"
+export { apiIgnore } from "./api/decorator/open-api/apiIgnore"
 export { apiOperation } from "./api/decorator/open-api/apiOperation"
 export { apiRequest } from "./api/decorator/open-api/apiRequest"
 export { apiResponse } from "./api/decorator/open-api/apiResponse"
