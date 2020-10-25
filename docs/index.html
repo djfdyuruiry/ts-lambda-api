@@ -1320,6 +1320,24 @@ appConfig.openApi.enabled = <span class="hljs-literal">true</span>
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">delete</span>() {
       <span class="hljs-built_in">this</span>.response.status(<span class="hljs-number">204</span>).send(<span class="hljs-string">&quot;&quot;</span>)
   }</code></pre>
+					</li>
+					<li><p>Hide controllers or individual endpoints from the documentation with <code>apiIgnoreController</code> and <code>apiIgnore</code>:</p>
+						<pre><code class="language-typescript">  <span class="hljs-keyword">import</span> { injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;inversify&quot;</span>
+  <span class="hljs-keyword">import</span> { api, apiController } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;ts-lambda-api&quot;</span>
+
+  <span class="hljs-meta">@apiController</span>(<span class="hljs-string">&quot;/private&quot;</span>)
+  <span class="hljs-meta">@api</span>(<span class="hljs-string">&quot;Private API&quot;</span>, <span class="hljs-string">&quot;You can still annotate these&quot;</span>)
+  <span class="hljs-meta">@apiIgnoreController</span>()
+  <span class="hljs-meta">@injectable</span>()
+  <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> PrivateController {
+
+    <span class="hljs-meta">@GET</span>()
+    <span class="hljs-meta">@apiOperation</span>({ name: <span class="hljs-string">&quot;get stuff&quot;</span>, description: <span class="hljs-string">&quot;go get some stuff&quot;</span>})
+    <span class="hljs-meta">@apiIgnore</span>() <span class="hljs-comment">// if you didn&#x27;t want to ignore the whole controller</span>
+    <span class="hljs-keyword">public</span> get() {
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;OK&quot;</span>
+    }
+  }</code></pre>
 						<p>  The class <code>Person</code> is set as the request and response in several of the examples above. To help the framework provide meaningful request and response examples automatically, you must either:</p>
 						<ol>
 							<li><p>Provide a public static <code>example</code> method in your class, which will be called if found when generating an API spec. (recommended)</p>
@@ -1641,6 +1659,12 @@ appConfig.openApi.useAuthentication = <span class="hljs-literal">true</span>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#apicontroller" class="tsd-kind-icon">api<wbr>Controller</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#apiignore" class="tsd-kind-icon">api<wbr>Ignore</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#apiignorecontroller" class="tsd-kind-icon">api<wbr>Ignore<wbr>Controller</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#apioperation" class="tsd-kind-icon">api<wbr>Operation</a>

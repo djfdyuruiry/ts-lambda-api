@@ -1,12 +1,8 @@
 import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 
 /**
- * Decorator that can be placed on an endpoint to describe it in any generated
+ * Decorator that can be placed on an endpoint method to exclude it from any generated
  * OpenAPI specification.
- *
- * @param apiOperationInfo Information about this api operation; will be merged with
- *                         existing info if present, replacing any existing properties,
- *                         if provided in this parameter.
  */
 export function apiIgnore() {
     return (classDefinition: Object, methodName: string) => {

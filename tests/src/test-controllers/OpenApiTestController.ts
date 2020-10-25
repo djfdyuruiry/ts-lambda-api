@@ -1,6 +1,6 @@
 import { injectable } from "inversify"
 
-import { api, apiController, apiIgnoreController, apiOperation, apiRequest, apiResponse, body, header, pathParam, queryParam, rawBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/ts-lambda-api"
+import { api, apiController, apiOperation, apiRequest, apiResponse, body, header, pathParam, queryParam, rawBody, Controller, JsonPatch, GET, POST, PUT, PATCH, DELETE} from "../../../dist/ts-lambda-api"
 
 import { ApiError } from "../test-components/model/ApiError"
 import { ArrayofPrimitivesExample } from '../test-components/model/ArrayOfPrimitivesExample'
@@ -10,8 +10,8 @@ import { People } from "../test-components/model/People"
 import { Person } from "../test-components/model/Person"
 import { PrimitiveExample } from '../test-components/model/PrimitiveExample'
 
-@apiController("/test/open-api")
 @api("Open API Test", "Endpoints with OpenAPI decorators")
+@apiController("/test/open-api")
 @injectable()
 export class OpenApiTestControllerController extends Controller {
     @GET()

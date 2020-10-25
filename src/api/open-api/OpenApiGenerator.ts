@@ -223,13 +223,15 @@ export class OpenApiGenerator {
 
             let endpointInfo = OpenApiGenerator.ENDPOINTS[endpoint]
 
+            if (endpointInfo.apiIgnore || (endpointInfo.controller && endpointInfo.controller.apiIgnore)) {
+                continue
+            }
+
             if (endpointInfo.controller) {
                 this.addTagIfPresent(tags, endpointInfo.controller)
             }
 
-            if (!endpointInfo.apiIgnore && (endpointInfo.controller && !endpointInfo.controller.apiIgnore)) {
-              this.addEndpoint(paths, endpointInfo)
-            }
+            this.addEndpoint(paths, endpointInfo)
         }
     }
 
