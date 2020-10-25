@@ -223,13 +223,15 @@ export class OpenApiGenerator {
 
             let endpointInfo = OpenApiGenerator.ENDPOINTS[endpoint]
 
+            if (endpointInfo.apiIgnore || (endpointInfo.controller && endpointInfo.controller.apiIgnore)) {
+                continue
+            }
+
             if (endpointInfo.controller) {
                 this.addTagIfPresent(tags, endpointInfo.controller)
             }
 
-            if (!endpointInfo.apiIgnore && (endpointInfo.controller && !endpointInfo.controller.apiIgnore)) {
-              this.addEndpoint(paths, endpointInfo)
-            }
+            this.addEndpoint(paths, endpointInfo)
         }
     }
 
@@ -497,7 +499,7 @@ export class OpenApiGenerator {
         }
     }
 
-    private getPrimitiveTypeSchema(apiBodyInfo: ApiBodyInfo | ApiParam) {
+    private getPrimitiveTypeSchema(apiBodyInfo: ApiBodyInfo | ApiParam) : any {
         let type = apiBodyInfo.type.toLowerCase()
 
         if (!OpenApiGenerator.OPEN_API_TYPES.includes(type)) {
@@ -512,7 +514,7 @@ export class OpenApiGenerator {
             this.logger.trace("Setting body to type: %s", type)
 
             let schema: SchemaObject = {
-                type: schemaType
+                type: schemaType as any
             }
 
             if (schemaType === "array") {
@@ -554,7 +556,7 @@ export class OpenApiGenerator {
 
         // ensure array items have a type
         schema.items = {
-            type: itemSchemaType
+            type: itemSchemaType as any
         }
 
         if (itemSchemaType === "object") {
@@ -604,7 +606,7 @@ export class OpenApiGenerator {
         }
 
         let schema: SchemaObject = {
-            type: instanceType
+            type: instanceType as any
         }
 
         mediaTypeObject.schema = schema
@@ -711,11 +713,11 @@ export class OpenApiGenerator {
         return true
     }
 
-    private getTypeOfInstanceProperty(instance: any, property: string | number) {
+    private getTypeOfInstanceProperty(instance: any, property: string | number) : any {
         return this.getInstanceType(instance[property])
     }
 
-    private getInstanceType(instance: any) {
+    private getInstanceType(instance: any) : any {
         let type = ((typeof instance)).toLowerCase()
 
         if (type === "object" && Array.isArray(instance)) {
