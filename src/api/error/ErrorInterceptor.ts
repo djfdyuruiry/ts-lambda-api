@@ -39,5 +39,5 @@ export abstract class ErrorInterceptor {
      *                 custom HTTP response.
      * @returns Value that you want to send back in the HTTP response; optional.
      */
-    public abstract async intercept(apiError: ApiError): Promise<any>
+    public abstract intercept(apiError: ApiError): Promise<any>
 }

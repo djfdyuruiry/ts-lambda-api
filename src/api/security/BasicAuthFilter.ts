@@ -35,5 +35,5 @@ export abstract class BasicAuthFilter<T extends Principal> implements IAuthFilte
      *
      * @param basicAuth
      */
-    public abstract async authenticate(basicAuth: BasicAuth): Promise<T | undefined>
+    public abstract authenticate(basicAuth: BasicAuth): Promise<T | undefined>
 }

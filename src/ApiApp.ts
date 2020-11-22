@@ -103,7 +103,7 @@ export abstract class ApiApp {
      * @param context Request context.
      * @returns The response.
      */
-    public abstract async run(event: ApiRequest, context: any): Promise<ApiResponse>
+    public abstract run(event: ApiRequest, context: any): Promise<ApiResponse>
 
     /**
      * Initialise all controllers and endpoints declared using decorators.
