@@ -157,7 +157,7 @@ export class OpenApiTests extends TestBase {
     @TestCase("yml")
     @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_parameters(specFormat: string) {
-        let pathEndpoint = await this.getOpenApiEndpoint(specFormat, "/test/path-test/:name/:age", "get")
+        let pathEndpoint = await this.getOpenApiEndpoint(specFormat, "/test/path-test/{name}/{age}", "get")
 
         Expect(pathEndpoint.parameters).toBeDefined()
     }
@@ -166,7 +166,7 @@ export class OpenApiTests extends TestBase {
     @TestCase("yml")
     @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_multiple_parameters(specFormat: string) {
-        let pathEndpoint = await this.getOpenApiEndpoint(specFormat, "/test/path-test/:name/:age", "get")
+        let pathEndpoint = await this.getOpenApiEndpoint(specFormat, "/test/path-test/{name}/{age}", "get")
 
         Expect(pathEndpoint.parameters.length).toBe(2)
     }
@@ -252,7 +252,7 @@ export class OpenApiTests extends TestBase {
     @TestCase("yml")
     @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_path_parameters(specFormat: string) {
-        let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/path-test/:name/:age", "get")
+        let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/path-test/{name}/{age}", "get")
         let nameParameter = pathEndpoint.parameters[0] as ParameterObject
         let ageParameter = pathEndpoint.parameters[1] as ParameterObject
 
@@ -271,7 +271,7 @@ export class OpenApiTests extends TestBase {
     @TestCase("yml")
     @Test()
     public async when_openapi_enabled_then_openapi_spec_contains_path_parameters_with_info(specFormat: string) {
-        let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/path-info-test/:pathTest", "get")
+        let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/path-info-test/{pathTest}", "get")
         let pathParameter = pathEndpoint.parameters[0] as ParameterObject
         let contentSchema = pathParameter.schema
 
