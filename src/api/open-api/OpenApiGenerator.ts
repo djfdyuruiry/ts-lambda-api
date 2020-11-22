@@ -260,6 +260,8 @@ export class OpenApiGenerator {
             path = path.substring(0, path.length - 1)
         }
 
+        // replace :param with {param} to match OpenAPI spec
+        path = path.replace(/:([^\/]*)(\/?)/g, "{$1}$2");
         let pathInfo: PathItemObject = paths[path] || {}
         let endpointMethod = endpointInfo.httpMethod.toLowerCase()
         let endpointOperation: OperationObject = {
