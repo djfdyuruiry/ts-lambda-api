@@ -55,7 +55,7 @@ export class EndpointInfo {
 
         return request ||
             this.getControllerPropOrDefault(c => c.apiRequestInfo)
-     }
+    }
 
     public get endpointErrorInterceptor() {
         return this.errorInterceptor || this.getControllerPropOrDefault(c => c.errorInterceptor )
