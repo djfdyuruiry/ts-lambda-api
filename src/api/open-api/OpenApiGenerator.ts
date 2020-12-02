@@ -720,6 +720,7 @@ export class OpenApiGenerator {
     }
 
     private getInstanceType(instance: any) : any {
+        if (instance === null || typeof instance === 'undefined') return null;
         let type = ((typeof instance)).toLowerCase()
 
         if (type === "object" && Array.isArray(instance)) {
