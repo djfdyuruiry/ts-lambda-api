@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 53
+    private static readonly ROUTE_COUNT = 54
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @Setup
@@ -762,6 +762,28 @@ export class OpenApiTests extends TestBase {
                 "type": "string",
                 "example": ""
             }
+        })
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @Test()
+    public async when_openapi_enabled_then_openapi_spec_ignores_null_fields(specFormat: string) {
+        let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/null-fields", "get")
+        let response = endpoint.responses["200"] as ResponseObject
+        let content = response.content["application/json"]
+        let schema = content.schema as SchemaObject
+
+        Expect(schema.type).toEqual("object")
+        Expect(schema.properties).toEqual({
+          "populatedField": {
+            "type": "number",
+            "example": 30
+          },
+          "emptyString": {
+            "type": "string",
+            "example": ""
+          }
         })
     }
 
