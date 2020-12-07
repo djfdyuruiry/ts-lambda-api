@@ -6,6 +6,7 @@ import { ApiError } from "../test-components/model/ApiError"
 import { ArrayofPrimitivesExample } from '../test-components/model/ArrayOfPrimitivesExample'
 import { ConstructorOnlyModel } from "../test-components/model/ConstructorOnlyModel"
 import { EdgeCaseModel } from "../test-components/model/EdgeCaseModel"
+import { NullFieldsModel } from '../test-components/model/NullFieldsModel'
 import { People } from "../test-components/model/People"
 import { Person } from "../test-components/model/Person"
 import { PrimitiveExample } from '../test-components/model/PrimitiveExample'
@@ -61,6 +62,13 @@ export class OpenApiTestControllerController extends Controller {
     @apiResponse(200, {class: EdgeCaseModel})
     public getEdgeCase() {
         return new EdgeCaseModel()
+    }
+
+    @GET("/null-fields")
+    @apiOperation({ name: "get null fields stuff", description: "go get some null fields stuff"})
+    @apiResponse(200, {class: NullFieldsModel})
+    public getNullFields() {
+        return new NullFieldsModel()
     }
 
     @POST()
