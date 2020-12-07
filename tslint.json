@@ -17,7 +17,8 @@
         "prefer-const": false,
         "semicolon": ["never"],
         "trailing-comma": [{"multiline": "never"}],
-        "variable-name": ["check-format", "allow-leading-underscore"]
+        "variable-name": ["check-format", "allow-leading-underscore"],
+        "curly": true
     },
     "rulesDirectory": [],
     "linterOptions": {
