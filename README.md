@@ -385,12 +385,13 @@ Different parts of the HTTP request can be bound to endpoint method parameters u
 - `queryParam` - Query string parameter
 - `header` - HTTP header value
 - `body` - Entity from request body, this will be an object if the request contains JSON, otherwise it will simply be a string
+- `bodyTyped` - Entity from request body, that will be coerced to the specified class, which must have a default no-args constructor. If the `validate` option is set, the class will also be validated using [class-validator](https://github.com/typestack/class-validator). You may also pass other options as described in the [class-validator documentation](https://github.com/typestack/class-validator#passing-options).
 - `rawBody` - Entity from request body as a Buffer, containing a string or binary data
 
 ```typescript
 import { injectable } from "inversify"
 
-import { apiController, body, header, queryParam, rawBody, GET, POST } from "ts-lambda-api"
+import { apiController, body, bodyTyped, header, queryParam, rawBody, GET, POST } from "ts-lambda-api"
 
 import { Thing } from "./Thing"
 
@@ -412,10 +413,16 @@ export class HelloWorldController {
         // do something with thing
     }
 
+    @POST("/validated-thing")
+    public addThing(@bodyTyped(Thing, { validate: true }) thing: Thing) {
+      // thing is a validated instance of Thing
+    }
+
     @POST("/upload-file")
     public addThing(@rawBody file: Buffer) {
         // do something with file
     }
+
 }
 ```
 

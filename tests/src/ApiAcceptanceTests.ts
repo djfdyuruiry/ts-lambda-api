@@ -1,4 +1,4 @@
-import { Expect, Test, TestCase, TestFixture } from "alsatian"
+import { Expect, FocusTest, Test, TestCase, TestFixture } from "alsatian"
 import { ReplaceOperation } from "fast-json-patch"
 import { readFileSync, statSync as statFileSync, writeFileSync } from "fs"
 import { METHODS } from "lambda-api"
@@ -58,6 +58,66 @@ export class ApiAcceptanceTests extends TestBase {
         }
 
         Expect(JSON.parse(body)).toEqual(requestBody)
+    }
+
+    @Test()
+    public async when_request_with_body_made_for_decorator_route_then_app_passes_typed_body_to_endpoint_and_returns_http_status_200_ok() {
+        let requestBody = {
+            id: 23,
+            name: "ezra"
+        }
+
+        let response = await this.sendRequest(
+            RequestBuilder.do("POST", "/test/methods/post-typed")
+                .body(JSON.stringify(requestBody))
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(200)
+
+        Expect(response.body).toEqual("23/ezra")
+    }
+
+    @Test()
+    public async when_request_with_body_made_for_decorator_route_then_body_is_validated_and_returns_400_if_not_valid() {
+        let requestBody = {
+            id: 23,
+            name: "ezra",
+            unknownField: 100
+        }
+
+        let response = await this.sendRequest(
+            RequestBuilder.do("POST", "/test/methods/post-validated")
+                .body(JSON.stringify(requestBody))
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(400)
+
+        Expect(JSON.parse(response.body)).toEqual({
+          errors: [
+            "property unknownField should not exist"
+          ]
+        })
+    }
+
+    @Test()
+    public async when_request_with_body_made_for_decorator_route_and_forbidNonWhitelisted_is_false_then_body_is_validated_and_but_ignores_extra_props() {
+        let requestBody = {
+            id: 23,
+            name: "ezra",
+            unknownField: 100
+        }
+
+        let response = await this.sendRequest(
+            RequestBuilder.do("POST", "/test/methods/post-validated-no-whitelist")
+                .body(JSON.stringify(requestBody))
+                .build()
+        )
+
+        Expect(response.statusCode).toEqual(200)
+
+        Expect(response.body).toEqual("23/ezra")
     }
 
     @Test()

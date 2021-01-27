@@ -348,11 +348,25 @@ export class Endpoint {
         controller: Controller, request: Request, response: Response, principal: Principal
     ) {
         let method: Function = controller[this.endpointInfo.methodName]
-        let parameters = this.buildEndpointParameters(request, response, principal)
-
         let controllerName = this.endpointInfo.controller ?
             this.endpointInfo.controller.name :
             "<dynamic>";
+
+        let parameters;
+
+        try {
+          parameters = this.buildEndpointParameters(request, response, principal)
+        } catch (ex) {
+          const errors = ex.reduce((list, error) => list.concat(Object.values(error.constraints)), []);
+          this.log(LogLevel.error, "Errors occurred extracting parameters for method '%s' in controller '%s': %j",
+                  this.endpointInfo.methodName,
+                  controllerName,
+                  errors)
+
+          response.status(400)
+          response.send({ errors })
+          return
+        }
 
         try {
             this.log(LogLevel.debug, "Invoking controller '%s' method: %s",

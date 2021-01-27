@@ -1,8 +1,18 @@
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { injectable } from "inversify"
 
-import { apiController, body, Controller, JsonPatch, rawBody, GET, POST, PUT, PATCH, DELETE } from "../../../dist/ts-lambda-api"
+import { apiController, body, Controller, JsonPatch, rawBody, GET, POST, PUT, PATCH, DELETE, bodyTyped } from "../../../dist/ts-lambda-api"
 
 import { Person } from "../test-components/model/Person"
+
+class TypedRequest {
+  @IsNumber() public id: number;
+  @IsOptional() @IsString() name: string;
+
+  public render() {
+    return `${this.id}/${this.name}`;
+  }
+}
 
 @apiController("/test/methods")
 @injectable()
@@ -15,6 +25,21 @@ export class MethodTestsController extends Controller {
     @POST("/post-raw")
     public postFile(@rawBody file: Buffer) {
         this.response.sendFile(file)
+    }
+
+    @POST("/post-typed")
+    public postTyped(@bodyTyped(TypedRequest) request: TypedRequest) {
+      return request.render();
+    }
+
+    @POST("/post-validated")
+    public postValidated(@bodyTyped(TypedRequest, { validate: true }) request: TypedRequest) {
+      return request.render();
+    }
+
+    @POST("/post-validated-no-whitelist")
+    public postValidatedNoWhitelist(@bodyTyped(TypedRequest, { validate: true, forbidNonWhitelisted: false }) request: TypedRequest) {
+      return request.render();
     }
 
     @PUT("/put")

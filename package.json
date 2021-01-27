@@ -40,6 +40,8 @@
   },
   "dependencies": {
     "@types/aws-lambda": "^8.10.64",
+    "class-transformer": "^0.3.2",
+    "class-validator": "^0.13.1",
     "fast-json-patch": "^3.0.0-1",
     "inversify": "^5.0.1",
     "lambda-api": "^0.10.6",
