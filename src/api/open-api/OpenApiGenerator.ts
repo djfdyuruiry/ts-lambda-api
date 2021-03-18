@@ -130,7 +130,7 @@ export class OpenApiGenerator {
 
             const jsyaml = await import("js-yaml")
 
-            return jsyaml.safeDump(openApiBuilder.getSpec())
+            return jsyaml.dump(openApiBuilder.getSpec())
         } catch (ex) {
             this.logger.errorWithStack("Error exporting OpenAPI spec as YAML, " +
                 "ensure that the 'js-yaml' module is installed", ex)

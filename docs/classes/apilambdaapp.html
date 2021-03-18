@@ -3,10 +3,11 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ApiLambdaApp | ts-lambda-api - v2.2.2</title>
-	<meta name="description" content="Documentation for ts-lambda-api - v2.2.2">
+	<title>ApiLambdaApp | ts-lambda-api - v2.2.3</title>
+	<meta name="description" content="Documentation for ts-lambda-api - v2.2.3">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -22,7 +23,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">ts-lambda-api - v2.2.2</a>
+					<a href="../index.html" class="title">ts-lambda-api - v2.2.3</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -40,8 +41,6 @@
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
 							<input type="checkbox" id="tsd-filter-externals" checked />
 							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -53,7 +52,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
+					<a href="../modules.html">ts-lambda-api - v2.2.3</a>
 				</li>
 				<li>
 					<a href="apilambdaapp.html">ApiLambdaApp</a>
@@ -80,7 +79,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="apiapp.html" class="tsd-signature-type">ApiApp</a>
+						<a href="apiapp.html" class="tsd-signature-type" data-tsd-kind="Class">ApiApp</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">ApiLambdaApp</span>
@@ -111,7 +110,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="apilambdaapp.html#logger" class="tsd-kind-icon">logger</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="apilambdaapp.html#middlewareregistry" class="tsd-kind-icon">middleware<wbr>Registry</a></li>
@@ -135,7 +134,7 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Api<wbr>Lambda<wbr>App<span class="tsd-signature-symbol">(</span>controllersPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, appConfig<span class="tsd-signature-symbol">?: </span><a href="appconfig.html" class="tsd-signature-type">AppConfig</a>, appContainer<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="apilambdaapp.html" class="tsd-signature-type">ApiLambdaApp</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Api<wbr>Lambda<wbr>App<span class="tsd-signature-symbol">(</span>controllersPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, appConfig<span class="tsd-signature-symbol">?: </span><a href="appconfig.html" class="tsd-signature-type" data-tsd-kind="Class">AppConfig</a>, appContainer<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="apilambdaapp.html" class="tsd-signature-type" data-tsd-kind="Class">ApiLambdaApp</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -155,34 +154,28 @@
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> controllersPath: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>(Optional) Paths to the directories that contain controller <code>js</code> files.
-												Required if the default <code>Container</code> is used, or the provided
-												<code>Container</code> instance has its <code>autoBindInjectable</code> flag set to <code>true</code>.
-												Ignored if the provided <code>Container</code> instance has its <code>autoBindInjectable</code>
-											flag set to <code>false</code>.</p>
-										</div>
+										<p>(Optional) Paths to the directories that contain controller <code>js</code> files.
+											Required if the default <code>Container</code> is used, or the provided
+											<code>Container</code> instance has its <code>autoBindInjectable</code> flag set to <code>true</code>.
+											Ignored if the provided <code>Container</code> instance has its <code>autoBindInjectable</code>
+										flag set to <code>false</code>.</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> appConfig: <a href="appconfig.html" class="tsd-signature-type">AppConfig</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> appConfig: <a href="appconfig.html" class="tsd-signature-type" data-tsd-kind="Class">AppConfig</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>(Optional) Application config to pass to <code>lambda-api</code>.</p>
-										</div>
+										<p>(Optional) Application config to pass to <code>lambda-api</code>.</p>
 									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> appContainer: <span class="tsd-signature-type">Container</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>(Optional) <code>InversifyJS</code> IOC <code>Container</code> instance which can build
-											controllers and error interceptors.</p>
-										</div>
+										<p>(Optional) <code>InversifyJS</code> IOC <code>Container</code> instance which can build
+										controllers and error interceptors.</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="apilambdaapp.html" class="tsd-signature-type">ApiLambdaApp</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="apilambdaapp.html" class="tsd-signature-type" data-tsd-kind="Class">ApiLambdaApp</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -192,7 +185,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="apiserver" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> api<wbr>Server</h3>
-					<div class="tsd-signature tsd-kind-icon">api<wbr>Server<span class="tsd-signature-symbol">:</span> <a href="server.html" class="tsd-signature-type">Server</a></div>
+					<div class="tsd-signature tsd-kind-icon">api<wbr>Server<span class="tsd-signature-symbol">:</span> <a href="server.html" class="tsd-signature-type" data-tsd-kind="Class">Server</a></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#apiserver">apiServer</a></p>
 						<ul>
@@ -203,36 +196,18 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="appconfig" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> app<wbr>Config</h3>
-					<div class="tsd-signature tsd-kind-icon">app<wbr>Config<span class="tsd-signature-symbol">:</span> <a href="appconfig.html" class="tsd-signature-type">AppConfig</a></div>
+					<div class="tsd-signature tsd-kind-icon">app<wbr>Config<span class="tsd-signature-symbol">:</span> <a href="appconfig.html" class="tsd-signature-type" data-tsd-kind="Class">AppConfig</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#appconfig">appConfig</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L51">ApiApp.ts:51</a></li>
-						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>(Optional) Application config to pass to <code>lambda-api</code>, defaults to new <code>AppConfig</code>.</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="appcontainer" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> app<wbr>Container</h3>
-					<div class="tsd-signature tsd-kind-icon">app<wbr>Container<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Container</span></div>
+					<div class="tsd-signature tsd-kind-icon">app<wbr>Container<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#appcontainer">appContainer</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L52">ApiApp.ts:52</a></li>
-						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>(Optional) <code>InversifyJS</code> IOC <code>Container</code> instance which can
-								build controllers and error interceptors, defaults to new <code>Container</code> with
-							<code>autoBindInjectable</code> flag set to <code>true</code>.</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="controllerspath" class="tsd-anchor"></a>
@@ -240,19 +215,7 @@
 					<div class="tsd-signature tsd-kind-icon">controllers<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#controllerspath">controllersPath</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L50">ApiApp.ts:50</a></li>
-						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>(Optional) Paths to the directories that contain controller <code>js</code> files that
-								declare controllers. Required if the default <code>Container</code> is used, or the
-								provided <code>Container</code> instance has its <code>autoBindInjectable</code> flag set to <code>true</code>.
-								Ignored if the provided <code>Container</code> instance has its <code>autoBindInjectable</code>
-							flag set to <code>false</code>.</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="initialised" class="tsd-anchor"></a>
@@ -268,7 +231,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="logfactory" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> log<wbr>Factory</h3>
-					<div class="tsd-signature tsd-kind-icon">log<wbr>Factory<span class="tsd-signature-symbol">:</span> <a href="logfactory.html" class="tsd-signature-type">LogFactory</a></div>
+					<div class="tsd-signature tsd-kind-icon">log<wbr>Factory<span class="tsd-signature-symbol">:</span> <a href="logfactory.html" class="tsd-signature-type" data-tsd-kind="Class">LogFactory</a></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#logfactory">logFactory</a></p>
 						<ul>
@@ -279,7 +242,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="logger" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> logger</h3>
-					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="../interfaces/ilogger.html" class="tsd-signature-type">ILogger</a></div>
+					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="../interfaces/ilogger.html" class="tsd-signature-type" data-tsd-kind="Interface">ILogger</a></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#logger">logger</a></p>
 						<ul>
@@ -288,23 +251,22 @@
 					</aside>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
 					<a name="middlewareregistry" class="tsd-anchor"></a>
 					<h3>middleware<wbr>Registry</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> middlewareRegistry<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="middlewareregistry.html" class="tsd-signature-type">MiddlewareRegistry</a></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> middlewareRegistry<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="middlewareregistry.html" class="tsd-signature-type" data-tsd-kind="Class">MiddlewareRegistry</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="apiapp.html">ApiApp</a>.<a href="apiapp.html#middlewareregistry">middlewareRegistry</a></p>
 								<ul>
 									<li>Defined in <a href="https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ApiApp.ts#L32">ApiApp.ts:32</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="middlewareregistry.html" class="tsd-signature-type">MiddlewareRegistry</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="middlewareregistry.html" class="tsd-signature-type" data-tsd-kind="Class">MiddlewareRegistry</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -315,7 +277,7 @@
 					<a name="configureapi" class="tsd-anchor"></a>
 					<h3>configure<wbr>Api</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">configure<wbr>Api<span class="tsd-signature-symbol">(</span>configureBlock<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>this<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span>, api<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">API</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">configure<wbr>Api<span class="tsd-signature-symbol">(</span>configureBlock<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>api<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">API</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -333,19 +295,16 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>configureBlock: <span class="tsd-signature-symbol">(</span>this<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span>, api<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">API</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+									<h5>configureBlock: <span class="tsd-signature-symbol">(</span>api<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">API</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-signature">
 											<ul class="tsd-signatures tsd-kind-type-literal">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>this<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span>, api<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">API</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>api<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">API</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 											</ul>
 											<ul class="tsd-descriptions">
 												<li class="tsd-description">
 													<h4 class="tsd-parameters-title">Parameters</h4>
 													<ul class="tsd-parameters">
-														<li>
-															<h5>this: <span class="tsd-signature-type">void</span></h5>
-														</li>
 														<li>
 															<h5>api: <span class="tsd-signature-type">API</span></h5>
 														</li>
@@ -365,7 +324,7 @@
 					<a name="configureapp" class="tsd-anchor"></a>
 					<h3>configure<wbr>App</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">configure<wbr>App<span class="tsd-signature-symbol">(</span>configureBlock<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>this<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span>, container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">configure<wbr>App<span class="tsd-signature-symbol">(</span>configureBlock<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -383,22 +342,19 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>configureBlock: <span class="tsd-signature-symbol">(</span>this<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span>, container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+									<h5>configureBlock: <span class="tsd-signature-symbol">(</span>container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Function that takes a <code>Container</code> instance as a parameter.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-signature">
 											<ul class="tsd-signatures tsd-kind-type-literal">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>this<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span>, container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>container<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 											</ul>
 											<ul class="tsd-descriptions">
 												<li class="tsd-description">
 													<h4 class="tsd-parameters-title">Parameters</h4>
 													<ul class="tsd-parameters">
-														<li>
-															<h5>this: <span class="tsd-signature-type">void</span></h5>
-														</li>
 														<li>
 															<h5>container: <span class="tsd-signature-type">Container</span></h5>
 														</li>
@@ -441,7 +397,7 @@
 					<a name="run" class="tsd-anchor"></a>
 					<h3>run</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="apirequest.html" class="tsd-signature-type">ApiRequest</a>, context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="apiresponse.html" class="tsd-signature-type">ApiResponse</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="apirequest.html" class="tsd-signature-type" data-tsd-kind="Class">ApiRequest</a>, context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="apiresponse.html" class="tsd-signature-type" data-tsd-kind="Class">ApiResponse</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -459,7 +415,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>event: <a href="apirequest.html" class="tsd-signature-type">ApiRequest</a></h5>
+									<h5>event: <a href="apirequest.html" class="tsd-signature-type" data-tsd-kind="Class">ApiRequest</a></h5>
 								</li>
 								<li>
 									<h5>context: <span class="tsd-signature-type">any</span></h5>
@@ -468,7 +424,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="apiresponse.html" class="tsd-signature-type">ApiResponse</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="apiresponse.html" class="tsd-signature-type" data-tsd-kind="Class">ApiResponse</a><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>The response.</p>
 						</li>
 					</ul>
@@ -478,8 +434,8 @@
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>
@@ -552,15 +508,13 @@
 				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>
