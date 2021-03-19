@@ -1,5 +1,5 @@
 import { Expect, Setup, Test, TestCase, TestFixture } from "alsatian"
-import { safeLoad } from "js-yaml"
+import { load } from "js-yaml"
 import { OpenAPIObject, SecuritySchemeObject, PathItemObject, ParameterObject, ResponseObject, RequestBodyObject, OperationObject, MediaTypeObject, SchemaObject } from "openapi3-ts"
 
 import { RequestBuilder, ApiLambdaApp } from "../../dist/ts-lambda-api"
@@ -1152,7 +1152,7 @@ export class OpenApiTests extends TestBase {
             if (specFileFormat === "json") {
                 response.value = JSON.parse(response.body)
             } else {
-                response.value = safeLoad(response.body) as any
+                response.value = load(response.body) as any
             }
         }
 
