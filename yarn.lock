@@ -227,13 +227,6 @@
   resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-4.0.1.tgz#5544730b65a480b18ace6b6ce914e519cec2d43b"
   integrity sha512-xdOvNmXmrZqqPy3kuCQ+fz6wA0xU5pji9cd1nDrflWaAWtYLLGk5ykW0H6yg5TVyehHP1pfmuuSaZkhP+kspVA==
 
-"@types/md5-file@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@types/md5-file/-/md5-file-5.0.0.tgz#aa0ab300c468378a1eb63f62f25d42cb977488d6"
-  integrity sha512-b5wGwzjovLIcHNNmxT9u8pNumt1vxZ/+tRIpe10R6ZriTipq8NqQIGH95rC7gn4PlZR6R2Rr7hNavTW7n5GQ3Q==
-  dependencies:
-    md5-file "*"
-
 "@types/node@*", "@types/node@>=0.0.2", "@types/node@>=4.0.0", "@types/node@^15.12.2":
   version "15.12.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.2.tgz#1f2b42c4be7156ff4a6f914b2fb03d05fa84e38d"
@@ -1171,7 +1164,7 @@ marky@^1.2.2:
   resolved "https://registry.yarnpkg.com/marky/-/marky-1.2.2.tgz#4456765b4de307a13d263a69b0c79bf226e68323"
   integrity sha512-k1dB2HNeaNyORco8ulVEhctyEGkKHb2YWAhDsxeFlW2nROIirsctBYzKwwS3Vza+sKTS1zO4Z+n9/+9WbGLIxQ==
 
-md5-file@*, md5-file@^5.0.0:
+md5-file@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/md5-file/-/md5-file-5.0.0.tgz#e519f631feca9c39e7f9ea1780b63c4745012e20"
   integrity sha512-xbEFXCYVWrSx/gEKS1VPlg84h/4L20znVIulKw6kMfmBUAZNAnF00eczz9ICMl+/hjQGo5KSXRxbL/47X3rmMw==
