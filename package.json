@@ -10,12 +10,12 @@
     "build": "yarn lint && rm -rf dist && tsc && yarn docs",
     "build-all": "yarn install && yarn build && yarn build-tests",
     "build-tests": "rm -rf ./tests/js && tsc -p ./tests",
-    "clean-install": "rm -rf node_modules && yarn install && yarn improved-audit",
+    "clean-install": "rm -rf node_modules && yarn install",
     "docs": "rm -rf ./docs && typedoc --entryPoints ./src/ts-lambda-api.ts --excludePrivate --includeVersion --gitRevision master --sourcefile-link-prefix https://github.com/djfdyuruiry/ts-lambda-api/blob/master/src/ --out ./docs",
     "lint": "tslint 'src/**/*.ts'",
     "shell": "$SHELL",
     "improved-audit": "improved-yarn-audit -e $(cat .audit-exceptions)",
-    "test": "yarn improved-audit && yarn build-all && scripts/runTests.sh"
+    "test": "yarn build-all && yarn improved-audit && scripts/runTests.sh"
   },
   "main": "dist/ts-lambda-api.js",
   "typings": "dist/ts-lambda-api.d.ts",
