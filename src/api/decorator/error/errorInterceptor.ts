@@ -1,6 +1,6 @@
 import { inspect } from "util"
 
-import { interfaces } from "inversify/dts/interfaces/interfaces"
+import { interfaces } from "inversify"
 
 import { LogLevel } from "../../../model/logging/LogLevel"
 import { ErrorInterceptor } from "../../error/ErrorInterceptor"
