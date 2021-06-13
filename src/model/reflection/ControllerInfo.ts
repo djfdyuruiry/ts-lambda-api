@@ -1,4 +1,4 @@
-import { interfaces } from "inversify/dts/interfaces/interfaces"
+import { interfaces } from "inversify"
 
 import { EndpointInfo } from "./EndpointInfo"
 import { ErrorInterceptor } from "../../api/error/ErrorInterceptor"
