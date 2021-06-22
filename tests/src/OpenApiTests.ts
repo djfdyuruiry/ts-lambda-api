@@ -1,6 +1,6 @@
 import { Expect, Setup, Test, TestCase, TestFixture } from "alsatian"
 import { load } from "js-yaml"
-import { OpenAPIObject, SecuritySchemeObject, PathItemObject, ParameterObject, ResponseObject, RequestBodyObject, OperationObject, MediaTypeObject, SchemaObject } from "openapi3-ts"
+import { OpenAPIObject, SecuritySchemeObject, PathItemObject, ParameterObject, ResponseObject, RequestBodyObject, OperationObject, MediaTypeObject, SchemaObject, SecurityRequirementObject } from "openapi3-ts"
 
 import { RequestBuilder, ApiLambdaApp } from "../../dist/ts-lambda-api"
 
@@ -11,7 +11,7 @@ import { TestCustomAuthFilter } from "./test-components/TestCustomAuthFilter";
 
 @TestFixture()
 export class OpenApiTests extends TestBase {
-    private static readonly ROUTE_COUNT = 54
+    private static readonly ROUTE_COUNT = 56
     private static readonly HTTP_METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
 
     @Setup
@@ -246,6 +246,27 @@ export class OpenApiTests extends TestBase {
                 }
             }
         })
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @Test()
+    public async when_openapi_enabled_then_openapi_spec_contains_security(specFormat: string) {
+        let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/security-test", "get")
+        let security = pathEndpoint.security[0] as SecurityRequirementObject
+        let roles: string[] = security["BearerAuth"]
+
+        Expect(roles[0]).toEqual("USER")
+    }
+
+    @TestCase("json")
+    @TestCase("yml")
+    @Test()
+    public async when_openapi_enabled_then_openapi_spec_contains_operationid(specFormat: string) {
+        let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/operation-id-test", "get")
+        const operationId = pathEndpoint.operationId;
+        
+        Expect(operationId).toEqual("operationIdTest")
     }
 
     @TestCase("json")

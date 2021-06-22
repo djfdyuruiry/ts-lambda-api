@@ -171,4 +171,20 @@ export class OpenApiTestControllerController extends Controller {
     ) {
         this.response.status(200).send("")
     }
+
+    @GET("/security-test")
+    @apiOperation({name: "security test", description: "security should use authorization", 
+        security: [ { "BearerAuth": ["USER"] } ]
+    })
+    public getSecurityTest() {
+        this.response.status(200).send("")
+    }
+
+    @GET("/operation-id-test")
+    @apiOperation({name: "operation id test", description: "operation id should be defined", 
+        security: [ { "BearerAuth": ["USER"] } ], operationId: 'operationIdTest'
+    })
+    public getOperationIdTest() {
+        this.response.status(200).send("")
+    }
 }

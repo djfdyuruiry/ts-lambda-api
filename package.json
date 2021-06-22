@@ -1,10 +1,10 @@
 {
-  "name": "ts-lambda-api",
-  "description": "Build REST API's using Typescript & AWS Lambda. Support for decorator based routing and dependecy injection using InversifyJS. This project is built on top of the wonderful lambda-api package.",
-  "version": "2.2.3",
+  "name": "dx-ts-lambda-api",
+  "description": "Build REST API's using Typescript & AWS Lambda. Support for decorator based routing and dependecy injection using InversifyJS. This project is built on top of the wonderful lambda-api package. Add some features, forked from ts-lambda-api",
+  "version": "2.2.4",
   "repository": {
     "type": "git",
-    "url": "https://github.com/djfdyuruiry/ts-lambda-api.git"
+    "url": "https://github.com/davidsoendoro/ts-lambda-api.git"
   },
   "scripts": {
     "build": "yarn lint && rm -rf dist && tsc && yarn docs",

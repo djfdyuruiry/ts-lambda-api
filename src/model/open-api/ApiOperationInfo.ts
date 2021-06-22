@@ -22,12 +22,20 @@ export class ApiOperationInfo extends ApiOperation {
      * Copy valid properties from another instance.
      */
     public mergeInfo(otherInstance: ApiOperation) {
+        if (otherInstance.operationId) {
+            this.operationId = otherInstance.operationId
+        }
+
         if (otherInstance.name) {
             this.name = otherInstance.name
         }
 
         if (otherInstance.description) {
             this.description = otherInstance.description
+        }
+
+        if (otherInstance.security) {
+            this.security = otherInstance.security
         }
 
         if (otherInstance.request) {

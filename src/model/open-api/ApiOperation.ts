@@ -11,9 +11,18 @@ export class ApiOperation {
     public name?: string
 
     /**
+     * Operation ID which will be converted to function name
+     */
+    public operationId?: string
+
+    /**
      * Description of the endpoint.
      */
     public description?: string
+
+    public security?: {
+        [name: string]: string[];
+    }[]
 
     /**
      * Information about the endpoint request body.

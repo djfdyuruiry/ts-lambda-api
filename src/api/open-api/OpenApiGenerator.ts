@@ -406,8 +406,10 @@ export class OpenApiGenerator {
         let operationInfo = endpointInfo.apiOperationInfo
         let responseContentType = endpointInfo.responseContentType || "application/json"
 
+        endpointOperation.operationId = operationInfo.operationId || ""
         endpointOperation.summary = operationInfo.name || ""
         endpointOperation.description = operationInfo.description || ""
+        endpointOperation.security = operationInfo.security || []
 
         if (operationInfo.request) {
             this.setRequestInfo(endpointOperation, endpointInfo)
