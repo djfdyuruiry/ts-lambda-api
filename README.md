@@ -1,6 +1,6 @@
 [![npm](https://img.shields.io/npm/v/ts-lambda-api.svg?style=flat-square)](https://www.npmjs.com/package/ts-lambda-api) [![downloads](https://img.shields.io/npm/dw/ts-lambda-api.svg?style=flat-square)](https://travis-ci.com/djfdyuruiry/ts-lambda-api)
 
-[![build](https://img.shields.io/travis/com/djfdyuruiry/ts-lambda-api.svg?style=flat-square)](https://travis-ci.com/djfdyuruiry/ts-lambda-api) [![dependencies](https://img.shields.io/david/djfdyuruiry/ts-lambda-api.svg?style=flat-square)](https://github.com/djfdyuruiry/ts-lambda-api/network/dependencies)
+[![build](https://img.shields.io/travis/com/djfdyuruiry/ts-lambda-api.svg?style=flat-square)](https://travis-ci.com/djfdyuruiry/ts-lambda-api) ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/djfdyuruiry/ts-lambda-api)
 
 # ts-lambda-api
 
