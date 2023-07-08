@@ -1,4 +1,4 @@
-import { SecuritySchemeObject } from "openapi3-ts"
+import { SecuritySchemeObject } from "openapi3-ts/oas31"
 
 import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 

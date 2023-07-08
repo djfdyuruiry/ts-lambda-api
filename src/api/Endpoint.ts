@@ -53,6 +53,7 @@ export class Endpoint {
 
         registerMethod(
             this.endpointInfo.fullPath,
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             async (req, res) => {
                 try {
                     if (this.logger.traceEnabled()) {
@@ -263,7 +264,7 @@ export class Endpoint {
         return endpointResponse || (rawRes && rawRes._state === "done")
     }
 
-    private buildControllerInstance(request: Request, response: Response): any {
+    private buildControllerInstance(request: Request, response: Response): Controller {
         if (!this.endpointInfo.controller) {
             return this.buildDynamicControllerInstance(request, response)
         }
@@ -302,13 +303,13 @@ export class Endpoint {
      * If an endpoint is function only (has no controller bound to it), we
      * build a dynamic controller which simulates a controller instance.
      */
-    private buildDynamicControllerInstance(request: Request, response: Response) {
+    private buildDynamicControllerInstance(request: Request, response: Response): Controller {
         this.log(LogLevel.debug, "Building dynamic controller instance for endpoint")
 
         let dynamicController = {
             request,
             response
-        }
+        } as unknown as Controller
 
         dynamicController[this.endpointInfo.methodName] = this.endpointInfo.method
 
@@ -330,15 +331,15 @@ export class Endpoint {
 
     private mapHttpMethodToCall(api: API, method: string) {
         if (method === "GET") {
-            return api.get
+            return api.get.bind(api)
         } else if (method === "POST") {
-            return api.post
+            return api.post.bind(api)
         } else if (method === "PUT") {
-            return api.put
+            return api.put.bind(api)
         } else if (method === "PATCH") {
-            return api.patch
+            return api.patch.bind(api)
         } else if (method === "DELETE") {
-            return api.delete
+            return api.delete.bind(api)
         }
 
         throw new Error(`Unrecognised HTTP method ${method}`)

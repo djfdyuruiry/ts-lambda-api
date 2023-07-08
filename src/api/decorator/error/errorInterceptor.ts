@@ -2,7 +2,6 @@ import { inspect } from "util"
 
 import { interfaces } from "inversify"
 
-import { LogLevel } from "../../../model/logging/LogLevel"
 import { ErrorInterceptor } from "../../error/ErrorInterceptor"
 import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 
