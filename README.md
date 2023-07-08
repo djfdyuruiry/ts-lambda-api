@@ -82,7 +82,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 
 This is a short guide to creating your first API using `ts-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customised.
 
-**Note: Node.js v16.x & Typescript v4.x are recommended. Other versions may work perfectly fine, but have not been tested.**
+**Note: Node.js v18.x & Typescript v5.x are recommended. Other versions may work perfectly fine, but have not been tested.**
 
 - Create a directory for your project and run `npm init` to create your `package.json`
 
@@ -90,7 +90,7 @@ This is a short guide to creating your first API using `ts-lambda-api`. It is so
 
 ```shell
 npm install ts-lambda-api
-npm install -D typescript @types/node aws-sdk
+npm install -D typescript @types/node @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
 ```
 
 - Open `package.json` and add a script to enable access to the Typescript compiler:
