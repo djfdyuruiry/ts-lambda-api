@@ -20,7 +20,7 @@ export class LogFactory {
         appConfig: AppConfig,
         private readonly logLevel: LogLevel = LogLevel.info,
         private readonly logFormat: LogFormat = "string",
-        private readonly logTimestamp: boolean = false
+        private readonly logTimestamp = false
     ) {
         if (appConfig && appConfig.serverLogger) {
             if (appConfig.serverLogger.level) {
@@ -71,7 +71,7 @@ export class LogFactory {
         clazz: Function,
         level: LogLevel = LogLevel.info,
         format: LogFormat = "string",
-        logTimestamp: boolean = false
+        logTimestamp = false
     ) {
         let logFactory = new LogFactory({
             serverLogger: {

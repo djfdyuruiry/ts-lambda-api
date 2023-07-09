@@ -1,0 +1,21 @@
+name: Build & Test
+
+on:
+  pull_request: {}
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Node.JS Version
+        shell: bash -l -eo pipefail {0}
+        run: nvm install
+
+      - name: Test
+        shell: bash -l -eo pipefail {0}
+        run: nvm use && yarn test

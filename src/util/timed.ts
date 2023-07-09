@@ -23,7 +23,12 @@ export function timed(_: any, propertyKey: string, descriptor: PropertyDescripto
         if (ProfilingEnabled) {
             let measurement = stop(propertyKey)
 
-            console.log(`method '${measurement.name}' took ${measurement.duration.toFixed(2)} ms`)
+            if (measurement != null) {
+                let name = measurement.name as string
+                let duration = measurement.duration.toFixed(2) as string
+
+                console.log(`method '${name}' took ${duration} ms`)
+            }
         }
 
         return result

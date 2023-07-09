@@ -23,6 +23,8 @@ Framework Features:
 
 This project is built on top of the wonderful [lambda-api](https://github.com/jeremydaly/lambda-api) framework.
 
+*Note: this project uses version 3 of the AWS SDK for certain features*
+
 ----
 
 **Quickstart**
@@ -30,7 +32,6 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 - [Creating a new API](#create-api)
 - [Deploy to AWS Lambda](#aws-deploy)
     - [Invoke AWS Lambda](#invoke-lambda)
-
 
 **Docs**
 
@@ -80,9 +81,9 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 
 ---
 
-This is a short guide to creating your first API using `ts-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customised.
+This is a short guide to creating your first API using `ts-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customized.
 
-**Note: Node.js v16.x & Typescript v4.x are recommended. Other versions may work perfectly fine, but have not been tested.**
+**Note: Node.js v18.x & Typescript v5.x are recommended. Other versions may work perfectly fine, but have not been tested.**
 
 - Create a directory for your project and run `npm init` to create your `package.json`
 
@@ -90,7 +91,7 @@ This is a short guide to creating your first API using `ts-lambda-api`. It is so
 
 ```shell
 npm install ts-lambda-api
-npm install -D typescript @types/node aws-sdk
+npm install -D typescript @types/node @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
 ```
 
 - Open `package.json` and add a script to enable access to the Typescript compiler:
@@ -165,7 +166,7 @@ import { apiController, Controller, GET } from "ts-lambda-api"
 
 @apiController("/hello-world")
 @injectable() // all controller classes must be decorated with injectable
-// extending Controller is optional, it provides convience methods
+// extending Controller is optional, it provides convenience methods
 export class HelloWorldController extends Controller {
     // GET, POST, PUT, PATCH and DELETE are supported
     @GET()
@@ -175,7 +176,7 @@ export class HelloWorldController extends Controller {
         }
     }
 
-    // sub routes can be specifed in method decorators
+    // sub routes can be specified in method decorators
     @GET("/sub-resource")
     public getSubResource() {
         return {
@@ -342,8 +343,8 @@ export class StoreController {
 ---
 
 The default IOC app `Container` enables the `autoBindInjectable` option. Controllers decorated with
-`@injectable` are dynamicallly loaded from the required `controllersPath` directory during 
-initialisation. However, controllers can be explicity specified instead of relying on the `@injectable` 
+`@injectable` are dynamically loaded from the required `controllersPath` directory during 
+initialization. However, controllers can be explicitly specified instead of relying on the `@injectable` 
 decoration to dynamically load the controllers from a directory.
 
 Create an IOC `Container` with the `autoBindInjectable` option disabled. Bind the desired controller 
@@ -368,11 +369,11 @@ appContainer.bind(AppController).toConstantValue(appController);
 const app = new ApiLambdaApp(undefined, appConfig, appContainer);
 
 export const lambdaHandler = async (event: ApiRequest, context: any) => {
-	return await app.run(event, context);
+    return await app.run(event, context);
 };
 ```
 
-**Note you do not need to decorate controller classes with @injectable when autoBindInjectable is disabled**
+**Note you do not need to decorate controller classes with `@injectable` when autoBindInjectable is disabled**
 
 ----
 
@@ -428,7 +429,7 @@ export class HelloWorldController {
 There are two ways to respond to requests:
 
 - Return a value from your endpoint method
-- Use the response context to send a response (see `Request / Response Context` section below - the context has convience methods for html, json, files etc.)
+- Use the response context to send a response (see `Request / Response Context` section below - the context has convenience methods for html, json, files etc.)
 
 By default all return values are serialised to JSON in the response body and the `content-type` response header is set to `application/json`. To change this you can use the `produces` and `controllerProduces` decorators.
 
@@ -608,7 +609,7 @@ export class UserController {
 
     @GET("/profile")
     public login(@principal user: StoreUser) {
-        // only authorised users can call this endpoint...
+        // only authorized users can call this endpoint...
     }
 }
 ```
@@ -729,7 +730,7 @@ export class StoreController {
 }
 ```
 
-You can restrict a single enpoint using the `rolesAllowed` decorator:
+You can restrict a single endpoint using the `rolesAllowed` decorator:
 
 ```typescript
 import { injectable } from "inversify"
@@ -1145,7 +1146,7 @@ const app = new ApiLambdaApp(controllersPath, appConfig)
 
 app.configureApi(api: API => {
     // add middleware handler, for example
-    api.use((req,res,next) => {
+    api.use((req, res, next) => {
         // parses any incoming XML data into an object
         if (req.headers["content-type"] === "application/xml") {
             req.body = xmljs.xml2json(req.body, {compact: true})
@@ -1178,7 +1179,7 @@ INFO  Endpoint - Invoking endpoint: [GET] /open-api.yml
 Below is some example output, include a stack trace from an `Error` instance:
 
 ```
-INFO ApiLambdaApp - Received event, initialising controllers and processing event
+INFO ApiLambdaApp - Received event, initializing controllers and processing event
 INFO Server - Processing API request event for path: /test/
 INFO Endpoint - [GET] /test - Authenticating request
 ERROR Endpoint - [GET] /test - Error processing endpoint request
@@ -1274,7 +1275,7 @@ logger.warn("Hello there %s, how are you?", "Roy")
 logger.debug("Task status: %s. Task data: %j", "success", {event: "run batch"})
 ```
 
-Using this will help to speed up your app if you do a lot of logging, because uneccessary work to convert values to strings and the JSON serialization of debug messages will not take place if a higher error level is set.
+Using this will help to speed up your app if you do a lot of logging, because unnecessary work to convert values to strings and the JSON serialization of debug messages will not take place if a higher log level is set.
 
 ----
 
@@ -1306,7 +1307,7 @@ export class SomeServiceYouMightMake {
             logger.trace("Sending data: %j", {some: {payload: 2345}})
         }
 
-        // check if the logging is currenly off (i.e. level is set to `off`)
+        // check if the logging is currently off (i.e. level is set to `off`)
         if (logger.isOff()) {
             // react to the cruel reality....
         }
@@ -1314,7 +1315,7 @@ export class SomeServiceYouMightMake {
         // pass level in as parameter
         logger.log(LogLevel.info, "Manual call to the %s method", "log")
 
-        // check level is enabled using aparameter
+        // check if level is enabled using a parameter
         if (logger.levelEnabled(LogLevel.info)) {
             logger.info("I am enabled!")
         }
@@ -1332,7 +1333,7 @@ Logging is also provided by the [lambda-api](https://github.com/jeremydaly/lambd
 
 ----
 
-The OpenAPI Specification (FKA Swagger) is supported out of the box. If you are not familar with it, check out https://github.com/OAI/OpenAPI-Specification
+The OpenAPI Specification (FKA Swagger) is supported out of the box. If you are not familiar with it, check out https://github.com/OAI/OpenAPI-Specification
 
 **This framework supports only OpenAPI v3**
 
@@ -1349,6 +1350,8 @@ The following features are supported:
     - HTTP Basic security scheme (when a basic auth filter is configured)
     - Custom auth filter security schemes
 - Specification files can be generated in `JSON` or `YAML` format (see [YAML Support](#open-api-yaml))
+
+*Note: this framework generates OpenAPI v3.1 compatible specs*
 
 To enable it, use the `openApi` property in the `AppConfig` class when building your app:
 
@@ -1380,7 +1383,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     import { api, apiController } from "ts-lambda-api"
 
     @apiController("/some")
-    @api("Awesome API", "descripton of API for doing amazing things") // the second parameter is optional
+    @api("Awesome API", "description of API for doing amazing things") // the second parameter is optional
     @injectable()
     export class SomeController {
         // ... endpoints ...
@@ -1582,8 +1585,6 @@ To further document your API endpoints you can use OpenAPI decorators.
 
     *Header parameters only support the 'simple' style*
 
-    *Note: Setting a content type for your parameter is supported, but due to an outstanding issue, these parameters will not display in Swagger UI / Editor, see: https://github.com/swagger-api/swagger-ui/issues/4442*
-
 - Add security schemes to your specification (other than Basic auth, this is automatically detected) using an `apiSecurity` decorator on your authentication filter:
 
     ```typescript
@@ -1601,7 +1602,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     }
     ```
 
-    This decorator uses the `SecuritySchemeObject` class from the `openapi3-ts` library to describe the security scheme in place. See the source for more information on using this class: [SecuritySchemeObject source](https://github.com/metadevpro/openapi3-ts/blob/ab997f12a63fa215e3b0c08cc293429b97ce0a44/src/model/OpenApi.ts#L314)
+    This decorator uses the `SecuritySchemeObject` class from the `openapi3-ts` library to describe the security scheme in place. See the source for more information on using this class: [SecuritySchemeObject source](https://github.com/metadevpro/openapi3-ts/blob/11ec4e394c1c40b3ad44a5cfbf3aa1a847fdb11e/src/model/openapi31.ts#L351)
 
 ### <a id="open-api-yaml"></a>YAML Support
 

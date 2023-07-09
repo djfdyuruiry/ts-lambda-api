@@ -1,6 +1,6 @@
 import { Expect, Setup, Test, TestCase, TestFixture } from "alsatian"
 import { load } from "js-yaml"
-import { OpenAPIObject, SecuritySchemeObject, PathItemObject, ParameterObject, ResponseObject, RequestBodyObject, OperationObject, MediaTypeObject, SchemaObject } from "openapi3-ts"
+import { OpenAPIObject, SecuritySchemeObject, PathItemObject, ParameterObject, ResponseObject, RequestBodyObject, OperationObject, MediaTypeObject, SchemaObject } from "openapi3-ts/oas31"
 
 import { RequestBuilder, ApiLambdaApp } from "../../dist/ts-lambda-api"
 
@@ -189,7 +189,7 @@ export class OpenApiTests extends TestBase {
     public async when_openapi_enabled_then_openapi_spec_contains_header_parameters_with_info(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/header-info-test", "get")
         let headerParameter = pathEndpoint.parameters[0] as ParameterObject
-        let schema: SchemaObject = headerParameter.schema
+        let schema: SchemaObject = headerParameter.schema as SchemaObject
 
         Expect(headerParameter.in).toEqual("header")
         Expect(headerParameter.name).toEqual("x-test-header")
@@ -200,7 +200,7 @@ export class OpenApiTests extends TestBase {
         })
 
         headerParameter = pathEndpoint.parameters[1] as ParameterObject
-        schema = headerParameter.content["application/json"].schema
+        schema = headerParameter.content["application/json"].schema as SchemaObject
 
         Expect(headerParameter.in).toEqual("header")
         Expect(headerParameter.name).toEqual("x-test-header2")
@@ -303,7 +303,7 @@ export class OpenApiTests extends TestBase {
     public async when_openapi_enabled_then_openapi_spec_contains_query_parameters_with_info(specFormat: string) {
         let pathEndpoint: PathItemObject = await this.getOpenApiEndpoint(specFormat, "/test/open-api/query-info-test", "get")
         let queryParameter = pathEndpoint.parameters[0] as ParameterObject
-        let schema: SchemaObject = queryParameter.schema
+        let schema: SchemaObject = queryParameter.schema as SchemaObject
 
         Expect(queryParameter.in).toEqual("query")
         Expect(queryParameter.name).toEqual("queryTest")
@@ -314,7 +314,7 @@ export class OpenApiTests extends TestBase {
         })
 
         queryParameter = pathEndpoint.parameters[1] as ParameterObject
-        schema = queryParameter.schema
+        schema = queryParameter.schema as SchemaObject
 
         Expect(queryParameter.in).toEqual("query")
         Expect(queryParameter.name).toEqual("queryTest2")
@@ -392,7 +392,7 @@ export class OpenApiTests extends TestBase {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
         let request = endpoint.requestBody as RequestBodyObject
         let requestContent: MediaTypeObject = request.content["application/json"]
-        let schema: SchemaObject = requestContent.schema
+        let schema: SchemaObject = requestContent.schema as SchemaObject
 
         Expect(schema.type).toEqual("object")
         Expect(schema.properties).toEqual({
@@ -455,7 +455,7 @@ export class OpenApiTests extends TestBase {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/plain", "post")
         let request = endpoint.requestBody as RequestBodyObject
         let requestContent: MediaTypeObject = request.content["text/plain"]
-        let schema: SchemaObject = requestContent.schema
+        let schema: SchemaObject = requestContent.schema as SchemaObject
 
         Expect(schema.type).toEqual("string")
         Expect(schema.example).toEqual(`"a string"`)
@@ -578,7 +578,7 @@ export class OpenApiTests extends TestBase {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "post")
         let response_201: ResponseObject = endpoint.responses["201"]
         let content_201: MediaTypeObject = response_201.content["application/json"]
-        let schema_201: SchemaObject = content_201.schema
+        let schema_201: SchemaObject = content_201.schema as SchemaObject
 
         Expect(schema_201.type).toEqual("object")
         Expect(schema_201.properties).toEqual({
@@ -624,7 +624,7 @@ export class OpenApiTests extends TestBase {
 
         let response_400: ResponseObject = endpoint.responses["400"]
         let content_400: MediaTypeObject = response_400.content["application/json"]
-        let schema_400: SchemaObject = content_400.schema
+        let schema_400: SchemaObject = content_400.schema as SchemaObject
 
         Expect(schema_400.type).toEqual("object")
         Expect(schema_400.properties).toEqual({
@@ -657,7 +657,7 @@ export class OpenApiTests extends TestBase {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api", "get")
         let response: ResponseObject = endpoint.responses["200"]
         let content: MediaTypeObject = response.content["application/json"]
-        let schema: SchemaObject = content.schema
+        let schema: SchemaObject = content.schema as SchemaObject
 
         Expect(schema.type).toEqual("string")
         Expect(schema.example).toEqual(`"a string"`)
@@ -670,7 +670,7 @@ export class OpenApiTests extends TestBase {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/primitive-class-example", "get")
         let response: ResponseObject = endpoint.responses["200"]
         let content: MediaTypeObject = response.content["application/json"]
-        let schema: SchemaObject = content.schema
+        let schema: SchemaObject = content.schema as SchemaObject
 
         Expect(content.example).toEqual(30)
 
@@ -685,7 +685,7 @@ export class OpenApiTests extends TestBase {
         let endpoint = await this.getOpenApiEndpoint(specFormat, "/test/open-api/primitive-array-class-example", "get")
         let response: ResponseObject = endpoint.responses["200"]
         let content: MediaTypeObject = response.content["application/json"]
-        let schema: SchemaObject = content.schema
+        let schema: SchemaObject = content.schema as SchemaObject
 
         Expect(content.example).toEqual(`[
   "a",

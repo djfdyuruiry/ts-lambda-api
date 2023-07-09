@@ -22,6 +22,7 @@ export abstract class BasicAuthFilter<T extends Principal> implements IAuthFilte
      *
      * @param request Request context to use.
      */
+    // eslint-disable-next-line @typescript-eslint/require-await
     public async extractAuthData(request: Request): Promise<BasicAuth | undefined> {
         if (request.auth.type === "Basic") {
             return {

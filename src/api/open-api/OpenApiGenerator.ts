@@ -1,4 +1,4 @@
-import { OpenApiBuilder } from "openapi3-ts"
+import { OpenApiBuilder } from "openapi3-ts/oas31"
 import {
     ContentObject,
     MediaTypeObject,
@@ -10,7 +10,7 @@ import {
     ResponseObject,
     SchemaObject,
     TagObject
-} from "openapi3-ts/dist/model"
+} from "openapi3-ts/dist/model/openapi31"
 
 import { MiddlewareRegistry } from "../MiddlewareRegistry"
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"

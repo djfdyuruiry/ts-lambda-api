@@ -2,7 +2,6 @@ import { inspect } from "util"
 
 import { Request, Response } from "lambda-api"
 
-import { LogLevel } from "../../model/logging/LogLevel"
 import { BaseParameterExtractor } from "./BaseParameterExtractor"
 
 export class ResponseParameterExtractor extends BaseParameterExtractor {

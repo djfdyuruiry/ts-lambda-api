@@ -1,4 +1,4 @@
-import { ParameterStyle } from "openapi3-ts/dist/model";
+import { ParameterStyle } from "openapi3-ts/dist/model/openapi31";
 
 import { ApiBody } from "./ApiBody"
 

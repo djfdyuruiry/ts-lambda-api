@@ -8,7 +8,7 @@ import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
  *             class using a `apiController` decorator. This URL can contain path parameters,
  *             prefixed with a colon (':') character.
  */
-export function GET(path: string = "") {
+export function GET(path = "") {
     return (classDefinition: Object, methodName: string) =>
         registerApiEndpoint(classDefinition, methodName, path, "GET")
 }
@@ -21,7 +21,7 @@ export function GET(path: string = "") {
  *             the class using a `apiController` decorator. This URL can contain path parameters,
  *             prefixed with a colon (':') character.
  */
-export function POST(path: string = "") {
+export function POST(path = "") {
     return (classDefinition: Object, methodName: string) =>
         registerApiEndpoint(classDefinition, methodName, path, "POST")
 }
@@ -34,7 +34,7 @@ export function POST(path: string = "") {
  *             the class using a `apiController` decorator. This URL can contain path parameters,
  *             prefixed with a colon (':') character.
  */
-export function PUT(path: string = "") {
+export function PUT(path = "") {
     return (classDefinition: Object, methodName: string) =>
         registerApiEndpoint(classDefinition, methodName, path, "PUT")
 }
@@ -47,7 +47,7 @@ export function PUT(path: string = "") {
  *             the class using a `apiController` decorator. This URL can contain path parameters,
  *             prefixed with a colon (':') character.
  */
-export function DELETE(path: string = "") {
+export function DELETE(path = "") {
     return (classDefinition: Object, methodName: string) =>
         registerApiEndpoint(classDefinition, methodName, path, "DELETE")
 }
@@ -60,7 +60,7 @@ export function DELETE(path: string = "") {
  *             the class using a `apiController` decorator. This URL can contain path parameters,
  *             prefixed with a colon (':') character.
  */
-export function PATCH(path: string = "") {
+export function PATCH(path = "") {
     return (classDefinition: Object, methodName: string) =>
         registerApiEndpoint(classDefinition, methodName, path, "PATCH")
 }
