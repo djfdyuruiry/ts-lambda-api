@@ -25,7 +25,6 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 
 *Note: this project uses version 3 of the AWS SDK for certain features*
 
-----
 
 **Quickstart**
 
@@ -72,14 +71,9 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
     - [YAML Support](#open-api-yaml)
     - [Authentication](#open-api-auth)
 - [Testing](#testing)
-
-- [Useful Links](#useful-links)
-
----
+- [Development](#dev)
 
 ## <a id="create-api"></a>Creating a new API
-
----
 
 This is a short guide to creating your first API using `ts-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customized.
 
@@ -193,11 +187,7 @@ export class HelloWorldController extends Controller {
 npm run tsc
 ```
 
----
-
 ## <a id="aws-deploy"></a>Deploy to AWS Lambda
-
----
 
 ***Note**: AWS supplies the `aws-sdk` package at runtime when running your Lambda applications, so there is no need to include this in your deployment package.*
 
@@ -222,11 +212,8 @@ zip -r lambda.zip ./
 
 - Upload your lambda using the `dist/lambda.zip` file. Specify `app.handler` as the function handler. See: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-create-deployment-pkg.html
 
----
 
 ### <a id="invoke-lambda"></a>Invoke Lambda
-
----
 
 - Create an AWS Load Balancer and point it to your new API Lambda. See: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html
 
@@ -241,11 +228,7 @@ wget -qO - https://some.alb.dns.address/api/v1/hello-world/
 {"hello":"world"}
 ```
 
-----
-
 ## <a id="routing"></a>Routing
-
-----
 
 Routing is configured using decorators on both controller classes and endpoint methods. You can also define a global base path (e.x. `/api/v1`) for your API by configuring the `base` property when passing your app configuration to the `ApiLambdaApp` class. (See the `Creating a new API` section)
 
@@ -292,8 +275,6 @@ export class StoreController {
 }
 ```
 
----
-
 ### <a id="path-params"></a>Path Parameters
 
 You can include parameters as part of your routes, when you need to capture parts of the URL.
@@ -313,11 +294,7 @@ export class StoreController {
 }
 ```
 
----
-
 You can also combine controller and endpoint path parameters.
-
----
 
 ```typescript
 import { injectable } from "inversify"
@@ -336,11 +313,7 @@ export class StoreController {
 
 **Note all path parameters are passed in as strings, you will need to cast these if required**
 
----
-
 ### <a id="loading-controllers"></a>Manually Loading Controllers
-
----
 
 The default IOC app `Container` enables the `autoBindInjectable` option. Controllers decorated with
 `@injectable` are dynamically loaded from the required `controllersPath` directory during 
@@ -375,11 +348,7 @@ export const lambdaHandler = async (event: ApiRequest, context: any) => {
 
 **Note you do not need to decorate controller classes with `@injectable` when autoBindInjectable is disabled**
 
-----
-
 ## <a id="request-binding"></a>Request Parameter Binding
-
-----
 
 Different parts of the HTTP request can be bound to endpoint method parameters using decorators.
 
@@ -420,11 +389,7 @@ export class HelloWorldController {
 }
 ```
 
-----
-
 ## <a id="responses"></a>Responses
-
-----
 
 There are two ways to respond to requests:
 
@@ -483,11 +448,7 @@ export class MessageOfTheDayController {
 }
 ```
 
-----
-
 ## <a id="auth-authorization"></a>Authentication & Authorization
-
-----
 
 This framework supports authenticating requests and authorization for controllers and endpoints. It can be used to configure HTTP authentication, token based auth and role based access control (ACLs).
 
@@ -761,11 +722,7 @@ const authorizer = new StoreAuthorizer()
 app.middlewareRegistry.addAuthorizer(authorizer)
 // export handler
 ```
-----
-
 ## <a id="errors"></a>Error Handling
-
-----
 
 When an unexpected error is thrown in one of your endpoints, you can choose how to handle this. There are three general techniques:
 
@@ -900,11 +857,7 @@ If you simply preform your logic in your endpoint method without catching any er
 }
 ```
 
-----
-
 ## <a id="json-patch"></a>JSON Patch Requests
-
-----
 
 This library supports [JSON Patch](http://jsonpatch.com/) format for updating entities without having to upload the entire entity. To use it in your endpoints, ensure your controller extends the `Controller` class, an example is below:
 
@@ -936,11 +889,7 @@ export class StoreController extends Controller {
 
 **Under the hood, the API uses the [fast-json-patch](https://www.npmjs.com/package/fast-json-patch) package**
 
-----
-
 ## <a id="req-res-context"></a>Request / Response Context
-
-----
 
 If you want to read request bodies or write to the response, there are several supported approaches.
 
@@ -1018,11 +967,7 @@ export class FilesController extends Controller {
 
 **The `Request` and `Response` classes are documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package.**
 
-----
-
 ## <a id="di"></a> Dependency Injection
-
-----
 
 Configuring the IOC container to enable dependency injection for your controllers is easy. Once you build an `ApiLambdaApp` instance you can call the `configureApp` method like below:
 
@@ -1065,11 +1010,7 @@ export class MyController {
 
 See the [InversifyJS](https://github.com/inversify/InversifyJS) package documentation for full guidance how to use the `Container` class to manage dependencies.
 
-----
-
 ## <a id="config"></a>Configuration
-
-----
 
 When building an application instance you pass an `AppConfig` instance to the constructor. If you want to provide your own application config it is recommended to extend this class .
 
@@ -1277,8 +1218,6 @@ logger.debug("Task status: %s. Task data: %j", "success", {event: "run batch"})
 
 Using this will help to speed up your app if you do a lot of logging, because unnecessary work to convert values to strings and the JSON serialization of debug messages will not take place if a higher log level is set.
 
-----
-
 Below is an example of the methods available on logger instances:
 
 ```typescript
@@ -1327,11 +1266,7 @@ export class SomeServiceYouMightMake {
 
 Logging is also provided by the [lambda-api](https://github.com/jeremydaly/lambda-api) package, use the `AppConfig` instance passed to `ApiLambdaApp` to configure logging using the `logger` key. See the [Config Reference](#config-reference) for details on options available.
 
-----
-
 ## <a id="open-api"></a>OpenAPI (Swagger)
-
-----
 
 The OpenAPI Specification (FKA Swagger) is supported out of the box. If you are not familiar with it, check out https://github.com/OAI/OpenAPI-Specification
 
@@ -1630,12 +1565,17 @@ const app = new ApiLambdaApp(controllersPath, appConfig)
 // export handler
 ```
 
----
-
 ## <a id="testing"></a>Testing
 
----
 
 For local dev testing and integration with acceptance tests see the [ts-lambda-api-local](https://www.npmjs.com/package/ts-lambda-api-local) package which enables hosting your API using express as a local HTTP server.
 
 Check out this project's dev dependencies to see what is required to test API code. The `tests` directory of this repo contains extensive acceptance tests which will show you how to build mock requests and invoke your API endpoints programmatically.
+
+## <a id="dev"></a>Development
+
+Contributions are welcome to this package. 
+
+Developing this package on your own machine requires a Unix shell, as the build scripts use Bash and Unix shell commands.
+
+For Windows machines please work under Git Bash or WSL.
