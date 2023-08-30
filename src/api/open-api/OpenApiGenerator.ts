@@ -1,4 +1,4 @@
-import { OpenApiBuilder } from "openapi3-ts/oas31"
+import { OpenApiBuilder } from "openapi3-ts/dist/oas31"
 import {
     ContentObject,
     MediaTypeObject,
