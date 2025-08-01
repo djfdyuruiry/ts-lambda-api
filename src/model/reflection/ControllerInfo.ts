@@ -1,4 +1,4 @@
-import { interfaces } from "inversify"
+import { ServiceIdentifier } from "inversify"
 
 import { EndpointInfo } from "./EndpointInfo"
 import { ErrorInterceptor } from "../../api/error/ErrorInterceptor"
@@ -17,7 +17,7 @@ export class ControllerInfo {
     public produces?: string
     public noAuth?: boolean
     public rolesAllowed?: string[]
-    public errorInterceptor?: interfaces.ServiceIdentifier<ErrorInterceptor>
+    public errorInterceptor?: ServiceIdentifier<ErrorInterceptor>
     public endpoints: Map<string, EndpointInfo> = new Map<string, EndpointInfo>()
 
     public constructor(name: string, classConstructor: Function) {

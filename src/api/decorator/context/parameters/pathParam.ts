@@ -11,7 +11,7 @@ import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
  * @param apiParamInfo (Optional) OpenApi metadata about the path parameter.
  */
 export function pathParam(paramName: string, apiParamInfo?: ApiParam) {
-    return (classDefinition: Object | Function, methodName: string, paramIndex: number) => {
+    return (classDefinition: object | Function, methodName: string, paramIndex: number) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

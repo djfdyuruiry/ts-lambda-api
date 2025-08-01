@@ -1,6 +1,6 @@
 import { inspect } from "util"
 
-import { interfaces } from "inversify"
+import { ServiceIdentifier } from "inversify"
 
 import { ErrorInterceptor } from "../../error/ErrorInterceptor"
 import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
@@ -12,8 +12,8 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
  *
  * Error interceptors instances are built using the InversifyJS IOC container for the current app.
  */
-export function errorInterceptor(interceptor: interfaces.ServiceIdentifier<ErrorInterceptor>) {
-    return (classDefinition: Object | Function, methodName: string) => {
+export function errorInterceptor(interceptor: ServiceIdentifier<ErrorInterceptor>) {
+    return (classDefinition: object | Function, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
@@ -32,7 +32,7 @@ export function errorInterceptor(interceptor: interfaces.ServiceIdentifier<Error
  *
  * Error interceptors instances are built using the current app InversifyJS IOC container.
  */
-export function controllerErrorInterceptor(interceptor: interfaces.ServiceIdentifier<ErrorInterceptor>) {
+export function controllerErrorInterceptor(interceptor: ServiceIdentifier<ErrorInterceptor>) {
     return (classDefinition: Function) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition)
 

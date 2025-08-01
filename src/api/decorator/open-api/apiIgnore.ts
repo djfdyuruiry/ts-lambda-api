@@ -5,7 +5,7 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
  * OpenAPI specification.
  */
 export function apiIgnore() {
-    return (classDefinition: Object, methodName: string) => {
+    return (classDefinition: object, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

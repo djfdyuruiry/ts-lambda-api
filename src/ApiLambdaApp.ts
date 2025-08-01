@@ -18,15 +18,16 @@ export class ApiLambdaApp extends ApiApp {
      *
      * @param controllersPath (Optional) Paths to the directories that contain controller `js` files.
      *                        Required if the default `Container` is used, or the provided
-     *                        `Container` instance has its `autoBindInjectable` flag set to `true`.
-     *                        Ignored if the provided `Container` instance has its `autoBindInjectable`
-     *                        flag set to `false`.
+     *                        `Container` instance has its `autobind` flag enabled.
+     *                        Ignored if the provided `Container` instance has its `autobind` flag enabled.
      * @param appConfig (Optional) Application config to pass to `lambda-api`.
-     * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can build
-     *                     controllers and error interceptors.
+     * @param autoInjectionEnabled (Optional) Enable auto injection in IOC container, defaults to new `true`.
+     * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can
+     *                     build controllers and error interceptors, defaults to new `Container` using
+     *                     `autobind` flag set to `true` if `autoInjectionEnabled` is `true`.
      */
-    public constructor(controllersPath?: string[], appConfig?: AppConfig, appContainer?: Container) {
-        super(controllersPath, appConfig, appContainer)
+    public constructor(controllersPath?: string[], appConfig?: AppConfig, autoInjectionEnabled?: boolean, appContainer?: Container) {
+        super(controllersPath, appConfig, autoInjectionEnabled, appContainer)
 
         this.logger = this.logFactory.getLogger(ApiLambdaApp)
     }
@@ -34,7 +35,7 @@ export class ApiLambdaApp extends ApiApp {
     /**
      * Process the passed lambda event and context as a synchronous HTTP request.
      *
-     * @param request API Gateway or ALB request.
+     * @param event API Gateway or ALB request.
      * @param context Request context.
      * @returns The response.
      */

@@ -10,7 +10,7 @@ import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
  * @param paramName The name of the query parameter to inject.
  */
 export function queryParam(paramName: string, apiParamInfo?: ApiParam) {
-    return (classDefinition: Object | Function, methodName: string, paramIndex: number) => {
+    return (classDefinition: object | Function, methodName: string, paramIndex: number) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

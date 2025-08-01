@@ -1,4 +1,4 @@
-import { interfaces } from "inversify"
+import { ServiceIdentifier } from "inversify"
 
 import { ControllerInfo } from "./ControllerInfo"
 import { ErrorInterceptor } from "../../api/error/ErrorInterceptor"
@@ -16,7 +16,7 @@ export class EndpointInfo {
     public produces?: string
     public noAuth?: boolean
     public rolesAllowed?: string[]
-    public errorInterceptor?: interfaces.ServiceIdentifier<ErrorInterceptor>
+    public errorInterceptor?: ServiceIdentifier<ErrorInterceptor>
     public apiOperationInfo?: ApiOperationInfo
     public apiIgnore?: boolean;
 

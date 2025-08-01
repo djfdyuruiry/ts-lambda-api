@@ -10,8 +10,8 @@ import { IDictionary } from "./IDictionary"
 export class RequestBuilder {
     private readonly method: METHODS
     private readonly path: string
-    private readonly httpHeaders: IDictionary<String>
-    private readonly httpQueryParams: IDictionary<String>
+    private readonly httpHeaders: IDictionary<string>
+    private readonly httpQueryParams: IDictionary<string>
     private httpBody: string
     private isBase64Encoded: boolean
 
@@ -97,7 +97,7 @@ export class RequestBuilder {
      * @param httpHeaders Map of HTTP headers to add.
      * @returns This builder instance.
      */
-    public headers(httpHeaders: IDictionary<String>) {
+    public headers(httpHeaders: IDictionary<string>) {
         for (let key in httpHeaders) {
             if (!httpHeaders.hasOwnProperty(key)) {
                 continue
@@ -112,7 +112,7 @@ export class RequestBuilder {
     /**
      * Add a HTTP query parameter to the request.
      *
-     * @param name Name of the query param.
+     * @param key Name of the query param.
      * @param value Value to set.
      * @returns This builder instance.
      */
@@ -127,7 +127,7 @@ export class RequestBuilder {
      * @param params Map of HTTP query params to add.
      * @returns This builder instance.
      */
-    public queryParams(params: IDictionary<String>) {
+    public queryParams(params: IDictionary<string>) {
         for (let key in params) {
             if (!params.hasOwnProperty(key)) {
                 continue
@@ -188,7 +188,7 @@ export class RequestBuilder {
         return this
     }
 
-    private mapToObject(map: IDictionary<String>) {
+    private mapToObject(map: IDictionary<string>) {
         let obj = {}
 
         for (let key in map) {

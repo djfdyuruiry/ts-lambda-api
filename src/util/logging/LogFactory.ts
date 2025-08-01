@@ -62,8 +62,8 @@ export class LogFactory {
      * Create a new logger using custom log configuration.
      *
      * @param clazz The enclosing class that will use the new logger.
-     * @param logLevel (Optional) Lowest level to log, defaults to `info`.
-     * @param logFormat (Optional) Format to output log messages in, defaults to `string`.
+     * @param level (Optional) Lowest level to log, defaults to `info`.
+     * @param format (Optional) Format to output log messages in, defaults to `string`.
      * @param logTimestamp (Optional) Print an ISO 8601 timestamp before every log message?
      *                     (string format only, defaults to `false`).
      */

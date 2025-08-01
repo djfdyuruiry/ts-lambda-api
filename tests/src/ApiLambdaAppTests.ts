@@ -28,11 +28,12 @@ export class ApiLambdaAppTests extends TestBase {
 
     @Test()
     public async when_custom_container_passed_to_app_then_it_is_available_for_configuration() {
-        let container = new Container({ autoBindInjectable: true })
+        let container = new Container({ autobind: true })
 
         let app = new ApiLambdaApp(
             TestBase.CONTROLLERS_PATH,
             this.appConfig,
+            true,
             container
         )
 
@@ -57,33 +58,36 @@ export class ApiLambdaAppTests extends TestBase {
 
     @Test()
     public async when_custom_container_passed_to_app_with_auto_bind_injectable_enabled_then_contoller_path_must_be_valid() {
-        let container = new Container({ autoBindInjectable: true })
+        let container = new Container({ autobind: true })
 
         Expect(() => new ApiLambdaApp(
             ["  "],
             this.appConfig,
+            true,
             container
         )).toThrow()
     }
 
     @Test()
     public async when_custom_container_passed_to_app_with_auto_bind_injectable_enabled_then_contoller_path_is_required() {
-        let container = new Container({ autoBindInjectable: true })
+        let container = new Container({ autobind: true })
 
         Expect(() => new ApiLambdaApp(
            undefined,
             this.appConfig,
+            true,
             container
         )).toThrow()
     }
 
     @Test()
     public async when_custom_container_passed_to_app_with_auto_bind_injectable_disabled_then_contoller_path_can_be_undefined() {
-        let container = new Container({ autoBindInjectable: false })
+        let container = new Container()
 
         let app = new ApiLambdaApp(
             undefined,
             this.appConfig,
+            false,
             container
         )
 
@@ -92,11 +96,12 @@ export class ApiLambdaAppTests extends TestBase {
 
     @Test()
     public async when_custom_container_passed_to_app_with_auto_bind_injectable_disabled_then_contoller_path_ignored() {
-        let container = new Container({ autoBindInjectable: false })
+        let container = new Container()
 
         let app = new ApiLambdaApp(
             [" "],
             this.appConfig,
+            false,
             container
         )
 

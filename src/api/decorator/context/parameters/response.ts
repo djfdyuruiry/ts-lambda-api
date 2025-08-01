@@ -6,7 +6,7 @@ import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
  *
  * Value passed to the method will be of type `Response` from the lambda-api package.
  */
-export function response(classDefinition: Object | Function, methodName: string, paramIndex: number) {
+export function response(classDefinition: object | Function, methodName: string, paramIndex: number) {
     let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
     let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

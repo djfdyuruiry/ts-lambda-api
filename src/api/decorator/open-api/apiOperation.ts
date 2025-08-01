@@ -12,7 +12,7 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
  *                         if provided in this parameter.
  */
 export function apiOperation(apiOperationInfo: ApiOperation) {
-    return (classDefinition: Object, methodName: string) => {
+    return (classDefinition: object, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 
