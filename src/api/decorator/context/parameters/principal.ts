@@ -6,7 +6,7 @@ import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
  *
  * Value passed to the method will be an implementation of the `Principal` interface.
  */
-export function principal(classDefinition: Object | Function, methodName: string, paramIndex: number) {
+export function principal(classDefinition: object | Function, methodName: string, paramIndex: number) {
     let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
     let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

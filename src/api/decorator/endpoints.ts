@@ -9,7 +9,7 @@ import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
  *             prefixed with a colon (':') character.
  */
 export function GET(path = "") {
-    return (classDefinition: Object, methodName: string) =>
+    return (classDefinition: object, methodName: string) =>
         registerApiEndpoint(classDefinition, methodName, path, "GET")
 }
 
@@ -22,7 +22,7 @@ export function GET(path = "") {
  *             prefixed with a colon (':') character.
  */
 export function POST(path = "") {
-    return (classDefinition: Object, methodName: string) =>
+    return (classDefinition: object, methodName: string) =>
         registerApiEndpoint(classDefinition, methodName, path, "POST")
 }
 
@@ -35,7 +35,7 @@ export function POST(path = "") {
  *             prefixed with a colon (':') character.
  */
 export function PUT(path = "") {
-    return (classDefinition: Object, methodName: string) =>
+    return (classDefinition: object, methodName: string) =>
         registerApiEndpoint(classDefinition, methodName, path, "PUT")
 }
 
@@ -48,7 +48,7 @@ export function PUT(path = "") {
  *             prefixed with a colon (':') character.
  */
 export function DELETE(path = "") {
-    return (classDefinition: Object, methodName: string) =>
+    return (classDefinition: object, methodName: string) =>
         registerApiEndpoint(classDefinition, methodName, path, "DELETE")
 }
 
@@ -61,11 +61,11 @@ export function DELETE(path = "") {
  *             prefixed with a colon (':') character.
  */
 export function PATCH(path = "") {
-    return (classDefinition: Object, methodName: string) =>
+    return (classDefinition: object, methodName: string) =>
         registerApiEndpoint(classDefinition, methodName, path, "PATCH")
 }
 
-function registerApiEndpoint(classDefinition: Object, methodName: string, path: string, httpMethod: string) {
+function registerApiEndpoint(classDefinition: object, methodName: string, path: string, httpMethod: string) {
     let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
     let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

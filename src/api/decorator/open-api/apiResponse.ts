@@ -12,7 +12,7 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
  * @param apiBodyInfo Information about the response body generated.
  */
 export function apiResponse(statusCode: number, apiBodyInfo?: ApiBody) {
-    return (classDefinition: Object, methodName: string) => {
+    return (classDefinition: object, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
         let responses: IDictionary<ApiBody> = {}

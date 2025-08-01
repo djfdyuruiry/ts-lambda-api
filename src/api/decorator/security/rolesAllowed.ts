@@ -11,7 +11,7 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry";
  * @param roleNames Names of roles that are permitted to use the endpoint.
  */
 export function rolesAllowed(...roleNames: string[]) {
-    return (classDefinition: Object | Function, methodName: string) => {
+    return (classDefinition: object | Function, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

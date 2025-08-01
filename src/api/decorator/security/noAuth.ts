@@ -3,7 +3,7 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
 /**
  * Decorator for an endpoint method that marks it as not requiring authentication.
  */
-export function noAuth(classDefinition: Object | Function, methodName: string) {
+export function noAuth(classDefinition: object | Function, methodName: string) {
     let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
     let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

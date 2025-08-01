@@ -11,7 +11,7 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
  * @param contentType Request content type.
  */
 export function consumes(contentType?: string, apiBodyInfo?: ApiBody) {
-    return (classDefinition: Object | Function, methodName: string) => {
+    return (classDefinition: object | Function, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
         let operationInfo = endpoint.getOrCreateApiOperationInfo()

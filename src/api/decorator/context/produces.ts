@@ -8,7 +8,7 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
  * @param contentType Content-Type header value.
  */
 export function produces(contentType: string) {
-    return (classDefinition: Object | Function, methodName: string) => {
+    return (classDefinition: object | Function, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

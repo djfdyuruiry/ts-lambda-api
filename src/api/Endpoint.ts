@@ -1,6 +1,6 @@
 import { inspect } from "util"
 
-import { interfaces } from "inversify"
+import { ServiceIdentifier } from "inversify"
 import { API, Request, Response } from "lambda-api"
 
 import { LogLevel } from "../model/logging/LogLevel"
@@ -14,7 +14,7 @@ import { ErrorInterceptor } from "./error/ErrorInterceptor"
 import { MiddlewareRegistry } from "./MiddlewareRegistry"
 
 export type ControllerFactory = (constructor: Function) => Controller
-export type ErrorInterceptorFactory = (type: interfaces.ServiceIdentifier<ErrorInterceptor>) => ErrorInterceptor
+export type ErrorInterceptorFactory = (type: ServiceIdentifier<ErrorInterceptor>) => ErrorInterceptor
 
 /**
  * Wrapper for endpoint method that proxies lamba-api requests.
@@ -53,7 +53,6 @@ export class Endpoint {
 
         registerMethod(
             this.endpointInfo.fullPath,
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             async (req, res) => {
                 try {
                     if (this.logger.traceEnabled()) {

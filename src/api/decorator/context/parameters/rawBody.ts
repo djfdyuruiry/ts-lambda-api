@@ -6,7 +6,7 @@ import { DecoratorRegistry } from "../../../reflection/DecoratorRegistry"
  *
  * Value passed to the method will be a Buffer.
  */
-export function rawBody(classDefinition: Object | Function, methodName: string, paramIndex: number) {
+export function rawBody(classDefinition: object | Function, methodName: string, paramIndex: number) {
     let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
     let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
 

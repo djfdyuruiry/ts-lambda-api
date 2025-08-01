@@ -34,9 +34,10 @@ export class Server {
      * Create a new server.
      *
      * @param appContainer Application container to use to build containers.
+     * @param autoInjectionEnabled Is autobind flag enabled on IOC container.
      * @param appConfig Application config to pass to `lambda-api`.
      */
-    public constructor(private appContainer: Container, private appConfig: AppConfig) {
+    public constructor(private appContainer: Container, private autoInjectionEnabled: boolean, private appConfig: AppConfig) {
         this.logFactory = new LogFactory(appConfig)
         this.logger = this.logFactory.getLogger(Server)
 
@@ -80,12 +81,12 @@ export class Server {
      *
      * @param controllersPath (Optional) Paths to the directories that contain controller `js` files.
      *                        Dynamic loading of `injectable` controllers is disabled if undefined
-     *                        or the app `Container` instance has its `autoBindInjectable`
-     *                        flag set to `false`.
+     *                        or the app `Container` instance has its `autobind`
+     *                        flag disabled.
      */
     @timed
     public async discoverAndBuildRoutes(controllersPath?: string[]) {
-        if (this.appContainer.options.autoBindInjectable && controllersPath) {
+        if (this.autoInjectionEnabled && controllersPath) {
             for (let path of controllersPath){
                 this.logger.debug("Loading controllers from path: %s", path)
                 await ControllerLoader.loadControllers(path, this.logFactory)

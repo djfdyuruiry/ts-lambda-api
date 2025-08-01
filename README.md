@@ -77,11 +77,12 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
   - [Testing](#testing)
   - [Development](#development)
 
-## <a id="create-api"></a>Creating a new API
+## Creating a new API
+<a id="create-api"></a>
 
 This is a short guide to creating your first API using `ts-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customized.
 
-**Note: Node.js v22.x & Typescript v5.x are recommended. Other versions may work perfectly fine, but have not been tested.**
+**Note: Node.js v22.x & Typescript v5.8.x are recommended. Other versions may work perfectly fine, but have not been tested.**
 
 - Create a directory for your project and run `npm init` to create your `package.json`
 
@@ -119,9 +120,9 @@ npm install -D typescript @types/node @aws-sdk/client-s3 @aws-sdk/s3-request-pre
                 "node_modules/*"
             ]
         },
-        "target": "es2017",
+        "target": "ES2024",
         "lib": [
-            "es2017"
+            "ES2024"
         ]
     },
     "include": [
@@ -191,7 +192,8 @@ export class HelloWorldController extends Controller {
 npm run tsc
 ```
 
-## <a id="aws-deploy"></a>Deploy to AWS Lambda
+## Deploy to AWS Lambda
+<a id="aws-deploy"></a>
 
 ***Note**: AWS supplies the `aws-sdk` package at runtime when running your Lambda applications, so there is no need to include this in your deployment package.*
 
@@ -217,7 +219,8 @@ zip -r lambda.zip ./
 - Upload your lambda using the `dist/lambda.zip` file. Specify `app.handler` as the function handler. See: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-create-deployment-pkg.html
 
 
-### <a id="invoke-lambda"></a>Invoke Lambda
+### Invoke Lambda
+<a id="invoke-lambda"></a>
 
 - Create an AWS Load Balancer and point it to your new API Lambda. See: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/lambda-functions.html
 
@@ -232,11 +235,13 @@ wget -qO - https://some.alb.dns.address/api/v1/hello-world/
 {"hello":"world"}
 ```
 
-## <a id="routing"></a>Routing
+## Routing
+<a id="routing"></a>
 
 Routing is configured using decorators on both controller classes and endpoint methods. You can also define a global base path (e.x. `/api/v1`) for your API by configuring the `base` property when passing your app configuration to the `ApiLambdaApp` class. (See the `Creating a new API` section)
 
-### <a id="controller-routes"></a>Controller Routes
+### Controller Routes
+<a id="controller-routes"></a>
 
 You can declare a root path for all methods in a controller using the `apiController` decorator.
 
@@ -260,7 +265,8 @@ export class HelloWorldController {
 }
 ```
 
-### <a id="endpoint-routes"></a>Endpoint Routes
+### Endpoint Routes
+<a id="endpoint-routes"></a>
 
 You can declare a path for any given method in a controller when using the endpoint decorators. The `apiController` decorator is not required on the class to use this form of routing.
 
@@ -279,7 +285,8 @@ export class StoreController {
 }
 ```
 
-### <a id="path-params"></a>Path Parameters
+### Path Parameters
+<a id="path-params"></a>
 
 You can include parameters as part of your routes, when you need to capture parts of the URL.
 
@@ -317,16 +324,17 @@ export class StoreController {
 
 **Note all path parameters are passed in as strings, you will need to cast these if required**
 
-### <a id="loading-controllers"></a>Manually Loading Controllers
+### Manually Loading Controllers
+<a id="loading-controllers"></a>
 
-The default IOC app `Container` enables the `autoBindInjectable` option. Controllers decorated with
+The default IOC app `Container` enables the `autobind` option. Controllers decorated with
 `@injectable` are dynamically loaded from the required `controllersPath` directory during 
 initialization. However, controllers can be explicitly specified instead of relying on the `@injectable` 
 decoration to dynamically load the controllers from a directory.
 
-Create an IOC `Container` with the `autoBindInjectable` option disabled. Bind the desired controller 
+Create an IOC `Container` without the `autobind` option. Bind the desired controller 
 classes to the container and pass the instance into the `ApiLambdaApp` constructor. The `controllersPath`
-parameter is ignored when the custom container's `autoBindInjectable` option disabled.
+parameter is ignored when the custom container's `autobind` option disabled.
 
 ```typescript
 import { Container } from 'inversify';
@@ -338,21 +346,22 @@ appConfig.base = '/api/v1';
 appConfig.version = 'v1';
 
 // Bind the controllers to a container instance with @injectable disabled
-const appContainer = new Container({ autoBindInjectable: false });
+const appContainer = new Container();
 const appController = new AppController();
 appContainer.bind(AppController).toConstantValue(appController);
 
-// Pass the customer container into the app - controllersPath is ignored
-const app = new ApiLambdaApp(undefined, appConfig, appContainer);
+// Pass the customer container into the app - controllersPath is ignored (false signals that autobind is not turned on)
+const app = new ApiLambdaApp(undefined, appConfig, false, appContainer);
 
 export const lambdaHandler = async (event: ApiRequest, context: any) => {
     return await app.run(event, context);
 };
 ```
 
-**Note you do not need to decorate controller classes with `@injectable` when autoBindInjectable is disabled**
+**Note you do not need to decorate controller classes with `@injectable` when autobind is disabled**
 
-## <a id="request-binding"></a>Request Parameter Binding
+## Request Parameter Binding
+<a id="request-binding"></a>
 
 Different parts of the HTTP request can be bound to endpoint method parameters using decorators.
 
@@ -393,7 +402,8 @@ export class HelloWorldController {
 }
 ```
 
-## <a id="responses"></a>Responses
+## Responses
+<a id="responses"></a>
 
 There are two ways to respond to requests:
 
@@ -452,13 +462,15 @@ export class MessageOfTheDayController {
 }
 ```
 
-## <a id="auth-authorization"></a>Authentication & Authorization
+## Authentication & Authorization
+<a id="auth-authorization"></a>
 
 This framework supports authenticating requests and authorization for controllers and endpoints. It can be used to configure HTTP authentication, token based auth and role based access control (ACLs).
 
 Implementation is heavily inspired by the Dropwizard framework for Java.
 
-### <a id="auth-princ"></a>Authentication and Principals
+### Authentication and Principals
+<a id="auth-princ"></a>
 
 Authentication is preformed by filter classes that are executed before invoking an endpoint; all filter classes implement the `IAuthFilter` interface.
 
@@ -481,7 +493,8 @@ export class StoreUser extends Principal {
 }
 ```
 
-### <a id="basic-auth"></a>Basic Authentication
+### Basic Authentication
+<a id="basic-auth"></a>
 
 HTTP Basic authentication is supported out of the box by the `BasicAuthFilter` filter abstract class. You extend this class to implement your authentication logic:
 
@@ -524,7 +537,8 @@ app.middlewareRegistry.addAuthFilter(authFilter)
 // export handler
 ```
 
-### <a id="endpoint-princip"></a>Access Principal Context
+### Access Principal Context
+<a id="endpoint-princip"></a>
 
 Once a user has been authenticated you can pass the principal instance into the target endpoint. You can do this by adding a `principal` parameter decorator to your endpoint method.
 
@@ -543,7 +557,8 @@ export class StoreController {
 }
 ```
 
-### <a id="no-auth-endpoints"></a>Unauthenticated Endpoints
+### Unauthenticated Endpoints
+<a id="no-auth-endpoints"></a>
 
 There are several situations where you might want to disable authentication for a specific endpoint:
 
@@ -601,7 +616,8 @@ export class PublicController {
 }
 ```
 
-### <a id="custom-auth"></a>Custom Authentication
+### Custom Authentication
+<a id="custom-auth"></a>
 
 If you wish to implement popular authentication mechanisms or make your own, you need to implement the `IAuthFilter` interface. It accepts two type parameters:
 
@@ -659,7 +675,8 @@ export class TokenAuthFilter<T extends Principal> implements IAuthFilter<TokenAu
 
 Tip: You can make your class abstract and then make the `authenticate` method abstract to enable your custom auth filter to be re-usable. This way, you simply extend your custom fiter and implement the authentication logic for your application.
 
-### <a id="authorization"></a>Authorization
+### Authorization
+<a id="authorization"></a>
 
 To implement role based authorization you implement the `IAuthorizer` interface.
 
@@ -726,7 +743,8 @@ const authorizer = new StoreAuthorizer()
 app.middlewareRegistry.addAuthorizer(authorizer)
 // export handler
 ```
-## <a id="errors"></a>Error Handling
+## Error Handling
+<a id="errors"></a>
 
 When an unexpected error is thrown in one of your endpoints, you can choose how to handle this. There are three general techniques:
 
@@ -734,7 +752,8 @@ When an unexpected error is thrown in one of your endpoints, you can choose how 
 1. Catch the error in your endpoint logic
 1. Let the framework handle the error
 
-### <a id="error-interceptors"></a>Error Interceptors
+### Error Interceptors
+<a id="error-interceptors"></a>
 
 Error interceptors are classes that can be configured to be invoked when an error occurs when calling a given controller or endpoint. Interceptors extend the `ErrorInterceptor` class and provide an implementation for an `intercept` method.
 
@@ -787,7 +806,8 @@ export class StoreController {
 
 You can also use the `errorInterceptor` decorator on individual endpoints for more fine grained error control. Endpoint interceptors will override controller interceptors.
 
-### <a id="manual-error-interceptors"></a>Manual Error Interceptors
+### Manual Error Interceptors
+<a id="manual-error-interceptors"></a>
 
 You can manually register interceptors when setting up your application instance:
 
@@ -817,7 +837,8 @@ errorInterceptor.controllerTarget = "StoreController"
 
 **Note: using this type of interceptor is overridden if the target controller or endpoint has an interceptor configured**
 
-### <a id="catching-errors"></a>Catching Errors
+### Catching Errors
+<a id="catching-errors"></a>
 
 You can use a try/catch block and the `Response` class to handle errors:
 
@@ -851,7 +872,8 @@ export class StoreController extends Controller {
 
 *Note: this can also be done by injecting the `Response` class instance using the `response` parameter decorator, instead of extending `Controller`.*
 
-### <a id="framework-errors"></a>Framework Error Handling
+### Framework Error Handling
+<a id="framework-errors"></a>
 
 If you simply preform your logic in your endpoint method without catching any errors yourself, the framework will catch the error and return a HTTP 500 response with error details. Below is a JSON snippet showing an example.
 
@@ -861,7 +883,8 @@ If you simply preform your logic in your endpoint method without catching any er
 }
 ```
 
-## <a id="json-patch"></a>JSON Patch Requests
+## JSON Patch Requests
+<a id="json-patch"></a>
 
 This library supports [JSON Patch](http://jsonpatch.com/) format for updating entities without having to upload the entire entity. To use it in your endpoints, ensure your controller extends the `Controller` class, an example is below:
 
@@ -893,11 +916,13 @@ export class StoreController extends Controller {
 
 **Under the hood, the API uses the [fast-json-patch](https://www.npmjs.com/package/fast-json-patch) package**
 
-## <a id="req-res-context"></a>Request / Response Context
+## Request / Response Context
+<a id="req-res-context"></a>
 
 If you want to read request bodies or write to the response, there are several supported approaches.
 
-### <a id="extend-controller"></a>Extending Controller Class
+### Extending Controller Class
+<a id="extend-controller"></a>
 
 If you extend the controller class, you get access to the request and response context.
 
@@ -920,7 +945,8 @@ export class HelloWorldController extends Controller {
 }
 ```
 
-### <a id="use-decorators"></a>Using Decorators
+### Using Decorators
+<a id="use-decorators"></a>
 
 You can use parameter decorators to inject the request and response context.
 
@@ -944,7 +970,8 @@ export class HelloWorldController {
 }
 ```
 
-### <a id="send-files"></a>Returning Files in a Response
+### Returning Files in a Response
+<a id="send-files"></a>
 
 You can return files by using the `sendFile` method in the response context.
 
@@ -971,7 +998,8 @@ export class FilesController extends Controller {
 
 **The `Request` and `Response` classes are documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package.**
 
-## <a id="di"></a> Dependency Injection
+##  Dependency Injection
+<a id="di"></a>
 
 Configuring the IOC container to enable dependency injection for your controllers is easy. Once you build an `ApiLambdaApp` instance you can call the `configureApp` method like below:
 
@@ -1014,7 +1042,8 @@ export class MyController {
 
 See the [InversifyJS](https://github.com/inversify/InversifyJS) package documentation for full guidance how to use the `Container` class to manage dependencies.
 
-## <a id="config"></a>Configuration
+## Configuration
+<a id="config"></a>
 
 When building an application instance you pass an `AppConfig` instance to the constructor. If you want to provide your own application config it is recommended to extend this class .
 
@@ -1074,11 +1103,13 @@ export class MyController {
 
 **Note: The `AppConfig` class supports all the configuration fields documented in the [lambda-api](https://github.com/jeremydaly/lambda-api) package.**
 
-### <a id="config-reference"></a>Reference
+### Reference
+<a id="config-reference"></a>
 
 For a complete reference see the [AppConfig](https://djfdyuruiry.github.io/ts-lambda-api/classes/appconfig.html) docs.
 
-### <a id="lambda-api-config"></a>lambda-api
+### lambda-api
+<a id="lambda-api-config"></a>
 
 Configuring `lambda-api` directly can be done by calling the `configureApi` method like below:
 
@@ -1107,7 +1138,8 @@ app.configureApi(api: API => {
 
 See the [lambda-api](https://github.com/jeremydaly/lambda-api) package documentation for guidance how to use the `API` class.
 
-## <a id="logging"></a>Logging
+## Logging
+<a id="logging"></a>
 
 A logger interface is provided that can write messages to standard out. You can configure this logger using the `serverLogging` key in the `AppConfig` class. See the [Config Reference](#config-reference) for details on options available. This complements the existing logging provided by `lambda-api`, which can be configured using the `logger` key.
 
@@ -1153,7 +1185,8 @@ If you set the `format` to `json` the log messages will look like this:
 
 This format matches the keys used by the `lambda-api` framework in it's output.
 
-### <a id="logging-writing"></a>Writing Logs
+### Writing Logs
+<a id="logging-writing"></a>
 
 To write logs you will ned a logger instance. There are three ways to get one:
 
@@ -1211,7 +1244,8 @@ export class SomeServiceYouMightMake {
 }
 ```
 
-### <a id="logging-api"></a> Server Logger API
+###  Server Logger API
+<a id="logging-api"></a>
 
 The logging API supports formatting of messages using the [`sprintf-js`](https://www.npmjs.com/package/sprintf-js) npm module, simply pass in your arguments and put placeholders in your message string:
 
@@ -1266,11 +1300,13 @@ export class SomeServiceYouMightMake {
 }
 ```
 
-### <a id="lambda-api-logging"></a>lambda-api
+### lambda-api
+<a id="lambda-api-logging"></a>
 
 Logging is also provided by the [lambda-api](https://github.com/jeremydaly/lambda-api) package, use the `AppConfig` instance passed to `ApiLambdaApp` to configure logging using the `logger` key. See the [Config Reference](#config-reference) for details on options available.
 
-## <a id="open-api"></a>OpenAPI (Swagger)
+## OpenAPI (Swagger)
+<a id="open-api"></a>
 
 The OpenAPI Specification (FKA Swagger) is supported out of the box. If you are not familiar with it, check out https://github.com/OAI/OpenAPI-Specification
 
@@ -1311,7 +1347,8 @@ You can then request your specification using the paths:
 - `/api/v1/open-api.json` - JSON format
 - `/api/v1/open-api.yml` - YAML format
 
-### <a id="open-api-decorators"></a>Decorators
+### Decorators
+<a id="open-api-decorators"></a>
 
 To further document your API endpoints you can use OpenAPI decorators.
 
@@ -1543,7 +1580,8 @@ To further document your API endpoints you can use OpenAPI decorators.
 
     This decorator uses the `SecuritySchemeObject` class from the `openapi3-ts` library to describe the security scheme in place. See the source for more information on using this class: [SecuritySchemeObject source](https://github.com/metadevpro/openapi3-ts/blob/11ec4e394c1c40b3ad44a5cfbf3aa1a847fdb11e/src/model/openapi31.ts#L351)
 
-### <a id="open-api-yaml"></a>YAML Support
+### YAML Support
+<a id="open-api-yaml"></a>
 
 For `YAML` specification support, you need to install the following packages in your project:
 
@@ -1552,7 +1590,8 @@ npm install js-yaml
 npm install -D @types/js-yaml
 ```
 
-### <a id="open-api-auth"></a>Authentication
+### Authentication
+<a id="open-api-auth"></a>
 
 By default the OpenAPI endpoints do not require authentication. If you wish to apply auth filters when a request is made for a spec, set the `useAuthentication` key in the `openApi` config:
 
@@ -1569,14 +1608,16 @@ const app = new ApiLambdaApp(controllersPath, appConfig)
 // export handler
 ```
 
-## <a id="testing"></a>Testing
+## Testing
+<a id="testing"></a>
 
 
 For local dev testing and integration with acceptance tests see the [ts-lambda-api-local](https://www.npmjs.com/package/ts-lambda-api-local) package which enables hosting your API using express as a local HTTP server.
 
 Check out this project's dev dependencies to see what is required to test API code. The `tests` directory of this repo contains extensive acceptance tests which will show you how to build mock requests and invoke your API endpoints programmatically.
 
-## <a id="dev"></a>Development
+## Development
+<a id="dev"></a>
 
 Contributions are welcome to this package. 
 

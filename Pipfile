@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-junit2html = "==30.1.3"
+junit2html = "==31.0.2"
 
 [requires]
 python_version = "3"

@@ -38,22 +38,21 @@ export abstract class ApiApp {
      *
      * @param controllersPath (Optional) Paths to the directories that contain controller `js` files that
      *                        declare controllers. Required if the default `Container` is used, or the
-     *                        provided `Container` instance has its `autoBindInjectable` flag set to `true`.
-     *                        Ignored if the provided `Container` instance has its `autoBindInjectable`
-     *                        flag set to `false`.
+     *                        `autoInjectionEnabled` is set to `true`. Ignored if the `autoInjectionEnabled`
+     *                        is set to `false`.
      * @param appConfig (Optional) Application config to pass to `lambda-api`, defaults to new `AppConfig`.
+     * @param autoInjectionEnabled (Optional) Is auto injection enabled in the IOC container? Defaults to `true`.
      * @param appContainer (Optional) `InversifyJS` IOC `Container` instance which can
-     *                     build controllers and error interceptors, defaults to new `Container` with
-     *                     `autoBindInjectable` flag set to `true`.
+     *                     build controllers and error interceptors, defaults to new `Container` using
+     *                     `autobind` flag set to `true` if `autoInjectionEnabled` is `true`. If you pass your own
+     *                     instance `autoInjectionEnabled` must reflect the autobind flag passed to the Container.
      */
     public constructor(
         protected readonly controllersPath?: string[],
         protected appConfig: AppConfig = new AppConfig(),
-        protected appContainer: Container = new Container({ autoBindInjectable: true })
+        protected autoInjectionEnabled: boolean = true,
+        protected appContainer: Container = new Container(autoInjectionEnabled ? { autobind: true } : {}),
     ) {
-        let autoInjectionEnabled = typeof(appContainer.options) === "object"
-            && appContainer.options.autoBindInjectable === true
-
         if (autoInjectionEnabled) {
             if (!Array.isArray(controllersPath) || controllersPath.length < 1) {
                 throw new Error("controllersPath passed to ApiApp was not an array")
@@ -70,7 +69,7 @@ export abstract class ApiApp {
 
         appContainer.bind(AppConfig).toConstantValue(this.appConfig)
 
-        this.apiServer = new Server(appContainer, this.appConfig)
+        this.apiServer = new Server(appContainer, autoInjectionEnabled, this.appConfig)
         this.logFactory = new LogFactory(appConfig)
 
         this.logger = this.logFactory.getLogger(ApiApp)
@@ -89,7 +88,7 @@ export abstract class ApiApp {
     /**
      * Configure the `API` instance from the `lambda-api` package.
      *
-     * @param handler Function that takes an `API` instance as a parameter.
+     * @param configureBlock Function that takes an `API` instance as a parameter.
      */
     public configureApi(configureBlock: (this: void, api: API) => void) {
         this.apiServer.configure(configureBlock)
@@ -99,7 +98,7 @@ export abstract class ApiApp {
      * Run using the passed event and context, ultimately should call the
      * `processEvent` method on the `apiServer` instance.
      *
-     * @param request API Gateway or ALB request.
+     * @param event API Gateway or ALB request.
      * @param context Request context.
      * @returns The response.
      */

@@ -10,7 +10,7 @@ import { DecoratorRegistry } from "../../reflection/DecoratorRegistry"
  * @param apiBodyInfo Request body info.
  */
 export function apiRequest(apiBodyInfo: ApiBody) {
-    return (classDefinition: Object | Function, methodName: string) => {
+    return (classDefinition: object | Function, methodName: string) => {
         let controller = DecoratorRegistry.getOrCreateController(classDefinition.constructor)
         let endpoint = DecoratorRegistry.getOrCreateEndpoint(controller, methodName)
         let operationInfo = endpoint.getOrCreateApiOperationInfo()
