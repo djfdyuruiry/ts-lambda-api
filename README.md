@@ -120,9 +120,9 @@ npm install -D typescript @types/node @aws-sdk/client-s3 @aws-sdk/s3-request-pre
                 "node_modules/*"
             ]
         },
-        "target": "es2022",
+        "target": "ES2024",
         "lib": [
-            "es2022"
+            "ES2024"
         ]
     },
     "include": [
