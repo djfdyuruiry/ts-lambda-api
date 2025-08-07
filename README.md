@@ -1106,7 +1106,7 @@ export class MyController {
 ### Reference
 <a id="config-reference"></a>
 
-For a complete reference see the [AppConfig](https://djfdyuruiry.github.io/ts-lambda-api/classes/appconfig.html) docs.
+For a complete reference see the [AppConfig](https://djfdyuruiry.github.io/ts-lambda-api/classes/AppConfig.html) docs.
 
 ### lambda-api
 <a id="lambda-api-config"></a>
@@ -1578,7 +1578,7 @@ To further document your API endpoints you can use OpenAPI decorators.
     }
     ```
 
-    This decorator uses the `SecuritySchemeObject` class from the `openapi3-ts` library to describe the security scheme in place. See the source for more information on using this class: [SecuritySchemeObject source](https://github.com/metadevpro/openapi3-ts/blob/11ec4e394c1c40b3ad44a5cfbf3aa1a847fdb11e/src/model/openapi31.ts#L351)
+    This decorator uses the `SecuritySchemeObject` class from the `openapi3-ts` library to describe the security scheme in place. See the source for more information on using this class: [SecuritySchemeObject source](https://github.com/metadevpro/openapi3-ts/blob/eea7856731156167d165ae2dd03487bd78267701/src/model/openapi31.ts#L369)
 
 ### YAML Support
 <a id="open-api-yaml"></a>
