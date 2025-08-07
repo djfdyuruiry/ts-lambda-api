@@ -8,7 +8,7 @@ Build REST API's using Typescript & AWS Lambda.
 
 [GitHub Repo](https://github.com/djfdyuruiry/ts-lambda-api/)
 
-[![NPM](https://nodei.co/npm/ts-lambda-api.png)](https://nodei.co/npm/ts-lambda-api/)
+[![NPM](https://nodei.co/npm/ts-lambda-api.svg?data=d,s)](https://www.npmjs.com/package/ts-lambda-api)
 
 Read the full `typedoc` documentation: https://djfdyuruiry.github.io/ts-lambda-api/
 
