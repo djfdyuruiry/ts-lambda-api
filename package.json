@@ -46,6 +46,7 @@
     "marky": "~1.2.5",
     "openapi3-ts": "^4.5.0",
     "reflect-metadata": "^0.2.2",
+    "semver": "^7.5.2",
     "sprintf-js": "^1.1.3"
   },
   "devDependencies": {
@@ -81,5 +82,6 @@
   "resolutions": {
     "trim": "^1.0.1",
     "semver": "^7.5.2"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }
