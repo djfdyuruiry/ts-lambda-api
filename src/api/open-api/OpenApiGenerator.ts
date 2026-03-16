@@ -10,7 +10,7 @@ import {
     ResponseObject,
     SchemaObject,
     TagObject
-} from "openapi3-ts/dist/model/openapi31"
+} from "openapi3-ts/oas31"
 
 import { MiddlewareRegistry } from "../MiddlewareRegistry"
 import { DecoratorRegistry } from "../reflection/DecoratorRegistry"
@@ -744,7 +744,7 @@ export class OpenApiGenerator {
 
             if (p.source === "header" &&
                 OpenApiGenerator.FORBIDDEN_HEADER_PARAMS.includes(p.name.toLowerCase())) {
-                this.logger.debug("Parameter for header %s is forbidden by the OpenAPI v3 Spec", p.name)
+                this.logger.debug("Parameter for header %s is forbidden by the OpenAPI v3.1 Spec", p.name)
                 return;
             }
 

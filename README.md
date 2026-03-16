@@ -18,7 +18,7 @@ Framework Features:
 - Decorator based parameter binding for endpoint methods (from body, path & query parameters and headers)
 - API controller dependency injection using [InversifyJS](https://github.com/inversify/InversifyJS)
 - Supports invoking your API from both `Amazon API Gateway` and `Amazon Load Balancer`
-- Out of the box OpenAPI spec (v3) generation support
+- Out of the box OpenAPI spec (v3.1) generation support
 - Built in support for applying JSON patch operations
 
 This project is built on top of the wonderful [lambda-api](https://github.com/jeremydaly/lambda-api) framework.
@@ -82,7 +82,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 
 This is a short guide to creating your first API using `ts-lambda-api`. It is somewhat opinionated about project structure, but most of this can be easily customized.
 
-**Note: Node.js v22.x & Typescript v5.8.x are recommended. Other versions may work perfectly fine, but have not been tested.**
+**Note: Node.js v24.x & Typescript v5.9.x are recommended. Other versions may work perfectly fine, but have not been tested.**
 
 - Create a directory for your project and run `npm init` to create your `package.json`
 
@@ -108,8 +108,8 @@ npm install -D typescript @types/node @aws-sdk/client-s3 @aws-sdk/s3-request-pre
 ```json
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "module": "node20",
+        "moduleResolution": "nodenext",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "strict": false,
@@ -120,9 +120,9 @@ npm install -D typescript @types/node @aws-sdk/client-s3 @aws-sdk/s3-request-pre
                 "node_modules/*"
             ]
         },
-        "target": "ES2024",
+        "target": "ES2023",
         "lib": [
-            "ES2024"
+            "ES2023"
         ]
     },
     "include": [
@@ -1310,7 +1310,7 @@ Logging is also provided by the [lambda-api](https://github.com/jeremydaly/lambd
 
 The OpenAPI Specification (FKA Swagger) is supported out of the box. If you are not familiar with it, check out https://github.com/OAI/OpenAPI-Specification
 
-**This framework supports only OpenAPI v3**
+**This framework supports only OpenAPI v3.1**
 
 The following features are supported:
 
