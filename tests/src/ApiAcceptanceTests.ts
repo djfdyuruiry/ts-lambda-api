@@ -1,4 +1,5 @@
 import { Expect, Test, TestCase, TestFixture } from "alsatian"
+import type { APIGatewayProxyEventV2 } from "aws-lambda"
 import { ReplaceOperation } from "fast-json-patch"
 import { readFileSync, statSync as statFileSync, writeFileSync } from "fs"
 import { METHODS } from "lambda-api"
@@ -16,6 +17,36 @@ export class ApiAcceptanceTests extends TestBase {
     private static readonly TEST_FILE_PATH = joinPath(__dirname, "../test.pdf")
     private static readonly TEST_FILE_SIZE = 19605
     private static readonly TEST_FILE_MD5 = "bb0cf6ccd0fe8e18e0a14e8028709abe"
+
+    private createApiGatewayV2Event(rawPath: string, queryStringParameters?: Record<string, string>): APIGatewayProxyEventV2 {
+        return {
+            version: "2.0",
+            routeKey: "$default",
+            rawPath,
+            rawQueryString: "",
+            headers: {},
+            queryStringParameters,
+            requestContext: {
+                accountId: "123456789012",
+                apiId: "api-id",
+                domainName: "example.com",
+                domainPrefix: "example",
+                http: {
+                    method: "GET",
+                    path: rawPath,
+                    protocol: "HTTP/1.1",
+                    sourceIp: "127.0.0.1",
+                    userAgent: "alsatian"
+                },
+                requestId: "request-id",
+                routeKey: "$default",
+                stage: "$default",
+                time: "16/Mar/2026:00:00:00 +0000",
+                timeEpoch: 0
+            },
+            isBase64Encoded: false
+        }
+    }
 
     @TestCase("/test/")
     @TestCase("/test/no-root-path")
@@ -153,6 +184,17 @@ export class ApiAcceptanceTests extends TestBase {
                 .build()
         )
 
+        Expect(response.body).toEqual("Magic status: enabled")
+    }
+
+    @Test()
+    public async when_raw_api_gateway_v2_event_contains_query_param_then_app_passes_value_to_endpoint() {
+        let response = await this.app.run(
+            this.createApiGatewayV2Event("/test/query-test/", { magic: "enabled" }),
+            {}
+        )
+
+        Expect(response.statusCode).toEqual(200)
         Expect(response.body).toEqual("Magic status: enabled")
     }
 

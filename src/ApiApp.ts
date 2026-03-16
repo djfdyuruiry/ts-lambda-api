@@ -5,7 +5,7 @@ import { API } from "lambda-api"
 
 import { Server } from "./api/Server"
 import { AppConfig } from "./model/AppConfig"
-import { ApiRequest } from "./model/ApiRequest"
+import { LambdaApiRequest } from "./model/ApiRequest"
 import { ApiResponse } from "./model/ApiResponse"
 import { ILogger } from "./util/logging/ILogger"
 import { LogFactory } from "./util/logging/LogFactory"
@@ -102,7 +102,7 @@ export abstract class ApiApp {
      * @param context Request context.
      * @returns The response.
      */
-    public abstract run(event: ApiRequest, context: any): Promise<ApiResponse>
+    public abstract run(event: LambdaApiRequest, context: any): Promise<ApiResponse>
 
     /**
      * Initialise all controllers and endpoints declared using decorators.

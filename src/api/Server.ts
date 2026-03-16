@@ -1,7 +1,7 @@
 import createAPI, { API } from "lambda-api"
 import { Container } from "inversify"
 
-import { ApiRequest } from "../model/ApiRequest"
+import { LambdaApiRequest } from "../model/ApiRequest"
 import { ApiResponse } from "../model/ApiResponse"
 import { AppConfig } from "../model/AppConfig"
 import { EndpointInfo } from "../model/reflection/EndpointInfo"
@@ -87,7 +87,7 @@ export class Server {
     @timed
     public async discoverAndBuildRoutes(controllersPath?: string[]) {
         if (this.autoInjectionEnabled && controllersPath) {
-            for (let path of controllersPath){
+            for (let path of Array.from(new Set(controllersPath))) {
                 this.logger.debug("Loading controllers from path: %s", path)
                 await ControllerLoader.loadControllers(path, this.logFactory)
             }
@@ -150,10 +150,10 @@ export class Server {
      * @returns The response.
      */
     @timed
-    public async processEvent(request: ApiRequest, context: any): Promise<ApiResponse> {
+    public async processEvent(request: LambdaApiRequest, context: any): Promise<ApiResponse> {
         let event: any = request
 
-        this.logger.info("Processing API request event for path: %s", request.path)
+        this.logger.info("Processing API request event for path: %s", event.rawPath || event.path)
 
         this.logger.debug("Event data: %j", event)
         this.logger.debug("Event context: %j", context)
