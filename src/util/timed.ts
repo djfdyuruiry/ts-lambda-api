@@ -24,8 +24,8 @@ export function timed(_: any, propertyKey: string, descriptor: PropertyDescripto
             let measurement = stop(propertyKey)
 
             if (measurement != null) {
-                let name = measurement.name as string
-                let duration = measurement.duration.toFixed(2) as string
+                let name = measurement.name
+                let duration = measurement.duration.toFixed(2)
 
                 console.log(`method '${name}' took ${duration} ms`)
             }

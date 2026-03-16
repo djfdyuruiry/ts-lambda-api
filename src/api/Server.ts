@@ -1,9 +1,10 @@
 import createAPI, { API } from "lambda-api"
-import { Container } from "inversify"
+import { Container, Newable } from "inversify"
 
 import { LambdaApiRequest } from "../model/ApiRequest"
 import { ApiResponse } from "../model/ApiResponse"
 import { AppConfig } from "../model/AppConfig"
+import { Controller } from "../api/Controller"
 import { EndpointInfo } from "../model/reflection/EndpointInfo"
 import { ILogger } from "../util/logging/ILogger"
 import { LogFactory } from "../util/logging/LogFactory"
@@ -132,7 +133,7 @@ export class Server {
     private registerEndpoint(endpointInfo: EndpointInfo) {
         let apiEndpoint = new Endpoint(
             endpointInfo,
-            c => this.appContainer.get(c),
+            c => this.appContainer.get(c as Newable<Controller>),
             ei => this.appContainer.get(ei),
             this._middlewareRegistry,
             this.logFactory

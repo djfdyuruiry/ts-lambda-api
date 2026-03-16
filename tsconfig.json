@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "module": "node20",
+        "moduleResolution": "nodenext",
         "emitDecoratorMetadata": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,
@@ -14,9 +14,9 @@
                 "node_modules/*"
             ]
         },
-        "target": "ES2024",
+        "target": "ES2023",
         "lib": [
-            "ES2024"
+            "ES2023"
         ]
     },
     "include": [
