@@ -31,6 +31,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
 - [Creating a new API](#create-api)
 - [Deploy to AWS Lambda](#aws-deploy)
     - [Invoke AWS Lambda](#invoke-lambda)
+    - [Deploy as Lambda Container Image](#deploy-as-lambda-container-image)
 
 **Docs**
 
@@ -38,6 +39,7 @@ This project is built on top of the wonderful [lambda-api](https://github.com/je
   - [Creating a new API](#creating-a-new-api)
   - [Deploy to AWS Lambda](#deploy-to-aws-lambda)
     - [Invoke Lambda](#invoke-lambda)
+    - [Deploy as Lambda Container Image](#deploy-as-lambda-container-image)
   - [Routing](#routing)
     - [Controller Routes](#controller-routes)
     - [Endpoint Routes](#endpoint-routes)
@@ -150,9 +152,7 @@ appConfig.version = "v1"
 const controllersPath = [path.join(__dirname, "controllers")]
 const app = new ApiLambdaApp(controllersPath, appConfig)
 
-export async function handler(event, context) {
-    return await app.run(event, context)
-}
+export const handler = app.createHandler()
 ```
 
 - Add a `src/controllers` directory
@@ -197,6 +197,8 @@ npm run tsc
 
 ***Note**: AWS supplies the `aws-sdk` package at runtime when running your Lambda applications, so there is no need to include this in your deployment package.*
 
+`ts-lambda-api` supports the standard Lambda HTTP event formats for API Gateway and ALB when deployed as either a `.zip` package or a Lambda container image. Container images do not change the proxy event or response contract, they only change how your function code is packaged and started.
+
 - Build your application
 
 - Remove dev dependencies from your `node_modules` directory:
@@ -234,6 +236,68 @@ wget -qO - https://some.alb.dns.address/api/v1/hello-world/
 ```json
 {"hello":"world"}
 ```
+
+### Deploy as Lambda Container Image
+<a id="deploy-as-lambda-container-image"></a>
+
+AWS Lambda container images are a first-class deployment package type. The same `ApiLambdaApp` handler can be used for API Gateway or ALB whether you deploy a `.zip` archive or a container image.
+
+#### Container image requirements
+
+- Lambda container images must be Linux based.
+- Build each image for exactly one architecture (`linux/amd64` or `linux/arm64`).
+- Lambda runs the image on a read-only filesystem. Only `/tmp` is writable at runtime.
+- The default Lambda user must be able to read all files needed to start the function.
+- If you use an AWS Lambda base image, you do not need to add a `USER` instruction.
+- If you use a non-AWS or OS-only base image, you must include the runtime interface client (`aws-lambda-ric` for Node.js).
+
+#### AWS Node.js base image example
+
+```dockerfile
+FROM public.ecr.aws/lambda/nodejs:22
+
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+COPY package.json yarn.lock ./
+RUN yarn install --production --frozen-lockfile
+
+COPY dist ./dist
+
+CMD ["dist/api.handler"]
+```
+
+Build the image with `buildx` and disable provenance metadata so the image is accepted by Lambda:
+
+```shell
+docker buildx build --platform linux/amd64 --provenance=false -t ts-lambda-api-app:latest .
+```
+
+AWS supports overriding the Dockerfile `ENTRYPOINT`, `CMD`, and working directory with Lambda `ImageConfig` if you need to change them without rebuilding the image.
+
+#### Non-AWS base image example
+
+```dockerfile
+FROM node:22-bookworm-slim
+
+ENV NPM_CONFIG_CACHE=/tmp/.npm
+
+WORKDIR /function
+
+COPY package.json yarn.lock ./
+RUN yarn install --production --frozen-lockfile
+RUN yarn add aws-lambda-ric
+
+COPY dist ./dist
+
+ENTRYPOINT ["/usr/local/bin/npx", "aws-lambda-ric"]
+CMD ["dist/api.handler"]
+```
+
+#### Local workflow notes
+
+- Docker and the `buildx` plugin are required for the current AWS container image workflow.
+- Current AWS Node.js image guidance uses `docker buildx build ... --provenance=false`.
+- Modern Docker releases are required for current Lambda base images and local container testing.
 
 ## Routing
 <a id="routing"></a>
@@ -332,13 +396,15 @@ The default IOC app `Container` enables the `autobind` option. Controllers decor
 initialization. However, controllers can be explicitly specified instead of relying on the `@injectable` 
 decoration to dynamically load the controllers from a directory.
 
+When `autobind` is enabled, the loader scans each configured controller root recursively and imports `.js`, `.cjs` and `.mjs` files. In a compiled Lambda deployment you can usually pass just the top-level controllers directory.
+
 Create an IOC `Container` without the `autobind` option. Bind the desired controller 
 classes to the container and pass the instance into the `ApiLambdaApp` constructor. The `controllersPath`
 parameter is ignored when the custom container's `autobind` option disabled.
 
 ```typescript
 import { Container } from 'inversify';
-import { ApiLambdaApp, ApiRequest, AppConfig } from 'ts-lambda-api';
+import { ApiLambdaApp, AppConfig } from 'ts-lambda-api';
 import { AppController } from './controllers/AppController';
 
 const appConfig = new AppConfig();
@@ -353,9 +419,7 @@ appContainer.bind(AppController).toConstantValue(appController);
 // Pass the customer container into the app - controllersPath is ignored (false signals that autobind is not turned on)
 const app = new ApiLambdaApp(undefined, appConfig, false, appContainer);
 
-export const lambdaHandler = async (event: ApiRequest, context: any) => {
-    return await app.run(event, context);
-};
+export const lambdaHandler = app.createHandler();
 ```
 
 **Note you do not need to decorate controller classes with `@injectable` when autobind is disabled**

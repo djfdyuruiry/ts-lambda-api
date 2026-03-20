@@ -1,8 +1,9 @@
+import type { Context } from "aws-lambda"
 import { Container } from "inversify"
 
 import { ApiApp } from "./ApiApp"
 import { AppConfig } from "./model/AppConfig"
-import { ApiRequest } from "./model/ApiRequest"
+import { LambdaApiHandler, LambdaApiRequest } from "./model/ApiRequest"
 import { timed } from "./util/timed"
 
 /**
@@ -40,11 +41,23 @@ export class ApiLambdaApp extends ApiApp {
      * @returns The response.
      */
     @timed
-    public async run(event: ApiRequest, context: any) {
+    public async run(event: LambdaApiRequest, context: any) {
         this.logger.info("Received event, initialising controllers and processing event")
 
         await super.initialiseControllers()
 
         return await this.apiServer.processEvent(event, context)
+    }
+
+    /**
+     * Create a native AWS Lambda handler that passes the raw
+     * HTTP event directly through to `lambda-api`.
+     *
+     * @returns Lambda function handler.
+     */
+    public createHandler(): LambdaApiHandler {
+        return async (event: LambdaApiRequest, context: Context) => {
+            return await this.run(event, context)
+        }
     }
 }

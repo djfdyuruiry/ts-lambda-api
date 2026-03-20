@@ -1,3 +1,10 @@
+import type {
+    ALBEvent,
+    APIGatewayProxyEvent,
+    APIGatewayProxyEventV2,
+    Handler
+} from "aws-lambda"
+
 /**
  * AWS Lambda HTTP request event. Used for testing,
  * enabling manually passing requests to a `ApiLambdaApp`
@@ -34,3 +41,18 @@ export class ApiRequest {
      */
     public isBase64Encoded: boolean
 }
+
+/**
+ * Native AWS Lambda HTTP event shapes supported by `lambda-api`.
+ */
+export type NativeApiRequest = APIGatewayProxyEventV2 | APIGatewayProxyEvent | ALBEvent
+
+/**
+ * Request shape accepted by `ApiLambdaApp`.
+ */
+export type LambdaApiRequest = ApiRequest | NativeApiRequest
+
+/**
+ * Lambda handler returned by `ApiLambdaApp.createHandler()`.
+ */
+export type LambdaApiHandler = Handler<LambdaApiRequest, any>
